@@ -761,6 +761,14 @@ iptables-restore <<EOF
 COMMIT
 EOF
 
+ip6tables-restore <<EOF
+*filter
+:INPUT DROP [409:61073]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [1:260]
+COMMIT
+EOF
+
    Example hex match:
      iptables --append INPUT --match string --algo kmp --hex-string '|f4 6d 04 25 b2 02 00 0a|' --jump ACCEPT
 
