@@ -1,0 +1,2 @@
+# exo
+Everything about shells
