@@ -749,6 +749,16 @@ string         meaning
    -A INPUT -p tcp -m tcp --dport 12321 -j ACCEPT
    -A INPUT -j DROP
 
+*filter
+:INPUT DROP [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [1472:250899]
+-A INPUT -i lo -j ACCEPT
+-A INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A INPUT -j DROP
+COMMIT
+
    Example hex match:
      iptables --append INPUT --match string --algo kmp --hex-string '|f4 6d 04 25 b2 02 00 0a|' --jump ACCEPT
 
