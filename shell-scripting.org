@@ -749,6 +749,7 @@ string         meaning
    -A INPUT -p tcp -m tcp --dport 12321 -j ACCEPT
    -A INPUT -j DROP
 
+iptables-restore <<EOF
 *filter
 :INPUT DROP [0:0]
 :FORWARD ACCEPT [0:0]
@@ -758,6 +759,7 @@ string         meaning
 -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 -A INPUT -j DROP
 COMMIT
+EOF
 
    Example hex match:
      iptables --append INPUT --match string --algo kmp --hex-string '|f4 6d 04 25 b2 02 00 0a|' --jump ACCEPT
