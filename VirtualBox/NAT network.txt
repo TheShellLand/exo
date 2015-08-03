@@ -1,0 +1,1 @@
+The gateway is set to 10.0.2.2 and the name server can be found at 10.0.2.3
