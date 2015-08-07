@@ -1,0 +1,9 @@
+** Wireshark
+
+*** FILTER : Client Probe Request
+    # This filter finds the SSIDs stored in the client memory
+    (wlan_mgt.tag.number == 0 && ! wlan_mgt.ssid == "") && (wlan.fc.type_subtype == 0x0004)
+
+*** FILTER : Router SSID Broadcast
+    # This is the SSID broadcasted by router devices
+    ((! wlan_mgt.ssid == "") && (wlan_mgt.tag.number == 0)) && (wlan.fc.type_subtype == 0x0008)

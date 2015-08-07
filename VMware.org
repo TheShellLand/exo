@@ -1,0 +1,15 @@
+** VMware
+   # Network Adapters
+   vmnet0 bridged
+   vmnet1 host-only
+   vmnet8 NAT
+
+   # NAT Defaults
+   gateway: 172.16.197.2
+   netmask: 255.255.255.0
+
+   # NAT DHCP server
+   /etc/vmware/vmnet8/dhcp/dhcp.conf
+
+   # VM Headless
+   pref.vmplayer.exit.vmAction = "disconnect"
