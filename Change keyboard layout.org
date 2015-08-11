@@ -1,0 +1,9 @@
+sudo nano /etc/default/keyboard
+
+Then find where it says
+
+XKBLAYOUT=”gb”
+
+Change it to
+
+XKBLAYOUT=”us”
