@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# 8Mbits/sec
+dladm set-linkprop -p maxbw=8 vnic0
