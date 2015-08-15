@@ -1,0 +1,3 @@
+#!/usr/bin/sh
+
+nictagadm add nic_tag
