@@ -1,0 +1,1 @@
+"echo 'map net0 10.88.88.0/24 -> 0/32' > /etc/ipf/ipnat.conf; routeadm -u -e ipv4-forwarding; svcadm enable ipfilter; svcadm disable ssh"

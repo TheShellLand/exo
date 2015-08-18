@@ -4198,6 +4198,7 @@ tank/test/productAbeta@today      0      -   104M  -
       # Add zfs_enable=YES in /etc/rc.conf
 
 *** zfs share [-a | filesystem]
+    # dump  share  name=dump,path=/dump,prot=smb  local
 
 *** zfs snapshot [-r] tank@snapshot-name
     # create snapshot <recursively> on tank
@@ -4258,9 +4259,19 @@ In order to "grow" a disk, the following operation have to be done from command 
     (review if the partiton table is good)
     swapon -a
     zpool import pool_to_be_grown
+*** Create pool with specific version
+    zpool create -o version=28
+
 *** Expanding a ZFS pool
 http://www.itsacon.net/computers/unix/growing-a-zfs-pool/
 http://www.itsacon.net/computers/unix/expanding-a-zfs-pool/
+*** Show pool version
+    zpool get version <pool>
+
+*** Upgrade pool version
+    zpool upgrade -v <pool>
+
+
 
 *** zpool create mypool mirror da0 da1 mirror da2 da3
 
