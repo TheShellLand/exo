@@ -1,0 +1,33 @@
+[root@smartosn3 ~]# vmadm list
+UUID                                  TYPE  RAM      STATE             ALIAS
+ad42decb-31df-47c6-b5fc-f6cc5e4f3e02  OS    1024     stopped           zurmo-2.7-virgin
+dc853525-2429-42e7-8ec2-12f60b13e517  OS    1024     running           worpress-testm
+1bdee4bd-f317-4cad-958a-7b767b291153  KVM   4096     stopped           windows 7 test
+
+[root@smartosn3 ~]# fwadm list
+UUID                                 ENABLED RULE
+c905194c-deec-411c-8652-dc4245925b39 true    FROM any TO all vms ALLOW icmp TYPE 8 CODE 0
+
+[root@smartosn3 ~]# fwadm status dc853525-2429-42e7-8ec2-12f60b13e517
+stopped
+
+[root@smartosn3 ~]# fwadm start dc853525-2429-42e7-8ec2-12f60b13e517
+Firewall started for VM dc853525-2429-42e7-8ec2-12f60b13e517
+
+[root@smartosn3 ~]# fwadm status dc853525-2429-42e7-8ec2-12f60b13e517
+running
+
+[root@smartosn3 ~]# fwadm list dc853525-2429-42e7-8ec2-12f60b13e517
+UUID                                 ENABLED RULE
+c905194c-deec-411c-8652-dc4245925b39 true    FROM any TO all vms ALLOW icmp TYPE 8 CODE 0
+
+[root@smartosn3 ~]# fwadm status -v dc853525-2429-42e7-8ec2-12f60b13e517
+ipf: v4.1.9 (592)
+kernel: v4.1.9
+running: true
+log flags: 0 = none set
+default: pass all, Logging: available
+active list: 1
+feature mask: 0x107
+
+
