@@ -1,0 +1,31 @@
+IPNAT load balancer
+By Jay Danielsen on Oct 03, 2008
+
+A few weeks ago, I described how to configure the Solaris global zone as a firewall using ipnat. Another common application of ipnat on Solaris is as a simple round robin load balancer. Ipnat doesn't have a sticky-session capability, but is a good fit to test load balanced stateless services (such as http and ldap) in your development environment,
+
+ Use load balancing to increase the scalability of the stateless services you expose.
+For example, if you have a multi-master pair of ldap directory servers, you can
+load balance requests across hosts with the following  rdr and map rules:
+
+Example:
+ldap host ip addresses = 172.0.1.1 and 172.0.1.2
+firewall host ip address = 192.168.1.100
+
+/etc/ipf/ipnat.conf:
+rdr bge0 192.168.1.100/32 port 389 -> 172.0.1.1,172.0.1.2 port 389
+map bge0 from any to 172.0.1.1/32 port = 389 -> 192.168.1.100/32
+map bge0 from any to 172.0.1.2/32 port = 389 -> 192.168.1.100/32
+
+Very simple to configure - the rdr rule redirects requests sent to 192.168.1.100 port 389 to the round-robin pair of ldap hosts at addresses 172.0.1.1 and 172.0.1.2. The two map rules rewrite the source address of the request so that the response can be returned back to the originating host.
+
+Note that in rdr rule above, only two hosts can be specified. To add a third ldap host at address 172.0.1.3, you must use the following form:
+
+rdr bge0 192.168.1.100/32 port 389 -> 172.0.1.1 port 389 tcp round-robin
+rdr bge0 192.168.1.100/32 port 389 -> 172.0.1.2 port 389 tcp round-robin
+rdr bge0 192.168.1.100/32 port 389 -> 172.0.1.3 port 389 tcp round-robin
+
+
+To activate your changes:
+# svcadm retstart ipfilter
+- or, from the command line -
+# ipnat -FC -f /etc/ipf/ipnat.conf
