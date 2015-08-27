@@ -1,0 +1,22 @@
+
+# The MBR
+    446 bytes - Bootstrap.
+    64 bytes - Partition table.
+    2 bytes - Signature
+
+# restore partition table
+dd if=mbr of=/dev/sda bs=1 count=64 skip=446 seek=446
+
+
+
+
+
+GUID Partition Table (GPT) uses GUIDs (or UUIDs in linux world) to define partitions and its types, hence the name.
+
+The GPT consists of:
+Location in the HDD 	Purpose
+First logical sector of the disk or First 512 bytes 	Protective MBR - Same as a normal MBR but the 64-byte area contains a single 0xEE type Primary partition entry defined over the entire size of the disk or in case of >2 TiB, upto a partition size of 2 TiB.
+Second logical sector of the disk or Next 512 bytes 	Primary GPT Header - Contains the Unique Disk GUID, Location of the Primary Partition Table, Number of possible entries in partition table, CRC32 checksums of itself and the Primary Partition Table, Location of the Secondary (or Backup) GPT Header
+16 KiB (by default) following the second logical sector of the disk 	Primary GPT Table - 128 Partition entries (by default, can be higher), each with an entry of size 128 bytes (hence total of 16 KiB for 128 partition entries). Sector numbers are stored as 64-bit LBA and each partition has a Partition Type GUID and a Unique Partition GUID.
+16 KiB (by default) before the last logical sector of the disk 	Secondary GPT table - It is byte-for-byte identical to the Primary table. Used mainly for recovery in case the primary partition table is damaged.
+Last logical sector of the disk or Last 512 bytes 	Secondary GPT Header - Contains the Unique Disk GUID, Location of the Secondary Partition Table, Number of possible entries in the partition table, CRC32 checksums of itself and the Secondary Partition Table, Location of the Primary GPT Header. This header can be used to recover GPT info in case the primary header is corrupted.
