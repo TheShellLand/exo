@@ -1,0 +1,16 @@
+* LINUX
+** How to know if a network interface is tap, tun, bridge or physical?
+   Physical devices have a /sys/class/net/eth0/device symlink
+   Bridges have a /sys/class/net/br0/bridge directory
+   TUN and TAP devices have a /sys/class/net/tap0/tun_flags file
+   Bridges and loopback interfaces have 00:00:00:00:00:00 in /sys/class/net/lo/address
+
+** Install flash plugin for Chrome
+   # Manually - currently not working
+   mkdir -p /opt/google/chrome/plugins
+   cp libflashplayer.so /opt/google/chrome/plugins
+   cp �r usr/* /usr
+
+   # Using PepperFlash
+   Install pepperflashplugin-nonfree
+   run update-pepperflashplugin-nonfree
