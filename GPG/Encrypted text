@@ -1,0 +1,3 @@
+gpg2 -a -e -s -u <secret-key-acct> -r <recv-acct> -r <recv-acct>
+Message here
+^d
