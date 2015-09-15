@@ -1,2 +1,0 @@
-zoneadm -z zonename install
-zoneadm -z zonename uninstall

@@ -1,1 +1,0 @@
-dd if=/dev/sda of=mbr-bootloader.img bs=446 count=1

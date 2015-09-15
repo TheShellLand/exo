@@ -1,1 +1,0 @@
-VBoxManage clonehd /path/to/src.vdi /path/to/dst.img --format RAW
