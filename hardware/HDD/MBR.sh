@@ -1,0 +1,1 @@
+dd if=/dev/sda of=mbr.img bs=512 count=1

@@ -1,0 +1,23 @@
+*** Kibana
+    /var/www/kibana/bin/kibana
+
+
+    # Configuration file
+    ~/kibana-3.0.1/config.js
+
+    # Change port
+    elasticsearch: "http://"+window.location.hostname+":80",
+
+    # Generate a login that will be used to access Kibana
+    # The htpasswd file just created is referenced in the Apache configuration that you recently configured
+    htpasswd -c /etc/httpd/conf.d/kibana-htpasswd <user-name>
+
+    # Start Apache and enable on boot
+    systemctl start httpd.service
+    systemctl enable httpd.service
+
+    # Change FQDN for access
+    vi kibana3.conf
+    <VirtualHost FQDN:80>
+    ServerName FQDN
+    cp ~/kibana3.conf /etc/httpd/conf.d/

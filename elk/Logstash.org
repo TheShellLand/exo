@@ -1,0 +1,289 @@
+*** Logstash
+
+    # Fix for Ubuntu and Oracle Java
+    # https://github.com/elastic/logstash/issues/3127#issuecomment-101068714
+    ln -s /lib/x86_64-linux-gnu/libcrypt.so.1 /usr/lib/x86_64-linux-gnu/libcrypt.so
+
+    # Dropped events log message
+    too many attempts at sending event. dropping:
+
+    ./logstash agent -f /tmp/local/logstash.conf < /file_path/test.log
+    ./logstash agent -e 'input { stdin {} } output { ANY_OUTPUT_FILTER }' < /file_path/test.log
+
+**** Input
+***** CSV
+filter {
+  csv {
+    add_field => ... # hash (optional), default: {}
+    add_tag => ... # array (optional), default: []
+    columns => ... # array (optional), default: []
+    quote_char => ... # string (optional), default: "\""
+    remove_field => ... # array (optional), default: []
+    remove_tag => ... # array (optional), default: []
+    separator => ... # string (optional), default: ","
+    source => ... # string (optional), default: "message"
+    target => ... # string (optional)
+  }
+}
+
+***** file
+input {
+  file {
+    add_field => ... # hash (optional), default: {}
+    codec => ... # codec (optional), default: "plain"
+    discover_interval => ... # number (optional), default: 15
+    exclude => ... # array (optional)
+    path => ... # array (required)
+    sincedb_path => ... # string (optional)
+    sincedb_write_interval => ... # number (optional), default: 15
+    start_position => ... # string, one of ["beginning", "end"] (optional), default: "end"
+    stat_interval => ... # number (optional), default: 1
+    tags => ... # array (optional)
+    type => ... # string (optional)
+  }
+}
+
+path => [ "/var/log/*.log", "/var/log/messages", "/var/log/syslog" ]
+sincedb_path => "/dev/null"
+
+***** Comments
+# this is a comment
+
+input { # comments can appear at the end of a line, too
+  # ...
+}
+
+***** Plugins
+input {
+  file {
+    path => "/var/log/messages"
+    type => "syslog"
+  }
+
+  file {
+    path => "/var/log/apache/access.log"
+    type => "apache"
+  }
+}
+
+***** Boolean
+debug => true
+
+***** String
+name => "Hello world"
+
+***** Number
+port => 33
+
+***** Array
+path => [ "/var/log/messages", "/var/log/*.log" ]
+path => "/data/mysql/mysql.log"
+
+***** Hash
+match => {
+  "field1" => "value1"
+  "field2" => "value2"
+  ...
+}
+
+***** Conditionals
+if EXPRESSION {
+  ...
+} else if EXPRESSION {
+  ...
+} else {
+  ...
+}
+
+**** Codec
+***** multiline
+input {
+  stdin {
+    codec => multiline {
+      pattern => "pattern, a regexp"
+      negate => "true" or "false"
+      what => "previous" or "next"
+    }
+  }
+}
+
+**** Filter
+***** grok
+filter {
+  grok {
+    add_field => ... # hash (optional), default: {}
+    add_tag => ... # array (optional), default: []
+    break_on_match => ... # boolean (optional), default: true
+    drop_if_match => ... # boolean (optional), default: false
+    keep_empty_captures => ... # boolean (optional), default: false
+    match => ... # hash (optional), default: {}
+    named_captures_only => ... # boolean (optional), default: true
+    overwrite => ... # array (optional), default: []
+    patterns_dir => ... # array (optional), default: []
+    remove_field => ... # array (optional), default: []
+    remove_tag => ... # array (optional), default: []
+    tag_on_failure => ... # array (optional), default: ["_grokparsefailure"]
+  }
+}
+
+
+# Expressions
+What's an expression? Comparison tests, boolean logic, etc!
+
+The following comparison operators are supported:
+
+    equality, etc: ==, !=, <, >, <=, >=
+    regexp: =~, !~
+    inclusion: in, not in
+
+The following boolean operators are supported:
+
+    and, or, nand, xor
+
+The following unary operators are supported:
+
+    !
+
+Expressions may contain expressions. Expressions may be negated with !. Expressions may be grouped with parentheses (...). Expressions can be long and complex.
+
+
+# Create a custom pattern
+(?<field_name>the pattern here)
+(?<queue_id>[0-9A-F]{11})
+%{INT:latency:int}
+%{INT:latency:integer}
+
+# Creates a pattern indexed with "timestamp"
+\A(?<timestamp>%{MONTH}%{SPACE}%{MONTHDAY}%{NOTSPACE}%{SPACE}%{YEAR}%{SPACE}%{TIME})
+
+
+55.3.244.1 GET /index.html 15824 0.043
+%{IP:client} %{WORD:method} %{URIPATHPARAM:request} %{NUMBER:bytes} %{NUMBER:duration}
+
+# Match across newlines
+(?m)
+(?<message>(.|\r|\n)*)
+
+# Example
+input {
+    file {
+	path => "/var/log/http.log"
+    }
+}
+
+filter {
+    grok {
+	match => [ "message", "%{IP:client} %{WORD:method} %{URIPATHPARAM:request} %{NUMBER:bytes} %{NUMBER:duration}" ]
+    }
+}
+
+# Filter path for filename
+    grok { match=> [ "path", "\A%{GREEDYDATA}/%{WORD:malware_hash}\.%{WORD:pcap_hash}\.pcap.logstash" ] }
+    grok { match=> [ "path", "\A%{GREEDYDATA}/%{GREEDYDATA:pcap_file}\.out" ] }
+
+***** date
+filter {
+  date {
+    add_field => ... # hash (optional), default: {}
+    add_tag => ... # array (optional), default: []
+    locale => ... # string (optional)
+    match => ... # array (optional), default: []
+    remove_field => ... # array (optional), default: []
+    remove_tag => ... # array (optional), default: []
+    target => ... # string (optional), default: "@timestamp"
+    timezone => ... # string (optional)
+}
+}
+
+# Convert to @timestamp
+filter {
+  grok { match => { "message" => "%{SYSLOGTIMESTAMP:time}" } }
+  date { match => [ "time", "MMM dd HH:mm:ss", "MMM  d HH:mm:ss" ] }
+}
+
+    date {
+       	match => [
+	    "timestamp",
+#	    "MMM d, yyyy HH:mm:ss.SSSSSSSSS",
+#	    "MMM dd, yyyy HH:mm:ss.SSSSSSSSS",
+#	    "MMM  d, yyyy HH:mm:ss.SSSSSSSSS",
+#	    "MMM  dd, yyyy HH:mm:ss.SSSSSSSSS"
+	    "yyyy-mm-dd hh:mm:ss.SSSSSS"
+	]
+    }
+
+***** if else
+output {
+  if [type] == "apache" {
+    if [status] =~ /^5\d\d/ {
+      nagios { ...  }
+    } else if [status] =~ /^4\d\d/ {
+      elasticsearch { ... }
+    }
+
+    statsd { increment => "apache.%{status}" }
+  }
+}
+
+****** Drop
+       if "_grokparsefailure" in [tags] { drop {} }
+
+**** Output
+***** elasticsearch
+output {
+  elasticsearch {
+    bind_host => ... # string (optional)
+    cluster => ... # string (optional)
+    embedded => ... # boolean (optional), default: false
+    embedded_http_port => ... # string (optional), default: "9200-9300"
+    exclude_tags => ... # array (optional), default: []
+    fields => ... # array (optional), default: []
+    host => ... # string (optional)
+    index => ... # string (optional), default: "logstash-%{+YYYY.MM.dd}"
+    index_type => ... # string (optional), default: "%{@type}"
+    max_inflight_requests => ... # number (optional), default: 50
+    node_name => ... # string (optional)
+    port => ... # number (optional), default: 9300
+    tags => ... # array (optional), default: []
+    type => ... # string (optional), default: ""
+  }
+}
+
+output {
+  elasticsearch { }
+}
+****** De-duplicating outputs
+filter {
+    mutate {
+	add_field => [ "logstash_checksum", "%{message}" ]
+    }
+    anonymize {
+	fields => [ "logstash_checksum" ]
+	algorithm => "MD5"
+	key => "sonic"
+    }
+}
+
+
+output {
+    elasticsearch {
+	document_id => '%{logstash_checksum}'
+    }
+}
+
+
+
+***** stdout
+output {
+  stdout {}
+}
+
+
+**** Run logstash
+     /opt/logstash/bin/logstash
+
+**** Test configuration file
+     /opt/logstash/bin/logstash --configtest -f /etc/logstash/conf.d/logstash.conf
+
+**** Update plugin
+     bin/plugin update logstash-output-elasticsearch # update 0.2.4 -> 0.2.5
