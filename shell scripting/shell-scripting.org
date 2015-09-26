@@ -2841,57 +2841,6 @@ Encode input data in a QR Code and save as a PNG or EPS image.
 ** Video Modes
 http://elinux.org/RPiconfig#Video
 
-* REGEX
-  id | grep uid | awk '{print $1}' | sed 's/.*\([(].*[)]\)/\1/;s/(//;s/)//'	# Current user
-  md5sum.exe * 2>/dev/null | sed -E 's/^([a-z0-9]*)[[:space:]]\*(.*)\.(.*)/mv -v "\2.\3" \1.\3/' | /bin/sh	# rename file to md5 hash
-  for i in "saying words" ; do cd "${i}"; printf "\e[31m$(pwd)\e[0m\n"; md5sum.exe * 2>/dev/null | sed -E 's/^([a-z0-9]*)[[:space:]]\*(.*)\.(.*)/mv -v "\2.\3" \1.\3/' | /bin/sh; cd -; done	# rename file to md5 hash
-
-  IP Address........[0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}
-                    [0-9]\{1,3\}[.][0-9]\{1,3\}[.][0-9]\{1,3\}[.][0-9]\{1,3\}
-
-  Class A,B,C.......()[.]()[.]()[.]()
-
-  Email Address.....[0-9a-zA-Z]*[@][a-zA-Z]{2,3}
-                    [0-9a-zA-Z]*[ ][aA][tT][ ][a-zA-Z]{2,3}
-  MAC Address.......([0-9A-F]{2}[:-]){5}([0-9A-F]{2})
-
-** Lookahead
-   # matches letter and number that follows with a space (without including the space)
-   md5sum.exe '/path/to/file' | grep -Pi --color '^[a-z0-9]*(?=[ ])'
-
-   (?=(regex))
-   (?!(regex))
-
-** Lookbehind
-   (?<=(regex))
-   (?<!(regex))
-
-** Character classes
-
-The character class is the most basic regular expression concept after a literal match. It makes one small sequence of characters match a larger set of characters. For example, [A-Z] could stand for the alphabet, and \d could mean any digit. Character classes apply to both POSIX levels.
-
-When specifying a range of characters, such as [a-Z] computer's locale settings determine the contents by the numeric ordering of the character encoding. They could store digits in that sequence, or the ordering could be abc...zABC...Z, or aAbBcC...zZ. So the POSIX standard defines a character class, which will be known by the regular expression processor installed. Those definitions are in the following table:
-
-| POSIX      | Non-standard | Perl/Tcl | Vim   | ASCII                              | Description                                |
-|------------+--------------+----------+-------+------------------------------------+--------------------------------------------|
-| [:alnum:]  |              |          |       | [A-Za-z0-9]                        | Alphanumeric characters                    |
-|            | [:word:]     | \w       | \w    | [A-Za-z0-9_]                       | Alphanumeric characters plus "_"           |
-|            |              | \W       | \W    | [^A-Za-z0-9_]                      | Non-word characters                        |
-| [:alpha:]  |              |          | \a    | [A-Za-z]                           | Alphabetic characters                      |
-| [:blank:]  |              |          | \s    | [ \t]                              | Space and tab                              |
-|            |              | \b       | \< \> | (?<=\W)(?=\w)|(?<=\w)(?=\W)        | Word boundaries                            |
-| [:cntrl:]  |              |          |       | [\x00-\x1F\x7F]                    | Control characters                         |
-| [:digit:]  |              | \d       | \d    | [0-9]                              | Digits                                     |
-|            |              | \D       | \D    | [^0-9]                             | Non-digits                                 |
-| [:graph:]  |              |          |       | [\x21-\x7E]                        | Visible characters                         |
-| [:lower:]  |              |          | \l    | [a-z]                              | Lowercase letters                          |
-| [:print:]  |              |          | \p    | [\x20-\x7E]                        | Visible characters and the space character |
-| [:punct:]  |              |          |       | [][!"#$%&'()*+,./:;<=>?@\^_`{|}~-] | Punctuation characters                     |
-| [:space:]  |              | \s       | \_s   | [ \t\r\n\v\f]                      | Whitespace characters                      |
-|            |              | \S       |       | [^ \t\r\n\v\f]                     | Non-whitespace characters                  |
-| [:upper:]  |              |          | \u    | [A-Z]                              | Uppercase letters                          |
-| [:xdigit:] |              |          | \x    | [A-Fa-f0-9]                        | Hexadecimal digits                         |
-
 * Shell Scripting
 ** array
    ArrayName=("element 1" "element 2" "element 3")
