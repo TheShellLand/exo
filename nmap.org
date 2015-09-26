@@ -1,0 +1,29 @@
+* nmap
+  -Pn					# disable ping
+  -n					# never do reverse DNS
+  -sn					# ping only
+  --dns-servers <server1>,<server2>	# custom DNS
+  -R					# always do reverse DNS
+  -oX					# output XML
+
+  # Extended scripts
+  –script <script>
+  	smb-os-discovery.nse 		# Windows hostname discovery
+
+nmap --script "http-*"
+
+    Loads all scripts whose name starts with http-, such as http-auth and http-open-proxy. The argument to --script had to be in quotes to protect the wildcard from the shell.
+
+More complicated script selection can be done using the and, or, and not operators to build Boolean expressions. The operators have the same precedence as in Lua: not is the highest, followed by and and then or. You can alter precedence by using parentheses. Because expressions contain space characters it is necessary to quote them.
+
+nmap --script "not intrusive"
+    Loads every script except for those in the intrusive category.
+
+nmap --script "default or safe"
+    This is functionally equivalent to nmap --script "default,safe". It loads all scripts that are in the default category or the safe category or both.
+
+nmap --script "default and safe"
+    Loads those scripts that are in both the default and safe categories.
+
+nmap --script "(default or safe or intrusive) and not http-*"
+    Loads scripts in the default, safe, or intrusive categories, except for those whose names start with http-.
