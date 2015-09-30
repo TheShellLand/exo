@@ -1,0 +1,27 @@
+input {
+  # We read from the "old" cluster
+  elasticsearch {
+    hosts => [ "localhost" ]
+    port => "9200"
+    index => "person"
+    size => 500
+    scroll => "5m"
+    docinfo => true
+  }
+}
+
+output {
+  # We write to the "new" cluster
+  elasticsearch {
+    host => "localhost"
+    port => "9201"
+    protocol => "http"
+    index => "%{[@metadata][_index]}"
+    index_type => "%{[@metadata][_type]}"
+    document_id => "%{[@metadata][_id]}"
+  }
+  # We print dots to see it in action
+  stdout {
+    codec => "dots"
+  }
+}

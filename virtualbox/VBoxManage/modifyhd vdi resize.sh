@@ -1,0 +1,1 @@
+VBoxManage modifyhd windows7x64.vdi --resize 40960
