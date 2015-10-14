@@ -1,1 +1,3 @@
-apt-get install --no-install-recommends gnome-shell gnome-session gnome-terminal gnome-panel xorg xterm gdm menu gksu synaptic
+apt-get install --no-install-recommends gnome-shell gnome-session gnome-terminal gnome-panel xorg xterm gdm gksu synaptic
+
+# menu
