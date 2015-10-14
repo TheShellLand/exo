@@ -1,0 +1,1 @@
+apt-get install --no-install-recommends gnome-shell gnome-session gnome-terminal gnome-panel xorg xterm gdm menu gksu synaptic
