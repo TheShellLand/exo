@@ -20,3 +20,7 @@
 **** Delete API
      curl -XDELETE localhost:9200/logstash-domainiq/logs/2d9ce9400d492e84cdf7b32a4d79d2ae
                                  >index            >type >_id
+**** node stats
+     # This will also tell you the location of "data"
+     curl 12.0.0.2:9200/_nodes/stats?pretty
+
