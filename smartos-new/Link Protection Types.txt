@@ -1,0 +1,28 @@
+Link Protection Types
+
+The link protection mechanism is disabled by default. To enable link protection, specify one or more of the following protection types as values of the protection link property:
+
+mac-nospoof
+
+    Enables protection against MAC spoofing. An outbound packet's source MAC address must match the datalink's configured MAC address. Otherwise, the packet is dropped. If the link belongs to a zone, enabling mac-nospoof prevents the zone's owner from modifying that link's MAC address.
+ip-nospoof
+
+    Enables protection against IP spoofing. Any outgoing IP, ARP, or NDP packet must have an address field that matches either a DHCP-configured IP address or one of the addresses listed in the allowed-ips link property. Otherwise, the packet is dropped.
+
+    The allowed-ips link property works with the ip-nospoof protection type. By default, the list specified by this property is empty. If the property is empty or unconfigured, the following IP addresses are implicitly included in the property. These IP addresses are matched with the IP address of the outgoing packets to determine if the packets are allowed to pass or are dropped.
+
+        DHCP-configured IPv4 or IPv6 addresses that are dynamically learned
+
+        Link local IPv6 addresses that conform to RFC 2464 and which are derived from the link's MAC address
+
+    The following list indicates a protocol and the corresponding outbound packet's associated address field that must match an address in the allowed-ips property. If this property is empty, then the packet's address must match a DHCP-configured IP address.
+
+        IP (IPv4 or IPv6) – The packet's source address
+
+        ARP – The packet's sender protocol address.
+
+restricted
+
+    Restricts outgoing packets to only those packets of the IPv4, IPv6, and ARP protocol types. Other packets that are not of the listed types are dropped. Using this protection type prevents the link from generating potentially harmful L2 control frames.
+
+    Note - Packets that are dropped because of link protection are tracked by the following kernel statistics: mac_spoofed, ip_spoofed, and restricted. These statistics correspond to the three protection types. Use the kstat command to retrieve these per-link statistics. For more details about retrieving these statistics, see the kstat(1M) man page.

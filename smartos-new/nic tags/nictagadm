@@ -1,0 +1,7 @@
+#!/usr/bin/sh
+
+# Create nic tag
+nictagadm add nic_tag mac_address
+
+# Create etherstrub
+nictagadm add -l etherstub

@@ -1,0 +1,25 @@
+{
+  "alias": "coal-nat",
+  "hostname": "coal-nat",
+  "brand": "joyent",
+  "max_physical_memory": 128,
+  "image_uuid": "62f148f8-6e84-11e4-82c5-efca60348b9f",
+  "nics": [
+    {
+      "nic_tag": "external",
+      "ip": "dhcp",
+      "allow_ip_spoofing": "1",
+      "primary": "1"
+    },
+    {
+      "nic_tag": "sdc_external0",
+      "ip": "10.88.88.2",
+      "netmask": "255.255.255.0",
+      "allow_ip_spoofing": "1",
+      "gateway": "10.88.88.2"
+    }
+  ],
+  "customer_metadata" : {
+    "user-script" : "echo 'map net0 10.88.88.0/24 -> 0/32' > /etc/ipf/ipnat.conf; routeadm -u -e ipv4-forwarding; svcadm enable ipfilter; svcadm disable ssh"
+  }
+}
