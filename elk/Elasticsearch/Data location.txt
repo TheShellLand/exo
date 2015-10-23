@@ -1,0 +1,1 @@
+curl -s 12.0.0.2:9200/_nodes/stats?pretty | json nodes | json hBm3MAfZSxiwKD8FOqGDDg | json fs | json data
