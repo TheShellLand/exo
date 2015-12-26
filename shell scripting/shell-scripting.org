@@ -3941,6 +3941,10 @@ online 14:46:43 svc:/application/x11/xvnc-inetd:default
 ** Hostname
    Setting the Host Name
 
+   /etc/hosts
+   /etc/nodename
+   /etc/hostname.<interface>
+
    In Oracle Solaris 11, /etc/nodename has been removed and replaced with the config/nodename property of the svc:/system/identity:node service.
 
    To set the host name, we again use svccfg:
