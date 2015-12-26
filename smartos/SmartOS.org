@@ -1934,6 +1934,15 @@ case "$1" in
 esac
 exit $SMF_EXIT_OK
 
+*** SMARTOS : Delegate dataset
+    # zonecfg -z zion
+    zonecfg:zion> add dataset
+    zonecfg:zion:dataset> set name=tank/zone/zion
+    zonecfg:zion:dataset> end
+
+    zonecfg:zion> remove dataset name=tank/zone/zion
+    zonecfg:zion1> exit    
+
 *** SMARTOS : Determine if VM are running out of memory
     zonememstat
 
