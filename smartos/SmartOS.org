@@ -1778,6 +1778,10 @@ vmadm update <zone id> vcpus=4
 *** SMARTOS : Change hostname
     $ hostname "the-new-hostname" && hostname > /etc/nodename
 
+    # or 
+
+    $ sm-set-hostname the-new-hostname
+
 *** SMARTOS : Change NIC
     # modify /usbkey/config
 
