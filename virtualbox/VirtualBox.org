@@ -120,6 +120,8 @@
      The created image can be attached to a storage controller in a VM configuration as usual.
 
 **** VBoxManage
+***** VBoxManage convertfromraw --format VDI [filename].img [filename].vdi
+
 ***** VBoxManage dhcpserver remove --netname <network_name>
 
 ***** VBoxManage list dhcpservers
