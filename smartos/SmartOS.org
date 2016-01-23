@@ -2099,6 +2099,8 @@ updatenics.json
     ]
 }
 
+*** SMARTOS : vmadm destroy doesn't tell logadm to stop rotating logs
+    for v in $(logadm -V |  awk -F/ '/zones/ {print $3}'); do exist=$(vmadm lookup uuid=$v); [[ -z "$exist" ]] && logadm -r /zones/$v/root/tmp/vm.log; done
 
 *** VM : Create Windows virtio disk drivers
     # Windows 2008 will not find the virtual hard disk unless you load the disk drivers
