@@ -1689,6 +1689,7 @@ menuentry "Test memory" {
 
 ** COMMAND : apt-get
    # apt-get install --reinstall package
+   # apt-get --download-only -o Dir::Cache="/path/to/destination/dir/" -o Dir::Cache::archives="./" install package_name
 
 ** COMMAND : dpkg
    # dpkg -i package
