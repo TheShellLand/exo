@@ -2102,6 +2102,16 @@ updatenics.json
 *** SMARTOS : vmadm destroy doesn't tell logadm to stop rotating logs
     for v in $(logadm -V |  awk -F/ '/zones/ {print $3}'); do exist=$(vmadm lookup uuid=$v); [[ -z "$exist" ]] && logadm -r /zones/$v/root/tmp/vm.log; done
 
+*** SMARTOS : mdb 0 analyzing system dump
+    You don't want to be using mdb -f on a system dump. Instead here, I
+    would go into that directory, run `savecore -vf vmdump.0 .`.
+    
+    That will create a unix.0 and vmcore.0 which you can then access with
+    mdb by running `mdb 0` in that directory. Note that by using mdb -f,
+    you've asked mdb not to interpret the core dump, but rather treat it as
+    a raw file which is why the dcmds are not being found.
+
+
 *** VM : Create Windows virtio disk drivers
     # Windows 2008 will not find the virtual hard disk unless you load the disk drivers
     http://ispire.me/how-to-create-smartos-windows-vm/
