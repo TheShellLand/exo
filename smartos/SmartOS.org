@@ -2065,10 +2065,15 @@ exit $SMF_EXIT_OK
     
     Yes, I likely should have called it '/tmpfs'.
 
-
 *** SMARTOS : Remove disks
     echo '{"remove_disks": ["/dev/zvol/rdsk/zones/54f1cc77-68f1-42ab-acac-5c4f64f5d6e0-disk1"]}' | vmadm update UUID
 
+*** SMARTOS : Remove offending log files
+    logadm -r /zones/<uuid>/root/tmp/vm.log
+
+*** SMARTOS : See all logs in logadm
+    logadm -V
+    
 *** SMARTOS : Seeing what is using a specific interrupt
     echo ::interrupts | mdb -k
 
