@@ -1,0 +1,16 @@
+
+[root@d298fd28-c62a-11e5-892e-67b443483161 (SDC-EAST:napi0) ~]# svcs -xv
+svc:/smartdc/mdata:execute (Joyent SDC metadata handler)
+ State: maintenance since Fri Jan 29 03:11:30 2016
+Reason: Start method exited with $SMF_EXIT_ERR_FATAL.
+   See: http://illumos.org/msg/SMF-8000-KS
+   See: /var/svc/log/smartdc-mdata:execute.log
+Impact: This service is not running.
+
+svc:/smartdc/application/config-agent:default (Joyent Configuration Agent)
+ State: offline since Fri Jan 29 03:11:27 2016
+Reason: Start method is running.
+   See: http://illumos.org/msg/SMF-8000-C4
+   See: /var/svc/log/smartdc-application-config-agent:default.log
+Impact: This service is not running.
+
