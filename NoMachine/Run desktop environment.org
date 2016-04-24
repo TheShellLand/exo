@@ -1,0 +1,4 @@
+
+
+* Step 6: Run the desktop environment
+    $ DISPLAY=:0 nohup /etc/X11/Xsession gnome-session &
