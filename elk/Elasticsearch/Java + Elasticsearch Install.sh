@@ -24,6 +24,7 @@ tar -zxf elasticsearch.tgz && \
 rm -f elasticsearch.tgz && \
 rm -f /usr/local/bin/elasticsearch && \
 ln -s /opt/elasticsearch/elasticsearch-5.0.0-alpha4/bin/elasticsearch /usr/local/bin/elasticsearch && \
+chown -R elasticsearch:elasticsearch /opt/elasticsearch && \
 echo "Done"
 
 
@@ -37,4 +38,5 @@ tar -zxf elasticsearch.tgz && \
 rm -f elasticsearch.tgz && \
 rm -f /usr/local/bin/elasticsearch && \
 ln -s /opt/elasticsearch/elasticsearch-5.0.0-alpha4/bin/elasticsearch /usr/local/bin/elasticsearch && \
+chown -R elasticsearch:elasticsearch /opt/elasticsearch && \
 echo "Done"
