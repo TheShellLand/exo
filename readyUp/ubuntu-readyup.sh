@@ -13,6 +13,11 @@ apt update
 
 
 
+# OpenVPN
+echo "[*] Installing OpenVPN"
+apt install -y openvpn
+
+
 # Virt-Viewer
 echo "[*] Installing virt-viewer"
 apt install -y virt-viewer
