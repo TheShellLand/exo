@@ -8,5 +8,8 @@ apt-get update
 apt-get install -y neo4j
 
 ip r
+read -p "Press Enter"
 
-echo "Modify /etc/neo4j/neo4j.conf"
+vi /etc/neo4j/neo4j.conf
+
+service neo4j start
