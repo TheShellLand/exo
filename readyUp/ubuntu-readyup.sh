@@ -10,6 +10,7 @@ apps=apps
 cd $(dirname "$0")
 
 apt update
+apt install -f
 
 
 
