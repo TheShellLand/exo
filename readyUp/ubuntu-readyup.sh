@@ -43,7 +43,7 @@ apt install -f -y
 echo "[*] Installing Pycharm"
 pycharm=pycharm.tgz
 if [ ! -f $apps/$pycharm ]; then
-	wget -O $pycharm 'https://download.jetbrains.com/python/pycharm-community-2016.3.2.tar.gz'
+	wget -O $pycharm 'https://download.jetbrains.com/python/pycharm-community-2017.1.tar.gz'
 	tar zxf $pycharm -C /opt
 	rm $pycharm
 else
