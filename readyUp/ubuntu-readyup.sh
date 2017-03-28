@@ -23,6 +23,11 @@ echo "[*] Installing virt-viewer"
 apt install -y virt-viewer
 
 
+# tmux
+echo "[*] Installing tmux"
+apt install -y tmux
+
+
 # Chrome
 echo "[*] Installing Chrome"
 chrome=chrome.deb
