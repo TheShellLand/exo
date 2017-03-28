@@ -93,12 +93,13 @@ apt update
 apt install -y gnome-tweak-tool
 apt install -y ubuntu-gnome-desktop
 
+apt install -y plank
+apt install -y macbuntu-os-plank-theme-lts-v8
 apt install -y macbuntu-os-icons-lts-v8
 apt install -y macbuntu-os-ithemes-lts-v8
 apt install -y slingscold
 #apt install -y albert
-apt install -y plank
-apt install -y macbuntu-os-plank-theme-lts-v8
+
 apt install -y libreoffice-style-sifr
 if [ ! -f $apps/mac-fonts.zip ]; then
 	wget -O mac-fonts.zip http://drive.noobslab.com/data/Mac/macfonts.zip
