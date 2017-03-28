@@ -56,6 +56,10 @@ fi
 if [ -d usr ]; then
 	rsync -rti usr /
 fi
+dpkg --add-architecture i386
+apt update
+apt install -y wine
+
 apt install -f -y
 
 
