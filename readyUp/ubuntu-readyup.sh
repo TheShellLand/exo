@@ -12,7 +12,7 @@ cd $(dirname "$0")
 apt update
 apt install -f -y
 
-if [ ! -d "$apps" ]; then mkdir "$apps"
+if [ ! -d "$apps" ]; then mkdir "$apps"; fi
 
 
 # OpenVPN
