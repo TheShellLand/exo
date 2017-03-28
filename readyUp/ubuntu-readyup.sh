@@ -23,6 +23,19 @@ echo "[*] Installing virt-viewer"
 apt install -y virt-viewer
 
 
+# Chrome
+echo "[*] Installing Chrome"
+chrome=chrome.deb
+if [ ! -f $apps/$chrome ]; then
+	wget -O $chrome 'https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb'
+	dpkg -i $chrome
+	rm $chrome
+else
+	dpkg -i $apps/$chrome
+fi
+apt install -f -y
+
+
 # PlayOnLinux
 echo "[*] Installing PlayOnLinux"
 pol=PlayOnLinux.deb
@@ -51,20 +64,6 @@ else
 fi
 ln -s /opt/*/*/pycharm.sh /usr/local/bin/pycharm
 apt install -y git
-
-
-
-# Chrome
-echo "[*] Installing Chrome"
-chrome=chrome.deb
-if [ ! -f $apps/$chrome ]; then
-	wget -O $chrome 'https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb'
-	dpkg -i $chrome
-	rm $chrome
-else
-	dpkg -i $apps/$chrome
-fi
-apt install -f -y
 
 
 # QTQR
