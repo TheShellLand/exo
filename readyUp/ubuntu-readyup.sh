@@ -27,7 +27,7 @@ apt install -y virt-viewer
 echo "[*] Installing PlayOnLinux"
 pol=PlayOnLinux.deb
 if [ ! -f $apps/$pol ]; then
-	wget -O $pol 'https://www.playonlinux.com/script_files/PlayOnLinux/4.2.10/PlayOnLinux_4.2.10.deb'
+	wget -O $pol 'http://repository.playonlinux.com/PlayOnLinux/4.2.10/PlayOnLinux_4.2.10.deb'
 	dpkg -i $pol
 	rm $pol
 else
