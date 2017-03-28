@@ -12,6 +12,7 @@ cd $(dirname "$0")
 apt update
 apt install -f
 
+if [ ! -d "$apps" ]; then mkdir "$apps"
 
 
 # OpenVPN
@@ -33,8 +34,8 @@ apt install -y tmux
 echo "[*] Installing Chrome"
 chrome=chrome.deb
 if [ ! -f $apps/$chrome ]; then
-	wget -O $chrome 'https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb'
-	dpkg -i $chrome
+	wget -O $apps/$chrome 'https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb'
+	dpkg -i $apps/$chrome
 	rm $chrome
 else
 	dpkg -i $apps/$chrome
@@ -46,9 +47,9 @@ apt install -f -y
 echo "[*] Installing PlayOnLinux"
 pol=PlayOnLinux.deb
 if [ ! -f $apps/$pol ]; then
-	wget -O $pol 'http://repository.playonlinux.com/PlayOnLinux/4.2.10/PlayOnLinux_4.2.10.deb'
-	dpkg -i $pol
-	rm $pol
+	wget -O $apps/$pol 'http://repository.playonlinux.com/PlayOnLinux/4.2.10/PlayOnLinux_4.2.10.deb'
+	dpkg -i $apps/$pol
+	#rm $apps/$pol
 else
 	dpkg -i $apps/$pol
 fi
@@ -62,9 +63,9 @@ apt install -f -y
 echo "[*] Installing Pycharm"
 pycharm=pycharm.tgz
 if [ ! -f $apps/$pycharm ]; then
-	wget -O $pycharm 'https://download.jetbrains.com/python/pycharm-community-2017.1.tar.gz'
-	tar zxf $pycharm -C /opt
-	rm $pycharm
+	wget -O $apps/$pycharm 'https://download.jetbrains.com/python/pycharm-community-2017.1.tar.gz'
+	tar zxf $apps/$pycharm -C /opt
+	#rm $apps/$pycharm
 else
 	tar zxf $apps/$pycharm -C /opt
 fi
@@ -81,9 +82,9 @@ rm $chrome
 # Macbuntu for 16.10 install
 echo "[*] Installing cerebro"
 cerebro=cerebro.deb
-wget -O $cerebro https://github.com/KELiON/cerebro/releases/download/0.2.6/cerebro_0.2.6_amd64.deb
-dpkg -i $cerebro
-rm $cerebro
+wget -O $apps/$cerebro https://github.com/KELiON/cerebro/releases/download/0.2.6/cerebro_0.2.6_amd64.deb
+dpkg -i $apps/$cerebro
+#rm $apps/$cerebro
 
 echo "[*] Installing Macbuntu"
 apt install -y software-properties-common
@@ -101,10 +102,11 @@ apt install -y slingscold
 #apt install -y albert
 
 apt install -y libreoffice-style-sifr
+fonts=mac-fonts.zip
 if [ ! -f $apps/mac-fonts.zip ]; then
-	wget -O mac-fonts.zip http://drive.noobslab.com/data/Mac/macfonts.zip
-	unzip mac-fonts.zip -d /usr/share/fonts
-	rm mac-fonts.zip
+	wget -O $apps/$fonts http://drive.noobslab.com/data/Mac/macfonts.zip
+	unzip $apps/$fonts -d /usr/share/fonts
+	#rm $apps/$fonts
 else
 	unzip $apps/mac-fonts.zip -d /usr/share/fonts
 fi
