@@ -58,7 +58,7 @@ if [ -d usr ]; then
 fi
 dpkg --add-architecture i386
 apt update
-apt install -y wine
+apt install -y wine-stable
 
 apt install -f -y
 
