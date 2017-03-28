@@ -10,7 +10,7 @@ apps=apps
 cd $(dirname "$0")
 
 apt update
-apt install -f
+apt install -f -y
 
 if [ ! -d "$apps" ]; then mkdir "$apps"
 
