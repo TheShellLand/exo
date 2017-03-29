@@ -7,7 +7,7 @@
 apps=apps
 
 
-cd $(dirname "$0")
+#cd $(dirname "$0")
 
 apt update
 apt install -f -y
