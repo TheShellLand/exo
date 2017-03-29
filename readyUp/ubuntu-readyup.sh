@@ -77,6 +77,11 @@ ln -s /opt/*/*/pycharm.sh /usr/local/bin/pycharm
 apt install -y git
 
 
+# nmap
+echo "[*] Installing nmap"
+apt install -y nmap
+
+
 # QTQR
 echo "[*] Installing QTQR"
 apt install -y qtqr
