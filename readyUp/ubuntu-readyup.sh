@@ -82,6 +82,11 @@ echo "[*] Installing nmap"
 apt install -y nmap
 
 
+# wireshark
+echo "[*] Installing wireshark"
+apt install -y wireshark
+
+
 # QTQR
 echo "[*] Installing QTQR"
 apt install -y qtqr
