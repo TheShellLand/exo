@@ -4,7 +4,7 @@
 
 
 
-apps=apps
+apps=/tmp/apps
 
 
 #cd $(dirname "$0")
