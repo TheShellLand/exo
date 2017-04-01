@@ -2,9 +2,10 @@
 
 # Let's Encrypt script
 
-add-apt-repository ppa:certbot/certbot
+apt install -y software-properties-common
+add-apt-repository -y ppa:certbot/certbot
 apt-get update
-apt-get install certbot
+apt-get install -y certbot
 
 certbot certonly
 
