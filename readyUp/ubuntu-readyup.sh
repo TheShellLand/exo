@@ -64,6 +64,11 @@ echo "[*] Installing tmux"
 apt install -y tmux
 
 
+# CIFS
+echo "[*] Installing samba tools"
+apt install -y cifs-utils
+
+
 # Chrome
 echo "[*] Installing Chrome"
 chrome=chrome.deb
