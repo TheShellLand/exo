@@ -52,7 +52,7 @@ if [ ! -f $apps/mac-fonts.zip ]; then
 	unzip $apps/$fonts -d /usr/share/fonts
 	#rm $apps/$fonts
 else
-	unzip $apps/mac-fonts.zip -d /usr/share/fonts
+	unzip -o $apps/mac-fonts.zip -d /usr/share/fonts
 fi
 fc-cache -f -v
 
