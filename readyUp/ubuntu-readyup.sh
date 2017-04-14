@@ -19,9 +19,15 @@ mkdir "$apps"
 # Macbuntu for 16.10 install
 echo "[*] Installing cerebro"
 cerebro=cerebro.deb
-wget -O $apps/$cerebro https://github.com/KELiON/cerebro/releases/download/0.2.6/cerebro_0.2.6_amd64.deb
-dpkg -i $apps/$cerebro
-#rm $apps/$cerebro
+if [ ! -f $apps/mac-fonts.zip ]; then
+    wget -O $apps/$cerebro https://github.com/KELiON/cerebro/releases/download/0.2.6/cerebro_0.2.6_amd64.deb
+    dpkg -i $apps/$cerebro
+    #rm $apps/$cerebro
+else
+    dpkg -i $apps/$cerebro
+fi
+
+
 
 echo "[*] Installing Macbuntu"
 apt install -y software-properties-common
