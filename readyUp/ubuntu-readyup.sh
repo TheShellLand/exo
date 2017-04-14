@@ -155,7 +155,7 @@ rm $chrome
 
 # Virtualbox
 echo "[*] Installing VLC"
-apt install virtualbox
+apt install -y virtualbox
 rm $chrome
 
 
