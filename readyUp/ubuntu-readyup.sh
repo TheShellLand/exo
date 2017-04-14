@@ -159,4 +159,16 @@ apt install virtualbox
 rm $chrome
 
 
+# Skype
+echo "[*] Installing Skype"
+skype=skype.deb
+if [ ! -f $apps/$skype ]; then
+	wget -O $apps/$skype 'https://go.skype.com/linux.deb'
+	tar zxf $apps/$skype -C /opt
+	#rm $apps/$skype
+else
+	dpkg -i $apps/$skype
+fi
+
+
 echo "[*] Done"
