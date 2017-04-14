@@ -126,7 +126,6 @@ apt-get update
 apt-get install -y code-insiders
 
 
-
 # nmap
 echo "[*] Installing nmap"
 apt install -y nmap
@@ -140,6 +139,12 @@ apt install -y wireshark
 # QTQR
 echo "[*] Installing QTQR"
 apt install -y qtqr
+rm $chrome
+
+
+# VLC
+echo "[*] Installing VLC"
+apt install -y vlc
 rm $chrome
 
 
