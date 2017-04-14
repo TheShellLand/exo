@@ -163,8 +163,8 @@ rm $chrome
 echo "[*] Installing Skype"
 skype=skype.deb
 if [ ! -f $apps/$skype ]; then
-	wget -O $apps/$skype 'https://go.skype.com/linux.deb'
-	tar zxf $apps/$skype -C /opt
+	wget -O $apps/$skype 'https://repo.skype.com/latest/skypeforlinux-64.deb'
+	dpkg -i $apps/$skype
 	#rm $apps/$skype
 else
 	dpkg -i $apps/$skype
