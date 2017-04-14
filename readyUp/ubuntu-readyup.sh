@@ -65,8 +65,8 @@ apt install -y tmux
 
 
 # CIFS
-echo "[*] Installing samba tools"
-apt install -y cifs-utils
+#echo "[*] Installing samba tools"
+#apt install -y cifs-utils
 
 
 # Chrome
@@ -150,6 +150,12 @@ rm $chrome
 # VLC
 echo "[*] Installing VLC"
 apt install -y vlc
+rm $chrome
+
+
+# Virtualbox
+echo "[*] Installing VLC"
+apt install virtualbox
 rm $chrome
 
 
