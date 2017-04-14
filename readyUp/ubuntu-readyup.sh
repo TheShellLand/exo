@@ -161,14 +161,11 @@ rm $chrome
 
 # Skype
 echo "[*] Installing Skype"
-skype=skype.deb
-if [ ! -f $apps/$skype ]; then
-	wget -O $apps/$skype 'https://repo.skype.com/latest/skypeforlinux-64.deb'
-	dpkg -i $apps/$skype
-	#rm $apps/$skype
-else
-	dpkg -i $apps/$skype
-fi
+dpkg -s apt-transport-https > /dev/null || bash -c "sudo apt-get update; sudo apt-get install apt-transport-https -y"
+curl https://repo.skype.com/data/SKYPE-GPG-KEY | apt-key add -
+echo "deb [arch=amd64] https://repo.skype.com/deb stable main" | tee /etc/apt/sources.list.d/skype-stable.list
+apt update
+apt install -y skypeforlinux
 
 
 echo "[*] Done"
