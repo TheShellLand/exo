@@ -169,7 +169,9 @@ echo "[*] Installing iotop"
 apt install -y iotop
 
 
-
+# iftop
+echo "[*] Installing iftop"
+apt install -y iftop
 
 
 
