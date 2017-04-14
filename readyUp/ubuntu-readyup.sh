@@ -15,6 +15,11 @@ apt install -f -y
 mkdir "$apps"
 
 
+# ubuntu-desktop
+echo "[*] Installing Ubuntu Desktop"
+apt install -y ubuntu-desktop
+
+
 # Macbuntu for 16.10 install
 echo "[*] Installing cerebro"
 cerebro=cerebro.deb
