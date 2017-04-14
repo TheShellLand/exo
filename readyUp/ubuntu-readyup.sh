@@ -144,19 +144,16 @@ apt install -y wireshark
 # QTQR
 echo "[*] Installing QTQR"
 apt install -y qtqr
-rm $chrome
 
 
 # VLC
 echo "[*] Installing VLC"
 apt install -y vlc
-rm $chrome
 
 
 # Virtualbox
 echo "[*] Installing VLC"
 apt install -y virtualbox
-rm $chrome
 
 
 # Skype
@@ -171,7 +168,9 @@ apt install -y skypeforlinux
 # iotop
 echo "[*] Installing iotop"
 apt install -y iotop
-rm $chrome
+
+
+
 
 
 
