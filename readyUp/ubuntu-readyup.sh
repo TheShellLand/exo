@@ -15,6 +15,40 @@ apt install -f -y
 mkdir "$apps"
 
 
+# Macbuntu for 16.10 install
+echo "[*] Installing cerebro"
+cerebro=cerebro.deb
+wget -O $apps/$cerebro https://github.com/KELiON/cerebro/releases/download/0.2.6/cerebro_0.2.6_amd64.deb
+dpkg -i $apps/$cerebro
+#rm $apps/$cerebro
+
+echo "[*] Installing Macbuntu"
+apt install -y software-properties-common
+add-apt-repository -y ppa:noobslab/macbuntu
+apt update
+
+apt install -y gnome-tweak-tool
+apt install -y ubuntu-gnome-desktop
+
+apt install -y plank
+apt install -y macbuntu-os-plank-theme-lts-v8
+apt install -y macbuntu-os-icons-lts-v8
+apt install -y macbuntu-os-ithemes-lts-v8
+apt install -y slingscold
+#apt install -y albert
+
+apt install -y libreoffice-style-sifr
+fonts=mac-fonts.zip
+if [ ! -f $apps/mac-fonts.zip ]; then
+	wget -O $apps/$fonts http://drive.noobslab.com/data/Mac/macfonts.zip
+	unzip $apps/$fonts -d /usr/share/fonts
+	#rm $apps/$fonts
+else
+	unzip $apps/mac-fonts.zip -d /usr/share/fonts
+fi
+fc-cache -f -v
+
+
 # OpenVPN
 echo "[*] Installing OpenVPN"
 apt install -y openvpn
@@ -67,14 +101,20 @@ apt install -f -y
 echo "[*] Installing Pycharm"
 pycharm=pycharm.tgz
 if [ ! -f $apps/$pycharm ]; then
-	wget -O $apps/$pycharm 'https://download.jetbrains.com/python/pycharm-community-2017.1.tar.gz'
+	wget -O $apps/$pycharm 'https://download-cf.jetbrains.com/python/pycharm-community-2017.1.1.tar.gz'
 	tar zxf $apps/$pycharm -C /opt
 	#rm $apps/$pycharm
 else
 	tar zxf $apps/$pycharm -C /opt
 fi
-ln -s /opt/*/*/pycharm.sh /usr/local/bin/pycharm
+if [ ! -f /usr/local/bin/pycharm ]; then
+    ln -s /opt/*/*/pycharm.sh /usr/local/bin/pycharm
+else
+    rm /usr/local/bin/pycharm
+    ln -s /opt/*/*/pycharm.sh /usr/local/bin/pycharm
+fi
 apt install -y git
+apt install -y python3-pip
 
 
 # Visual Studio Code
@@ -101,40 +141,6 @@ apt install -y wireshark
 echo "[*] Installing QTQR"
 apt install -y qtqr
 rm $chrome
-
-
-# Macbuntu for 16.10 install
-echo "[*] Installing cerebro"
-cerebro=cerebro.deb
-wget -O $apps/$cerebro https://github.com/KELiON/cerebro/releases/download/0.2.6/cerebro_0.2.6_amd64.deb
-dpkg -i $apps/$cerebro
-#rm $apps/$cerebro
-
-echo "[*] Installing Macbuntu"
-apt install -y software-properties-common
-add-apt-repository -y ppa:noobslab/macbuntu
-apt update
-
-apt install -y gnome-tweak-tool
-apt install -y ubuntu-gnome-desktop
-
-apt install -y plank
-apt install -y macbuntu-os-plank-theme-lts-v8
-apt install -y macbuntu-os-icons-lts-v8
-apt install -y macbuntu-os-ithemes-lts-v8
-apt install -y slingscold
-#apt install -y albert
-
-apt install -y libreoffice-style-sifr
-fonts=mac-fonts.zip
-if [ ! -f $apps/mac-fonts.zip ]; then
-	wget -O $apps/$fonts http://drive.noobslab.com/data/Mac/macfonts.zip
-	unzip $apps/$fonts -d /usr/share/fonts
-	#rm $apps/$fonts
-else
-	unzip $apps/mac-fonts.zip -d /usr/share/fonts
-fi
-fc-cache -f -v
 
 
 echo "[*] Done"
