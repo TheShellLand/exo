@@ -168,4 +168,11 @@ apt update
 apt install -y skypeforlinux
 
 
+# iotop
+echo "[*] Installing iotop"
+apt install -y iotop
+rm $chrome
+
+
+
 echo "[*] Done"
