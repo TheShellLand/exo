@@ -15,10 +15,6 @@ apt install -f -y
 mkdir "$apps"
 
 
-# ubuntu-desktop
-echo "[*] Installing Ubuntu Desktop"
-apt install -y ubuntu-desktop
-
 
 # Macbuntu for 16.10 install
 echo "[*] Installing cerebro"
@@ -34,6 +30,7 @@ apt update
 
 apt install -y gnome-tweak-tool
 apt install -y ubuntu-gnome-desktop
+#apt install -y ubuntu-desktop
 
 apt install -y plank
 apt install -y macbuntu-os-plank-theme-lts-v8
