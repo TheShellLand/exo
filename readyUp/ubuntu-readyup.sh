@@ -27,8 +27,6 @@ else
     dpkg -i $apps/$cerebro
 fi
 
-
-
 echo "[*] Installing Macbuntu"
 apt install -y software-properties-common
 add-apt-repository -y ppa:noobslab/macbuntu
@@ -55,6 +53,19 @@ else
 	unzip -o $apps/mac-fonts.zip -d /usr/share/fonts
 fi
 fc-cache -f -v
+
+
+# Disable Mouse Acceleration for X server
+echo "[*] Disable X mouse acceleration"
+echo > /usr/share/X11/xorg.conf.d/50-mouse-acceleration.conf <<EOF
+Section "InputClass"
+    Identifier "My Mouse"
+    MatchIsPointer "yes"
+    Option "AccelerationProfile" "-1"
+    Option "AccelerationScheme" "none"
+    Option "AccelSpeed" "-1"
+EndSection
+EOF
 
 
 # OpenVPN
