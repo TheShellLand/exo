@@ -45,7 +45,7 @@ apt install -y slingscold
 
 apt install -y libreoffice-style-sifr
 fonts=mac-fonts.zip
-if [ ! -f $apps/mac-fonts.zip ]; then
+if [ ! -f $apps/$fonts ]; then
 	wget -O $apps/$fonts http://drive.noobslab.com/data/Mac/macfonts.zip
 	unzip $apps/$fonts -d /usr/share/fonts
 	#rm $apps/$fonts
