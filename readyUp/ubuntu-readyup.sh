@@ -57,7 +57,7 @@ fc-cache -f -v
 
 # Disable Mouse Acceleration for X server
 echo "[*] Disable X mouse acceleration"
-echo > /usr/share/X11/xorg.conf.d/50-mouse-acceleration.conf <<EOF
+cat > /usr/share/X11/xorg.conf.d/50-mouse-acceleration.conf <<EOF
 Section "InputClass"
     Identifier "My Mouse"
     MatchIsPointer "yes"
