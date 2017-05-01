@@ -9,8 +9,7 @@ ln -s `which nodejs` /usr/bin/node
 
 git clone https://github.com/neo4j/neo4j-browser.git
 cd neo4j-browser
-npm install -g
-yarn install
-yarn
+npm install -g yarn
+yarn --ignore-engines
+yarn build
 
-yarn start
