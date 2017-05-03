@@ -189,7 +189,7 @@ apt install -y virtualbox 1>>$log 2>>$err && let progress++
 echo "[*] [ $progress/$total ] Installing Skype"
 dpkg -s apt-transport-https > /dev/null || bash -c "sudo apt-get update; sudo apt-get install apt-transport-https -y"
 curl -s https://repo.skype.com/data/SKYPE-GPG-KEY | apt-key add - 1>>$log 2>>$err
-echo "deb [arch=amd64] https://repo.skype.com/deb stable main" | tee /etc/apt/sources.list.d/skype-stable.list
+echo "deb [arch=amd64] https://repo.skype.com/deb stable main" > /etc/apt/sources.list.d/skype-stable.list
 apt update 1>>$log 2>>$err
 apt install -y skypeforlinux 1>>$log 2>>$err && let progress++
 
