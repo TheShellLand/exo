@@ -19,8 +19,9 @@ total=31
 
 #cd $(dirname "$0")
 
-
+echo "[*] Updating repository"
 apt update 1>>$err 2>>$log
+echo "[*] Installing missing dependencies"
 apt install -f -y 1>>$err 2>>$log
 
 
