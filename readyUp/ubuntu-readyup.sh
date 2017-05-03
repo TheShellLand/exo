@@ -14,7 +14,7 @@ log="$apps/install.log"
 err="$apps/install-err.log"
 
 progress=1
-total=30
+total=29
 
 
 #cd $(dirname "$0")
@@ -205,4 +205,4 @@ apt install -y iftop 1>>$log 2>>$err && let progress++
 
 
 
-echo "[*] [ $progress/$total ] Done"
+echo "[*] Done"
