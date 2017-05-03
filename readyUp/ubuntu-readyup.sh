@@ -14,7 +14,7 @@ log="$apps/install.log"
 err="$apps/install-err.log"
 
 progress=1
-total=31
+total=30
 
 
 #cd $(dirname "$0")
@@ -135,7 +135,7 @@ apt install -f -y 1>>$err 2>>$log && let progress++
 echo "[*] [ $progress/$total ] Installing Pycharm"
 pycharm=pycharm.tgz
 if [ ! -f $apps/$pycharm ]; then
-	wget -O $apps/$pycharm 'https://download-cf.jetbrains.com/python/pycharm-community-2017.1.1.tar.gz'
+	wget -q -O $apps/$pycharm 'https://download-cf.jetbrains.com/python/pycharm-community-2017.1.1.tar.gz'
 	tar zxf $apps/$pycharm -C /opt 1>>$err 2>>$log && let progress++
 	#rm $apps/$pycharm
 else
@@ -188,7 +188,7 @@ apt install -y virtualbox 1>>$err 2>>$log && let progress++
 # Skype
 echo "[*] [ $progress/$total ] Installing Skype"
 dpkg -s apt-transport-https > /dev/null || bash -c "sudo apt-get update; sudo apt-get install apt-transport-https -y"
-curl https://repo.skype.com/data/SKYPE-GPG-KEY | apt-key add -
+curl -s https://repo.skype.com/data/SKYPE-GPG-KEY | apt-key add - 1>>$err 2>>$log
 echo "deb [arch=amd64] https://repo.skype.com/deb stable main" | tee /etc/apt/sources.list.d/skype-stable.list
 apt update 1>>$err 2>>$log
 apt install -y skypeforlinux 1>>$err 2>>$log && let progress++
