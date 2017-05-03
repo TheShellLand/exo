@@ -6,7 +6,9 @@
 
 apps=/tmp/apps
 
-mkdir "$apps"
+if [ ! -d "$apps" ]; then
+	mkdir "$apps"
+fi
 
 log="$apps/install.log"
 err="$apps/install-err.log"
