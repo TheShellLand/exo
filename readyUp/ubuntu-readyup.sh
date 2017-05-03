@@ -6,18 +6,21 @@
 
 apps=/tmp/apps
 
-
-#cd $(dirname "$0")
-
-apt update
-apt install -f -y
-
 mkdir "$apps"
+
 log="$apps/install.log"
 err="$apps/install-err.log"
 
 progress=1
 total=31
+
+
+#cd $(dirname "$0")
+
+
+apt update 1>>$err 2>>$log
+apt install -f -y 1>>$err 2>>$log
+
 
 # Macbuntu for 16.10 install
 echo "[*] [ $progress/$total ] Installing cerebro"
@@ -33,8 +36,8 @@ fi
 
 echo "[*] [ $progress/$total ] Installing Macbuntu"
 apt install -y software-properties-common 1>>$err 2>>$log && let progress++
-add-apt-repository -y ppa:noobslab/macbuntu
-apt update
+add-apt-repository -y ppa:noobslab/macbuntu 1>>$err 2>>$log 
+apt update 1>>$err 2>>$log 
 
 apt install -y gnome-tweak-tool 1>>$err 2>>$log && let progress++
 apt install -y ubuntu-gnome-desktop 1>>$err 2>>$log && let progress++
@@ -51,13 +54,12 @@ apt install -y libreoffice-style-sifr 1>>$err 2>>$log && let progress++
 fonts=mac-fonts.zip
 if [ ! -f $apps/$fonts ]; then
 	wget -O $apps/$fonts http://drive.noobslab.com/data/Mac/macfonts.zip
-	unzip $apps/$fonts -d /usr/share/fonts
+	unzip $apps/$fonts -d /usr/share/fonts 1>>$err 2>>$log && let progress++
 	#rm $apps/$fonts
 else
-	unzip -o $apps/mac-fonts.zip -d /usr/share/fonts
+	unzip -o $apps/mac-fonts.zip -d /usr/share/fonts 1>>$err 2>>$log && let progress++
 fi
-fc-cache -f -v 
-let progress++
+fc-cache -f -v  1>>$err 2>>$log && let progress++
 
 
 # Disable Mouse Acceleration for X server
@@ -121,7 +123,7 @@ if [ -d usr ]; then
 	rsync -rti usr /
 fi
 dpkg --add-architecture i386
-apt update
+apt update 1>>$err 2>>$log
 apt install -y wine-stable 1>>$err 2>>$log && let progress++
 apt install -f -y 1>>$err 2>>$log && let progress++
 
@@ -150,8 +152,8 @@ apt install -y python3-pip 1>>$err 2>>$log && let progress++
 curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
 mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
 sh -c 'echo "deb [arch=amd64] http://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
-apt-get update
-#apt-get install -y code
+apt-get update 1>>$err 2>>$log
+#apt-get install -y code 1>>$err 2>>$log && let progress++
 apt-get install -y code-insiders 1>>$err 2>>$log && let progress++
 
 
@@ -185,7 +187,7 @@ echo "[*] [ $progress/$total ] Installing Skype"
 dpkg -s apt-transport-https > /dev/null || bash -c "sudo apt-get update; sudo apt-get install apt-transport-https -y"
 curl https://repo.skype.com/data/SKYPE-GPG-KEY | apt-key add -
 echo "deb [arch=amd64] https://repo.skype.com/deb stable main" | tee /etc/apt/sources.list.d/skype-stable.list
-apt update
+apt update 1>>$err 2>>$log
 apt install -y skypeforlinux 1>>$err 2>>$log && let progress++
 
 
