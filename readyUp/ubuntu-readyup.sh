@@ -14,49 +14,51 @@ apt install -f -y
 
 mkdir "$apps"
 
-
+progress=1
+total=31
 
 # Macbuntu for 16.10 install
-echo "[*] Installing cerebro"
+echo "[*] [ $progress/$total ] Installing cerebro"
 cerebro=cerebro.deb
 if [ ! -f $apps/mac-fonts.zip ]; then
     wget -O $apps/$cerebro https://github.com/KELiON/cerebro/releases/download/0.2.6/cerebro_0.2.6_amd64.deb
-    dpkg -i $apps/$cerebro
+    dpkg -i $apps/$cerebro && let progress++
     #rm $apps/$cerebro
 else
-    dpkg -i $apps/$cerebro
+    dpkg -i $apps/$cerebro && let progress++
 fi
 
-echo "[*] Installing Macbuntu"
-apt install -y software-properties-common
+
+echo "[*] [ $progress/$total ] Installing Macbuntu"
+apt install -y software-properties-common && let progress++
 add-apt-repository -y ppa:noobslab/macbuntu
 apt update
 
-apt install -y gnome-tweak-tool
-apt install -y ubuntu-gnome-desktop
-#apt install -y ubuntu-desktop
+apt install -y gnome-tweak-tool && let progress++
+apt install -y ubuntu-gnome-desktop && let progress++
+#apt install -y ubuntu-desktop && let progress++
 
-apt install -y plank
-apt install -y macbuntu-os-plank-theme-lts-v8
-apt install -y macbuntu-os-icons-lts-v8
-apt install -y macbuntu-os-ithemes-lts-v8
-apt install -y slingscold
-#apt install -y albert
+apt install -y plank && let progress++
+apt install -y macbuntu-os-plank-theme-lts-v8 && let progress++
+apt install -y macbuntu-os-icons-lts-v8 && let progress++
+apt install -y macbuntu-os-ithemes-lts-v8 && let progress++
+apt install -y slingscold && let progress++
+#apt install -y albert && let progress++
 
-apt install -y libreoffice-style-sifr
+apt install -y libreoffice-style-sifr && let progress++
 fonts=mac-fonts.zip
 if [ ! -f $apps/$fonts ]; then
 	wget -O $apps/$fonts http://drive.noobslab.com/data/Mac/macfonts.zip
-	unzip $apps/$fonts -d /usr/share/fonts
+	unzip $apps/$fonts -d /usr/share/fonts && let progress++
 	#rm $apps/$fonts
 else
-	unzip -o $apps/mac-fonts.zip -d /usr/share/fonts
+	unzip -o $apps/mac-fonts.zip -d /usr/share/fonts && let progress++
 fi
-fc-cache -f -v
+fc-cache -f -v  && let progress++
 
 
 # Disable Mouse Acceleration for X server
-echo "[*] Disable X mouse acceleration"
+echo "[*] [ $progress/$total ] Disable X mouse acceleration"
 cat > /usr/share/X11/xorg.conf.d/50-mouse-acceleration.conf <<EOF
 Section "InputClass"
     Identifier "My Mouse"
@@ -66,69 +68,70 @@ Section "InputClass"
     Option "AccelSpeed" "-1"
 EndSection
 EOF
+let progress++
 
 
 # OpenVPN
-echo "[*] Installing OpenVPN"
-apt install -y openvpn
+echo "[*] [ $progress/$total ] Installing OpenVPN"
+apt install -y openvpn && let progress++
 
 
 # Virt-Viewer
-echo "[*] Installing virt-viewer"
-apt install -y virt-viewer
+echo "[*] [ $progress/$total ] Installing virt-viewer"
+apt install -y virt-viewer && let progress++
 
 
 # tmux
-echo "[*] Installing tmux"
-apt install -y tmux
+echo "[*] [ $progress/$total ] Installing tmux"
+apt install -y tmux && let progress++
 
 
 # CIFS
-#echo "[*] Installing samba tools"
-#apt install -y cifs-utils
+#echo "[*] [ $progress/$total ] Installing samba tools"
+#apt install -y cifs-utils && let progress++
 
 
 # Chrome
-echo "[*] Installing Chrome"
+echo "[*] [ $progress/$total ] Installing Chrome"
 chrome=chrome.deb
 if [ ! -f $apps/$chrome ]; then
 	wget -O $apps/$chrome 'https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb'
-	dpkg -i $apps/$chrome
+	dpkg -i $apps/$chrome && let progress++
 	#rm $apps/$chrome
 else
-	dpkg -i $apps/$chrome
+	dpkg -i $apps/$chrome && let progress++
 fi
-apt install -f -y
+apt install -f -y && let progress++
 
 
 # PlayOnLinux
-echo "[*] Installing PlayOnLinux"
+echo "[*] [ $progress/$total ] Installing PlayOnLinux"
 pol=PlayOnLinux.deb
 if [ ! -f $apps/$pol ]; then
 	wget -O $apps/$pol 'http://repository.playonlinux.com/PlayOnLinux/4.2.10/PlayOnLinux_4.2.10.deb'
-	dpkg -i $apps/$pol
+	dpkg -i $apps/$pol && let progress++
 	#rm $apps/$pol
 else
-	dpkg -i $apps/$pol
+	dpkg -i $apps/$pol && let progress++
 fi
 if [ -d usr ]; then
 	rsync -rti usr /
 fi
 dpkg --add-architecture i386
 apt update
-apt install -y wine-stable
-apt install -f -y
+apt install -y wine-stable && let progress++
+apt install -f -y && let progress++
 
 
 # Pycharm
-echo "[*] Installing Pycharm"
+echo "[*] [ $progress/$total ] Installing Pycharm"
 pycharm=pycharm.tgz
 if [ ! -f $apps/$pycharm ]; then
 	wget -O $apps/$pycharm 'https://download-cf.jetbrains.com/python/pycharm-community-2017.1.1.tar.gz'
-	tar zxf $apps/$pycharm -C /opt
+	tar zxf $apps/$pycharm -C /opt && let progress++
 	#rm $apps/$pycharm
 else
-	tar zxf $apps/$pycharm -C /opt
+	tar zxf $apps/$pycharm -C /opt && let progress++
 fi
 if [ ! -f /usr/local/bin/pycharm ]; then
     ln -s /opt/*/*/pycharm.sh /usr/local/bin/pycharm
@@ -136,8 +139,8 @@ else
     rm /usr/local/bin/pycharm
     ln -s /opt/*/*/pycharm.sh /usr/local/bin/pycharm
 fi
-apt install -y git
-apt install -y python3-pip
+apt install -y git && let progress++
+apt install -y python3-pip && let progress++
 
 
 # Visual Studio Code
@@ -146,52 +149,52 @@ mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
 sh -c 'echo "deb [arch=amd64] http://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
 apt-get update
 #apt-get install -y code
-apt-get install -y code-insiders
+apt-get install -y code-insiders && let progress++
 
 
 # nmap
-echo "[*] Installing nmap"
-apt install -y nmap
+echo "[*] [ $progress/$total ] Installing nmap"
+apt install -y nmap && let progress++
 
 
 # wireshark
-echo "[*] Installing wireshark"
-apt install -y wireshark
+echo "[*] [ $progress/$total ] Installing wireshark"
+apt install -y wireshark && let progress++
 
 
 # QTQR
-echo "[*] Installing QTQR"
-apt install -y qtqr
+echo "[*] [ $progress/$total ] Installing QTQR"
+apt install -y qtqr && let progress++
 
 
 # VLC
-echo "[*] Installing VLC"
-apt install -y vlc
+echo "[*] [ $progress/$total ] Installing VLC"
+apt install -y vlc && let progress++
 
 
 # Virtualbox
-echo "[*] Installing VLC"
-apt install -y virtualbox
+echo "[*] [ $progress/$total ] Installing VLC"
+apt install -y virtualbox && let progress++
 
 
 # Skype
-echo "[*] Installing Skype"
+echo "[*] [ $progress/$total ] Installing Skype"
 dpkg -s apt-transport-https > /dev/null || bash -c "sudo apt-get update; sudo apt-get install apt-transport-https -y"
 curl https://repo.skype.com/data/SKYPE-GPG-KEY | apt-key add -
 echo "deb [arch=amd64] https://repo.skype.com/deb stable main" | tee /etc/apt/sources.list.d/skype-stable.list
 apt update
-apt install -y skypeforlinux
+apt install -y skypeforlinux && let progress++
 
 
 # iotop
-echo "[*] Installing iotop"
-apt install -y iotop
+echo "[*] [ $progress/$total ] Installing iotop"
+apt install -y iotop && let progress++
 
 
 # iftop
-echo "[*] Installing iftop"
-apt install -y iftop
+echo "[*] [ $progress/$total ] Installing iftop"
+apt install -y iftop && let progress++
 
 
 
-echo "[*] Done"
+echo "[*] [ $progress/$total ] Done"
