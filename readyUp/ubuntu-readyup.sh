@@ -135,7 +135,7 @@ apt install -f -y 1>>$log 2>>$err && let progress++
 echo "[*] [ $progress/$total ] Installing Pycharm"
 pycharm=pycharm.tgz
 if [ ! -f $apps/$pycharm ]; then
-	wget -q -O $apps/$pycharm 'https://download-cf.jetbrains.com/python/pycharm-community-2017.1.1.tar.gz' 1>>$log 2>>$err
+	wget -q -O $apps/$pycharm 'https://download-cf.jetbrains.com/python/pycharm-community-2017.1.1.tar.gz'
 	tar zxf $apps/$pycharm -C /opt 1>>$log 2>>$err && let progress++
 	#rm $apps/$pycharm
 else
@@ -152,7 +152,7 @@ apt install -y python3-pip 1>>$log 2>>$err && let progress++
 
 
 # Visual Studio Code
-curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+curl -s https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
 mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
 sh -c 'echo "deb [arch=amd64] http://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
 apt-get update 1>>$log 2>>$err
