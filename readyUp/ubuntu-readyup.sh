@@ -181,7 +181,7 @@ apt install -y vlc 1>>$log 2>>$err && let progress++
 
 
 # Virtualbox
-echo "[*] [ $progress/$total ] Installing VLC"
+echo "[*] [ $progress/$total ] Installing Virtualbox"
 apt install -y virtualbox 1>>$log 2>>$err && let progress++
 
 
