@@ -53,7 +53,10 @@ apt install -y macbuntu-os-ithemes-lts-v8 1>>$log 2>>$err && let progress++ && e
 #apt install -y slingscold 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
 #apt install -y albert 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
 
-
+if [ ! -d ~/.theme ]; then
+	mkdir ~/.theme
+fi
+wget -q -O - "https://dl.opendesktop.org/api/files/download/id/1489658553/Gnome-OSX-II-NT-2-5-1.tar.xz" | tar -xf - -C ~/.theme
 gsettings set org.gnome.desktop.wm.preferences button-layout "close,minimize,maximize:"		# Put buttons on left side
 
 apt install -y libreoffice-style-sifr 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
