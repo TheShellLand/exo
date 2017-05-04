@@ -53,6 +53,9 @@ apt install -y macbuntu-os-ithemes-lts-v8 1>>$log 2>>$err && let progress++ && e
 #apt install -y slingscold 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
 #apt install -y albert 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
 
+
+gsettings set org.gnome.desktop.wm.preferences button-layout "close,minimize,maximize:"		# Put buttons on left side
+
 apt install -y libreoffice-style-sifr 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
 fonts=mac-fonts.zip
 if [ ! -f $apps/$fonts ]; then
