@@ -26,15 +26,15 @@ apt install -f -y 1>>$log 2>>$err
 
 
 # Macbuntu for 16.10 install
-echo "[*] [ $progress/$total ] Installing cerebro"
-cerebro=cerebro.deb
-if [ ! -f $apps/mac-fonts.zip ]; then
-    wget -q -O $apps/$cerebro https://github.com/KELiON/cerebro/releases/download/0.2.6/cerebro_0.2.6_amd64.deb
-    dpkg -i $apps/$cerebro 1>>$log 2>>$err && let progress++
-    #rm $apps/$cerebro
-else
-    dpkg -i $apps/$cerebro 1>>$log 2>>$err && let progress++
-fi
+# echo "[*] [ $progress/$total ] Installing cerebro"
+# cerebro=cerebro.deb
+# if [ ! -f $apps/mac-fonts.zip ]; then
+#     wget -q -O $apps/$cerebro https://github.com/KELiON/cerebro/releases/download/0.2.6/cerebro_0.2.6_amd64.deb
+#     dpkg -i $apps/$cerebro 1>>$log 2>>$err && let progress++
+#     #rm $apps/$cerebro
+# else
+#     dpkg -i $apps/$cerebro 1>>$log 2>>$err && let progress++
+# fi
 
 
 echo "[*] [ $progress/$total ] Installing Macbuntu"
