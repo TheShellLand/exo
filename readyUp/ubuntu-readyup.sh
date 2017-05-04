@@ -30,10 +30,10 @@ apt install -f -y 1>>$log 2>>$err
 # cerebro=cerebro.deb
 # if [ ! -f $apps/mac-fonts.zip ]; then
 #     wget -q -O $apps/$cerebro https://github.com/KELiON/cerebro/releases/download/0.2.6/cerebro_0.2.6_amd64.deb
-#     dpkg -i $apps/$cerebro 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+#     dpkg -i $apps/$cerebro 1>>$log 2>>$err && let progress++
 #     #rm $apps/$cerebro
 # else
-#     dpkg -i $apps/$cerebro 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+#     dpkg -i $apps/$cerebro 1>>$log 2>>$err && let progress++
 # fi
 
 
@@ -87,22 +87,22 @@ let progress++
 
 # OpenVPN
 echo "[*] [ $progress/$total ] Installing OpenVPN"
-apt install -y openvpn 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+apt install -y openvpn 1>>$log 2>>$err && let progress++
 
 
 # Virt-Viewer
 echo "[*] [ $progress/$total ] Installing virt-viewer"
-apt install -y virt-viewer 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+apt install -y virt-viewer 1>>$log 2>>$err && let progress++
 
 
 # tmux
 echo "[*] [ $progress/$total ] Installing tmux"
-apt install -y tmux 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+apt install -y tmux 1>>$log 2>>$err && let progress++
 
 
 # CIFS
 #echo "[*] [ $progress/$total ] Installing samba tools"
-#apt install -y cifs-utils 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+#apt install -y cifs-utils 1>>$log 2>>$err && let progress++
 
 
 # Chrome
@@ -110,12 +110,12 @@ echo "[*] [ $progress/$total ] Installing Chrome"
 chrome=chrome.deb
 if [ ! -f $apps/$chrome ]; then
 	wget -q -O $apps/$chrome 'https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb'
-	dpkg -i $apps/$chrome 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+	dpkg -i $apps/$chrome 1>>$log 2>>$err && let progress++
 	#rm $apps/$chrome
 else
-	dpkg -i $apps/$chrome 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+	dpkg -i $apps/$chrome 1>>$log 2>>$err && let progress++
 fi
-apt install -f -y 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+apt install -f -y 1>>$log 2>>$err && let progress++
 
 
 # PlayOnLinux
@@ -123,18 +123,18 @@ echo "[*] [ $progress/$total ] Installing PlayOnLinux"
 pol=PlayOnLinux.deb
 if [ ! -f $apps/$pol ]; then
 	wget -q -O $apps/$pol 'http://repository.playonlinux.com/PlayOnLinux/4.2.10/PlayOnLinux_4.2.10.deb'
-	dpkg -i $apps/$pol 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+	dpkg -i $apps/$pol 1>>$log 2>>$err && let progress++
 	#rm $apps/$pol
 else
-	dpkg -i $apps/$pol 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+	dpkg -i $apps/$pol 1>>$log 2>>$err && let progress++
 fi
 if [ -d usr ]; then
 	rsync -rti usr /
 fi
 dpkg --add-architecture i386
 apt update 1>>$log 2>>$err
-apt install -y wine-stable 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
-apt install -f -y 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+apt install -y wine-stable 1>>$log 2>>$err && let progress++
+apt install -f -y 1>>$log 2>>$err && let progress++
 
 
 # Pycharm
@@ -142,10 +142,10 @@ echo "[*] [ $progress/$total ] Installing Pycharm"
 pycharm=pycharm.tgz
 if [ ! -f $apps/$pycharm ]; then
 	wget -q -O $apps/$pycharm 'https://download-cf.jetbrains.com/python/pycharm-community-2017.1.1.tar.gz'
-	tar zxf $apps/$pycharm -C /opt 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+	tar zxf $apps/$pycharm -C /opt 1>>$log 2>>$err && let progress++
 	#rm $apps/$pycharm
 else
-	tar zxf $apps/$pycharm -C /opt 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+	tar zxf $apps/$pycharm -C /opt 1>>$log 2>>$err && let progress++
 fi
 if [ ! -f /usr/local/bin/pycharm ]; then
     ln -s /opt/*/*/pycharm.sh /usr/local/bin/pycharm
@@ -153,8 +153,8 @@ else
     rm /usr/local/bin/pycharm
     ln -s /opt/*/*/pycharm.sh /usr/local/bin/pycharm
 fi
-apt install -y git 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
-apt install -y python3-pip 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+apt install -y git 1>>$log 2>>$err && let progress++
+apt install -y python3-pip 1>>$log 2>>$err && let progress++
 
 
 # Visual Studio Code
@@ -162,38 +162,38 @@ curl -s https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > micr
 mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
 sh -c 'echo "deb [arch=amd64] http://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
 apt-get update 1>>$log 2>>$err
-#apt-get install -y code 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
-apt-get install -y code-insiders 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+#apt-get install -y code 1>>$log 2>>$err && let progress++
+apt-get install -y code-insiders 1>>$log 2>>$err && let progress++
 
 
 # nmap
 echo "[*] [ $progress/$total ] Installing nmap"
-apt install -y nmap 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+apt install -y nmap 1>>$log 2>>$err && let progress++
 
 
 # wireshark
 echo "[*] [ $progress/$total ] Installing wireshark"
-apt install -y wireshark 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+apt install -y wireshark 1>>$log 2>>$err && let progress++
 
 
 # QTQR
 echo "[*] [ $progress/$total ] Installing QTQR"
-apt install -y qtqr 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+apt install -y qtqr 1>>$log 2>>$err && let progress++
 
 
 # VLC
 echo "[*] [ $progress/$total ] Installing VLC"
-apt install -y vlc 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+apt install -y vlc 1>>$log 2>>$err && let progress++
 
 
 # Virtualbox
 echo "[*] [ $progress/$total ] Installing Virtualbox"
-apt install -y virtualbox 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+apt install -y virtualbox 1>>$log 2>>$err && let progress++
 
 
 # Emacs
 echo "[*] [ $progress/$total ] Installing Emacs"
-apt install -y emacs 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+apt install -y emacs 1>>$log 2>>$err && let progress++
 
 
 # Skype
@@ -202,17 +202,17 @@ dpkg -s apt-transport-https > /dev/null || bash -c "sudo apt-get update; sudo ap
 curl -s https://repo.skype.com/data/SKYPE-GPG-KEY | apt-key add - 1>>$log 2>>$err
 echo "deb [arch=amd64] https://repo.skype.com/deb stable main" > /etc/apt/sources.list.d/skype-stable.list
 apt update 1>>$log 2>>$err
-apt install -y skypeforlinux 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+apt install -y skypeforlinux 1>>$log 2>>$err && let progress++
 
 
 # iotop
 echo "[*] [ $progress/$total ] Installing iotop"
-apt install -y iotop 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+apt install -y iotop 1>>$log 2>>$err && let progress++
 
 
 # iftop
 echo "[*] [ $progress/$total ] Installing iftop"
-apt install -y iftop 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+apt install -y iftop 1>>$log 2>>$err && let progress++
 
 
 
