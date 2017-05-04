@@ -53,6 +53,8 @@ apt install -y macbuntu-os-ithemes-lts-v8 1>>$log 2>>$err && let progress++ && e
 #apt install -y slingscold 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
 #apt install -y albert 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
 
+wget -q -O - "https://github.com/LinxGem33/OSX-Arc-White/releases/download/v1.4.1/osx-arc-collection_1.4.1_amd64.deb" | dpkg -i 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing... OSX-Arc-Collection""
+
 if [ ! -d ~/.theme ]; then
 	mkdir ~/.theme
 fi
