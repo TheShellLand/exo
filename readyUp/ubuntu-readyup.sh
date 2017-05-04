@@ -50,7 +50,7 @@ apt install -y plank 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/
 apt install -y macbuntu-os-plank-theme-lts-v8 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
 apt install -y macbuntu-os-icons-lts-v8 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
 apt install -y macbuntu-os-ithemes-lts-v8 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
-apt install -y slingscold 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+#apt install -y slingscold 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
 #apt install -y albert 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
 
 apt install -y libreoffice-style-sifr 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
