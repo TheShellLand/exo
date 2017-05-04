@@ -14,7 +14,7 @@ log="$apps/install.log"
 err="$apps/install-err.log"
 
 progress=1
-total=29
+total=30
 
 
 #cd $(dirname "$0")
@@ -183,6 +183,11 @@ apt install -y vlc 1>>$log 2>>$err && let progress++
 # Virtualbox
 echo "[*] [ $progress/$total ] Installing Virtualbox"
 apt install -y virtualbox 1>>$log 2>>$err && let progress++
+
+
+# Emacs
+echo "[*] [ $progress/$total ] Installing Emacs"
+apt install -y emacs 1>>$log 2>>$err && let progress++
 
 
 # Skype
