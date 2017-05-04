@@ -68,7 +68,7 @@ if [ ! -f $apps/$fonts ]; then
 else
 	unzip -o $apps/mac-fonts.zip -d /usr/share/fonts 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
 fi
-fc-cache -f -v  1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+fc-cache -f -v 1>>$log 2>>$err && (let progress++ && echo "[*] [ $progress/$total ] Installing...")
 
 
 # Disable Mouse Acceleration for X server
@@ -83,6 +83,10 @@ Section "InputClass"
 EndSection
 EOF
 let progress++
+
+
+# Fix Nautilus recent files bug
+echo 'Environment=DISPLAY=:0' >> /usr/lib/systemd/user/gvfs-daemon.service
 
 
 # OpenVPN
