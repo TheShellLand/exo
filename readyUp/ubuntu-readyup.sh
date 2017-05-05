@@ -172,11 +172,6 @@ apt-get update 1>>$log 2>>$err
 apt-get install -y code-insiders 1>>$log 2>>$err && let progress++
 
 
-# npm
-echo "[*] [ $progress/$total ] Installing nmp"
-apt install -y nmp 1>>$log 2>>$err && let progress++
-
-
 # nmap
 echo "[*] [ $progress/$total ] Installing nmap"
 apt install -y nmap 1>>$log 2>>$err && let progress++
