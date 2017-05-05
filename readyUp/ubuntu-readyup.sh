@@ -172,6 +172,17 @@ apt-get update 1>>$log 2>>$err
 apt-get install -y code-insiders 1>>$log 2>>$err && let progress++
 
 
+# GitKraken
+gitk=gitkraken.deb
+if [ ! -f $apps/$pol ]; then
+	wget -q -O $apps/$gitk "https://release.gitkraken.com/linux/gitkraken-amd64.deb"
+	dpkg -i $apps/$gitk 1>>$log 2>>$err && let progress++
+	#rm $apps/$pol
+else
+	dpkg -i $apps/$gitk 1>>$log 2>>$err && let progress++
+fi
+
+
 # npm
 echo "[*] [ $progress/$total ] Installing nmp"
 apt install -y nmp 1>>$log 2>>$err && let progress++
