@@ -38,20 +38,20 @@ apt install -f -y 1>>$log 2>>$err
 
 
 echo "[*] [ $progress/$total ] Installing Macbuntu"
-apt install -y software-properties-common 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+apt install -y software-properties-common 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing software-properties-common"
 add-apt-repository -y ppa:noobslab/macbuntu 1>>$log 2>>$err 
 apt update 1>>$log 2>>$err 
 
-apt install -y gnome-tweak-tool 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
-apt install -y ubuntu-gnome-desktop 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
-#apt install -y ubuntu-desktop 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+apt install -y gnome-tweak-tool 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing gnome-tweak-tool"
+apt install -y ubuntu-gnome-desktop 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing ubuntu-gnome-desktop"
+#apt install -y ubuntu-desktop 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing ubuntu-desktop"
 
-apt install -y plank 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
-apt install -y macbuntu-os-plank-theme-lts-v8 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
-apt install -y macbuntu-os-icons-lts-v8 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
-apt install -y macbuntu-os-ithemes-lts-v8 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
-#apt install -y slingscold 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
-#apt install -y albert 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+apt install -y plank 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing plank"
+apt install -y macbuntu-os-plank-theme-lts-v8 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing macbuntu-os-plank-themes"
+apt install -y macbuntu-os-icons-lts-v8 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing macbuntu-os-icons-lts"
+apt install -y macbuntu-os-ithemes-lts-v8 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing macbuntu-os-ithemes"
+#apt install -y slingscold 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing slingscold"
+#apt install -y albert 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing albert"
 
 echo "[*] [ $progress/$total ] Installing OSX Arc Collection"
 theme=osx-arc-collection.deb
@@ -67,19 +67,19 @@ fi
 if [ ! -d ~/.theme ]; then
 	mkdir ~/.theme
 fi
-wget -q -O - "https://dl.opendesktop.org/api/files/download/id/1489658553/Gnome-OSX-II-NT-2-5-1.tar.xz" | tar -xJf - -C ~/.theme 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+wget -q -O - "https://dl.opendesktop.org/api/files/download/id/1489658553/Gnome-OSX-II-NT-2-5-1.tar.xz" | tar -xJf - -C ~/.theme 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing Gnome-OSX-II-NT"
 gsettings set org.gnome.desktop.wm.preferences button-layout "close,minimize,maximize:"		# Put buttons on left side
 
-apt install -y libreoffice-style-sifr 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+apt install -y libreoffice-style-sifr 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing libreoffice styles"
 fonts=mac-fonts.zip
 if [ ! -f $apps/$fonts ]; then
 	wget -q -O $apps/$fonts http://drive.noobslab.com/data/Mac/macfonts.zip
-	unzip $apps/$fonts -d /usr/share/fonts 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+	unzip $apps/$fonts -d /usr/share/fonts 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing Mac fonts"
 	#rm $apps/$fonts
 else
-	unzip -o $apps/mac-fonts.zip -d /usr/share/fonts 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing..."
+	unzip -o $apps/mac-fonts.zip -d /usr/share/fonts 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing Mac fonts"
 fi
-fc-cache -f -v 1>>$log 2>>$err && (let progress++ && echo "[*] [ $progress/$total ] Installing...")
+fc-cache -f -v 1>>$log 2>>$err && (let progress++ && echo "[*] [ $progress/$total ] Updating font cache")
 
 
 # Disable Mouse Acceleration for X server
