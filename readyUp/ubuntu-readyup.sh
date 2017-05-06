@@ -198,6 +198,11 @@ echo "[*] [ $progress/$total ] Installing nmp"
 apt install -y nmp 1>>$log 2>>$err && let progress++
 
 
+# exfat
+echo "[*] [ $progress/$total ] Installing exfat-utils"
+apt install -y exfat-utils 1>>$log 2>>$err && let progress++
+
+
 # nmap
 echo "[*] [ $progress/$total ] Installing nmap"
 apt install -y nmap 1>>$log 2>>$err && let progress++
