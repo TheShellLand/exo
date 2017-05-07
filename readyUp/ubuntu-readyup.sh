@@ -14,7 +14,7 @@ log="$apps/install.log"
 err="$apps/install-err.log"
 
 progress=1
-total=33
+total=34
 
 
 #cd $(dirname "$0")
@@ -250,6 +250,11 @@ apt install -y iotop 1>>$log 2>>$err && let progress++
 # iftop
 echo "[*] [ $progress/$total ] Installing iftop"
 apt install -y iftop 1>>$log 2>>$err && let progress++
+
+
+# darktable
+echo "[*] [ $progress/$total ] Installing darktable"
+apt install -y darktable 1>>$log 2>>$err && let progress++
 
 
 
