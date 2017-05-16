@@ -15,7 +15,7 @@ log="$apps/install.log"
 err="$apps/install-err.log"
 
 progress=1
-total=34
+total=35
 
 
 #cd $(dirname "$0")
