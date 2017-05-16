@@ -150,6 +150,7 @@ fi
 dpkg --add-architecture i386
 apt update 1>>$log 2>>$err
 apt install -y wine-stable 1>>$log 2>>$err && let progress++
+apt install -y winbind 1>>$log 2>>$err && let progress++
 apt install -f -y 1>>$log 2>>$err && let progress++
 
 
