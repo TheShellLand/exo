@@ -2,10 +2,17 @@
 
 # Get Flask up and running
 
+apt update
 apt install -y python3-pip
 
-pips="requests flask flask_login flask_wtf bcrypt neo4j-driver"
+pips="flask 
+      flask_login 
+      flask_wtf 
+      bcrypt 
+      neo4j-driver"
+
+pip3 install --upgrade pip
 
 for package in $pips; do
-  pip install $package
+  pip3 install $package
 done
