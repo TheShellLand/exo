@@ -5,7 +5,7 @@
 
 
 user=eric
-apps=/tmp/apps
+apps=apps
 
 if [ ! -d "$apps" ]; then
 	mkdir "$apps"
@@ -18,7 +18,7 @@ progress=1
 total=35
 
 
-#cd $(dirname "$0")
+cd $(dirname "$0")
 
 echo "[*] Updating repository"
 apt update 1>>$log 2>>$err
