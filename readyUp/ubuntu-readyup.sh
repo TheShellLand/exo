@@ -158,7 +158,7 @@ apt install -f -y 1>>$log 2>>$err && let progress++
 echo "[*] [ $progress/$total ] Installing Pycharm"
 pycharm=pycharm.tgz
 if [ ! -f $apps/$pycharm ]; then
-	wget -q -O $apps/$pycharm 'https://download.jetbrains.com/python/pycharm-community-2017.1.3.tar.gz'
+	wget -q -O $apps/$pycharm 'https://download.jetbrains.com/python/pycharm-community-2017.1.4.tar.gz'
 	tar zxf $apps/$pycharm -C /opt 1>>$log 2>>$err && let progress++
 	#rm $apps/$pycharm
 else
