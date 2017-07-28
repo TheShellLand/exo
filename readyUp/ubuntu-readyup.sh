@@ -7,6 +7,8 @@
 user=eric
 apps=apps
 
+cd $(dirname "$0")
+
 if [ ! -d "$apps" ]; then
 	mkdir "$apps"
 fi
@@ -15,10 +17,8 @@ log="$apps/install.log"
 err="$apps/install-err.log"
 
 progress=1
-total=35
+total=38
 
-
-cd $(dirname "$0")
 
 echo "[*] Updating repository"
 apt update 1>>$log 2>>$err
@@ -111,6 +111,11 @@ echo "[*] [ $progress/$total ] Installing virt-viewer"
 apt install -y virt-viewer 1>>$log 2>>$err && let progress++
 
 
+# x11vnc
+echo "[*] [ $progress/$total ] Installing x11vnc"
+apt install -y x11vnc 1>>$log 2>>$err && let progress++
+
+
 # tmux
 echo "[*] [ $progress/$total ] Installing tmux"
 apt install -y tmux 1>>$log 2>>$err && let progress++
@@ -138,7 +143,7 @@ apt install -f -y 1>>$log 2>>$err && let progress++
 echo "[*] [ $progress/$total ] Installing PlayOnLinux"
 pol=PlayOnLinux.deb
 if [ ! -f $apps/$pol ]; then
-	wget -q -O $apps/$pol 'http://repository.playonlinux.com/PlayOnLinux/4.2.10/PlayOnLinux_4.2.10.deb'
+	wget -q -O $apps/$pol 'https://www.playonlinux.com/script_files/PlayOnLinux/4.2.12/PlayOnLinux_4.2.12.deb'
 	dpkg -i $apps/$pol 1>>$log 2>>$err && let progress++
 	#rm $apps/$pol
 else
@@ -158,7 +163,7 @@ apt install -f -y 1>>$log 2>>$err && let progress++
 echo "[*] [ $progress/$total ] Installing Pycharm"
 pycharm=pycharm.tgz
 if [ ! -f $apps/$pycharm ]; then
-	wget -q -O $apps/$pycharm 'https://download.jetbrains.com/python/pycharm-community-2017.1.4.tar.gz'
+	wget -q -O $apps/$pycharm 'https://download.jetbrains.com/python/pycharm-community-2017.1.5.tar.gz'
 	tar zxf $apps/$pycharm -C /opt 1>>$log 2>>$err && let progress++
 	#rm $apps/$pycharm
 else
@@ -245,19 +250,53 @@ apt install -y skypeforlinux 1>>$log 2>>$err && let progress++
 
 
 # iotop
-echo "[*] [ $progress/$total ] Installing iotop"
-apt install -y iotop 1>>$log 2>>$err && let progress++
+#echo "[*] [ $progress/$total ] Installing iotop"
+#apt install -y iotop 1>>$log 2>>$err && let progress++
 
 
 # iftop
-echo "[*] [ $progress/$total ] Installing iftop"
+#echo "[*] [ $progress/$total ] Installing iftop"
+#apt install -y iftop 1>>$log 2>>$err && let progress++
+
+
+# glances
+echo "[*] [ $progress/$total ] Installing glances"
 apt install -y iftop 1>>$log 2>>$err && let progress++
+
+
+## Stacer
+#echo "[*] [ $progress/$total ] Installing Stacer"
+#stacer=stacer.deb
+#if [ ! -f $apps/$stacer ]; then
+#	wget -q -O $apps/$stacer 'https://github.com/oguzhaninan/Stacer/releases/download/v1.0.7/stacer_1.0.7_amd64.deb'
+#	dpkg -i $apps/$stacer 1>>$log 2>>$err && let progress++
+#else
+#	dpkg -i $apps/$stacer 1>>$log 2>>$err && let progress++
+#fi
+
+
+# aircrack
+echo "[*] [ $progress/$total ] Installing aircrack-ng"
+apt install -y aircrack-ng 1>>$log 2>>$err && let progress++
+
+
+# flux
+echo "[*] [ $progress/$total ] Installing fluxgui"
+add-apt-repository -y ppa:nathan-renniewaldock/flux 1>>$log 2>>$err
+apt update 1>>$log 2>>$err
+apt install -y fluxgui 1>>$log 2>>$err && let progress++
 
 
 # darktable
 echo "[*] [ $progress/$total ] Installing darktable"
 apt install -y darktable 1>>$log 2>>$err && let progress++
 
+
+# Veracrypt
+echo "[*] [ $progress/$total ] Installing Veracrypt"
+add-apt-repository -y ppa:unit193/encryption 1>>$log 2>>$err
+apt update 1>>$log 2>>$err
+apt install -y veracrypt 1>>$log 2>>$err && let progress++
 
 
 echo "[*] Done"
