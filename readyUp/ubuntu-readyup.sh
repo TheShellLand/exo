@@ -169,12 +169,6 @@ if [ ! -f $apps/$pycharm ]; then
 else
 	tar zxf $apps/$pycharm -C /opt 1>>$log 2>>$err && let progress++
 fi
-if [ ! -f /usr/local/bin/pycharm ]; then
-    ln -s /opt/*/*/pycharm.sh /usr/local/bin/pycharm
-else
-    rm /usr/local/bin/pycharm
-    ln -s /opt/*/*/pycharm.sh /usr/local/bin/pycharm
-fi
 
 cat > /usr/share/applications/pycharm.desktop << EOF
 [Desktop Entry]
