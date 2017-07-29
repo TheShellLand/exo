@@ -175,6 +175,20 @@ else
     rm /usr/local/bin/pycharm
     ln -s /opt/*/*/pycharm.sh /usr/local/bin/pycharm
 fi
+
+cat > /usr/share/applications/pycharm.desktop << EOF
+[Desktop Entry]
+Encoding=UTF-8
+Name=Pycharm IDE
+Comment=The Smarter Way to Code
+Exec=/bin/sh "/opt/pycharm/bin/pycharm.sh"
+Icon=/opt/pycharm/bin/pycharm.png
+Categories=Application;Development;Python;IDE
+Version=1.0
+Type=Application
+Terminal=0
+EOF
+
 apt install -y git 1>>$log 2>>$err && let progress++
 apt install -y python3-pip 1>>$log 2>>$err && let progress++
 
