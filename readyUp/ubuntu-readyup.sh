@@ -342,8 +342,7 @@ apt-get install -y code-insiders 1>>$log 2>>$err && let progress++
 # GitKraken
 echo "[*] [ $progress/$total ] Installing GitKraken"
 gitk=gitkraken.deb
-# TODO: fix reference bug
-if [ ! -f $apps/$pol ]; then
+if [ ! -f $apps/$gitk ]; then
 	wget -q -O $apps/$gitk "https://release.gitkraken.com/linux/gitkraken-amd64.deb"
 	dpkg -i $apps/$gitk 1>>$log 2>>$err && let progress++
 	#rm $apps/$pol
