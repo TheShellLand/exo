@@ -194,7 +194,7 @@ echo "[*] [ $progress/$total ] Installing Java JDK 8"
 file=jdk.tgz
 if [ ! -d '/opt/jdk' ]; then mkdir /opt/jdk; fi
 if [ ! -f $apps/$file ]; then
-	wget -q -O $apps/$file 'http://download.oracle.com/otn-pub/java/jdk/8u144-b01/090f390dda5b47b9b721c7dfaa008135/jdk-8u144-linux-x64.tar.gz?AuthParam=1501318793_2636421664f4541a5d9410458ca16143'
+	wget -q -O $apps/$file -c --header "Cookie: oraclelicense=accept-securebackup-cookie" 'http://download.oracle.com/otn-pub/java/jdk/8u144-b01/090f390dda5b47b9b721c7dfaa008135/jdk-8u144-linux-x64.tar.gz'
 	tar zxf $apps/$file -C /opt/jdk 1>>$log 2>>$err && let progress++
 else
 	tar zxf $apps/$file -C /opt/jdk 1>>$log 2>>$err && let progress++
