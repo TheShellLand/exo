@@ -49,9 +49,9 @@ apt install -y ubuntu-gnome-desktop 1>>$log 2>>$err && let progress++ && echo "[
 #apt install -y ubuntu-desktop 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installed ubuntu-desktop"
 
 apt install -y plank 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installed plank"
-apt install -y macbuntu-os-plank-theme-lts-v8 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installed macbuntu-os-plank-themes"
-apt install -y macbuntu-os-icons-lts-v8 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installed macbuntu-os-icons-lts"
-apt install -y macbuntu-os-ithemes-lts-v8 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installed macbuntu-os-ithemes"
+apt install -y macbuntu-os-plank-theme-lts-v7 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installed macbuntu-os-plank-themes"
+apt install -y macbuntu-os-icons-lts-v7 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installed macbuntu-os-icons-lts"
+apt install -y macbuntu-os-ithemes-lts-v7 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installed macbuntu-os-ithemes"
 #apt install -y slingscold 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installed slingscold"
 #apt install -y albert 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installed albert"
 
@@ -153,7 +153,7 @@ fi
 if [ -d usr ]; then
 	rsync -rti usr /
 fi
-dpkg --add-architecture i386
+dpkg --add-architecture i386 1>>$log 2>>$err
 apt update 1>>$log 2>>$err
 apt install -y wine-stable 1>>$log 2>>$err && let progress++
 apt install -y winbind 1>>$log 2>>$err && let progress++
