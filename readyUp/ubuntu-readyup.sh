@@ -155,7 +155,7 @@ if [ -d usr ]; then
 fi
 dpkg --add-architecture i386 1>>$log 2>>$err
 apt update 1>>$log 2>>$err
-apt install -y wine-stable 1>>$log 2>>$err && let progress++
+apt install -y wine 1>>$log 2>>$err && let progress++
 apt install -y winbind 1>>$log 2>>$err && let progress++
 apt install -f -y 1>>$log 2>>$err && let progress++
 
