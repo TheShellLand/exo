@@ -39,7 +39,7 @@ apt install -f -y 1>>$log 2>>$err
 
 
 echo "[*] [ $progress/$total ] Installing Macbuntu"
-apt install -y software-properties-common 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installing software-properties-common"
+apt install -y software-properties-common 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installed software-properties-common"
 add-apt-repository -y ppa:noobslab/macbuntu 1>>$log 2>>$err 
 apt update 1>>$log 2>>$err 
 
