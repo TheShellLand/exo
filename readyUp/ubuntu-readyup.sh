@@ -165,7 +165,7 @@ echo "[*] [ $progress/$total ] Installing Pycharm"
 pycharm=pycharm.tgz
 if [ ! -d '/opt/pycharm' ]; then mkdir /opt/pycharm; fi
 if [ ! -f $apps/$pycharm ]; then
-	wget -q -O $apps/$pycharm 'https://download.jetbrains.com/python/pycharm-community-2017.1.5.tar.gz'
+	wget -q -O $apps/$pycharm 'https://download.jetbrains.com/python/pycharm-community-2017.2.tar.gz'
 	tar zxf $apps/$pycharm -C /opt/pycharm 1>>$log 2>>$err && let progress++
 	#rm $apps/$pycharm
 else
@@ -177,8 +177,8 @@ cat > /usr/share/applications/pycharm.desktop << EOF
 Encoding=UTF-8
 Name=Pycharm IDE
 Comment=The Smarter Way to Code
-Exec=/bin/sh "/opt/pycharm/pycharm-community-2017.1.5/bin/pycharm.sh"
-Icon=/opt/pycharm/pycharm-community-2017.1.5/bin/pycharm.png
+Exec=/bin/sh "/opt/pycharm/pycharm-community-2017.2/bin/pycharm.sh"
+Icon=/opt/pycharm/pycharm-community-2017.2/bin/pycharm.png
 Categories=Application;Development;Python;IDE
 Version=1.0
 Type=Application
