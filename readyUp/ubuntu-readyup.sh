@@ -3,7 +3,7 @@
 # Set up my ubuntu
 
 
-apps=apps
+apps=/tmp/apps
 
 cd $(dirname "$0")
 
@@ -35,8 +35,8 @@ apt install -f -y
 
 echo "[*] [ $progress/$total ] Installing Macbuntu"
 apt install -y software-properties-common && let progress++ && echo "[*] [ $progress/$total ] Installed software-properties-common"
-add-apt-repository -y ppa:noobslab/macbuntu 
-apt update 
+add-apt-repository -y ppa:noobslab/macbuntu
+apt update
 
 #apt remove -y lightdm
 apt install -y gnome-tweak-tool && let progress++ && echo "[*] [ $progress/$total ] Installed gnome-tweak-tool"
@@ -44,31 +44,79 @@ apt install -y ubuntu-gnome-desktop && let progress++ && echo "[*] [ $progress/$
 #apt install -y ubuntu-desktop && let progress++ && echo "[*] [ $progress/$total ] Installed ubuntu-desktop"
 
 apt install -y plank && let progress++ && echo "[*] [ $progress/$total ] Installed plank"
+echo "[*] [ $progress/$total ] Installing Plank themes"
+if [ ! -d "~/.local/share/plank/themes" ]; then mkdir -p "~/.local/share/plank/themes"; fi
+theme=plank-themes.zip
+if [ ! -f $apps/$theme ]; then
+	wget -q -O $apps/$theme "https://github.com/KenHarkey/plank-themes/archive/master.zip"
+	unzip $apps/$theme -d $apps
+	cp -r $apps/plank-themes-master/anti-shade ~/.local/share/plank/themes
+	cp -r $apps/plank-themes-master/paperterial ~/.local/share/plank/themes
+	cp -r $apps/plank-themes-master/shade ~/.local/share/plank/themes
+else
+	unzip $apps/$theme -d $apps
+	cp -r $apps/plank-themes-master/anti-shade ~/.local/share/plank/themes
+	cp -r $apps/plank-themes-master/paperterial ~/.local/share/plank/themes
+	cp -r $apps/plank-themes-master/shade ~/.local/share/plank/themes
+fi
+
 apt install -y macbuntu-os-plank-theme-lts-v7 && let progress++ && echo "[*] [ $progress/$total ] Installed macbuntu-os-plank-themes"
 apt install -y macbuntu-os-icons-lts-v7 && let progress++ && echo "[*] [ $progress/$total ] Installed macbuntu-os-icons-lts"
 apt install -y macbuntu-os-ithemes-lts-v7 && let progress++ && echo "[*] [ $progress/$total ] Installed macbuntu-os-ithemes"
+apt install -y libreoffice-style-sifr && let progress++ && echo "[*] [ $progress/$total ] Installed libreoffice styles"
 #apt install -y slingscold && let progress++ && echo "[*] [ $progress/$total ] Installed slingscold"
 #apt install -y albert && let progress++ && echo "[*] [ $progress/$total ] Installed albert"
 
 echo "[*] [ $progress/$total ] Installing OSX Arc Collection"
 theme=osx-arc-collection.deb
 if [ ! -f $apps/$theme ]; then
-	wget -q -O $apps/$theme 'https://github.com/LinxGem33/OSX-Arc-White/releases/download/v1.4.1/osx-arc-collection_1.4.1_amd64.deb'
-	dpkg -i $apps/$theme && let progress++
+	wget -q -O $apps/$theme 'https://github.com/LinxGem33/OSX-Arc-White/releases/download/v1.4.3/osx-arc-collection_1.4.3_amd64.deb'
+	dpkg -i $apps/$theme 1>>$log 2>>$err && let progress++
 	#rm $apps/$chrome
 else
 	dpkg -i $apps/$theme && let progress++
 fi
 
 
-if [ ! -d ~/.theme ]; then
-	mkdir ~/.theme
-fi
-wget -q -O - "https://dl.opendesktop.org/api/files/download/id/1489658553/Gnome-OSX-II-NT-2-5-1.tar.xz" | tar -xJf - -C ~/.theme && let progress++ && echo "[*] [ $progress/$total ] Installed Gnome-OSX-II-NT"
 # Put buttons on left side
 gsettings set org.gnome.desktop.wm.preferences button-layout "close,minimize,maximize:"
 
-apt install -y libreoffice-style-sifr && let progress++ && echo "[*] [ $progress/$total ] Installed libreoffice styles"
+
+# oranchelo-icon-theme
+echo "[*] [ $progress/$total ] Installing oranchelo-icon-theme"
+add-apt-repository -y ppa:oranchelo/oranchelo-icon-theme 1>>$log 2>>$err
+apt-get update 1>>$log 2>>$err
+apt-get install -y oranchelo-icon-theme 1>>$log 2>>$err && let progress++
+
+
+# arc-icon-theme
+echo "[*] [ $progress/$total ] Installing arc-icon-theme"
+if [ ! -d "$apps/arc-icon-theme" ]; then mkdir "$apps/arc-icon-theme"; fi
+if [ ! -d $apps/arc-icon-theme/Arc ]; then
+    git clone https://github.com/horst3180/arc-icon-theme.git "$apps/arc-icon-theme"
+    mv $apps/arc-icon-theme/Arc /usr/share/icons 1>>$log 2>>$err && let progress++
+else
+    mv $apps/arc-icon-theme/Arc /usr/share/icons 1>>$log 2>>$err && let progress++
+fi
+
+
+# capitaine-cursors
+echo "[*] [ $progress/$total ] Installing capitaine-cursors"
+file=capitaine-cursors.tgz
+if [ ! -d $apps/capitaine-cursors ]; then mkdir $apps/capitaine-cursors; fi
+if [ ! -f $apps/$file ]; then
+    wget -q -O $apps/$file https://dl.opendesktop.org/api/files/download/id/1489948557/capitaine-cursors-r2.tar.gz
+    tar zxf $apps/$file -C $apps/capitaine-cursors 1>>$log 2>>$err
+    mv $apps/capitaine-cursors/capitaine-cursors-r2/bin/xcursors $apps/capitaine-cursors/capitaine-cursors-r2/bin/capitaine-cursors 1>>$log 2>>$err && let progress++
+    mv $apps/capitaine-cursors/capitaine-cursors-r2/bin/capitaine-cursors /usr/share/icons 1>>$log 2>>$err && let progress++
+else
+    tar zxf $apps/$file -C $apps/capitaine-cursors 1>>$log 2>>$err
+    mv $apps/capitaine-cursors/capitaine-cursors-r2/bin/xcursors $apps/capitaine-cursors/capitaine-cursors-r2/bin/capitaine-cursors 1>>$log 2>>$err && let progress++
+    mv $apps/capitaine-cursors/capitaine-cursors-r2/bin/capitaine-cursors /usr/share/icons 1>>$log 2>>$err && let progress++
+fi
+
+
+apt install -y libreoffice-style-sifr 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installed libreoffice styles"
 fonts=mac-fonts.zip
 if [ ! -f $apps/$fonts ]; then
 	wget -q -O $apps/$fonts http://drive.noobslab.com/data/Mac/macfonts.zip
@@ -206,6 +254,7 @@ if [ ! -f $apps/$gitk ]; then
 else
 	dpkg -i $apps/$gitk && let progress++
 fi
+apt-get install -f -y 1>>$log 2>>$err && let progress++
 
 
 # npm
