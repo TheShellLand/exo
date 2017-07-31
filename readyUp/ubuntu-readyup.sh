@@ -189,6 +189,127 @@ apt install -y git 1>>$log 2>>$err && let progress++
 apt install -y python3-pip 1>>$log 2>>$err && let progress++
 
 
+# Visual Studio Code
+echo "[*] [ $progress/$total ] Visual Studio Code"
+curl -s https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
+sh -c 'echo "deb [arch=amd64] http://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
+apt-get update 1>>$log 2>>$err
+#apt-get install -y code 1>>$log 2>>$err && let progress++
+apt-get install -y code-insiders 1>>$log 2>>$err && let progress++
+
+
+# GitKraken
+echo "[*] [ $progress/$total ] Installing GitKraken"
+gitk=gitkraken.deb
+if [ ! -f $apps/$gitk ]; then
+	wget -q -O $apps/$gitk "https://release.gitkraken.com/linux/gitkraken-amd64.deb"
+	dpkg -i $apps/$gitk 1>>$log 2>>$err && let progress++
+	#rm $apps/$pol
+else
+	dpkg -i $apps/$gitk 1>>$log 2>>$err && let progress++
+fi
+
+
+# npm
+echo "[*] [ $progress/$total ] Installing nmp"
+apt install -y nmp 1>>$log 2>>$err && let progress++
+
+
+# exfat
+echo "[*] [ $progress/$total ] Installing exfat-utils"
+apt install -y exfat-utils 1>>$log 2>>$err && let progress++
+
+
+# nmap
+echo "[*] [ $progress/$total ] Installing nmap"
+apt install -y nmap 1>>$log 2>>$err && let progress++
+
+
+# wireshark
+echo "[*] [ $progress/$total ] Installing wireshark"
+apt install -y wireshark 1>>$log 2>>$err && let progress++
+
+
+# QTQR
+echo "[*] [ $progress/$total ] Installing QTQR"
+apt install -y qtqr 1>>$log 2>>$err && let progress++
+
+
+# VLC
+echo "[*] [ $progress/$total ] Installing VLC"
+apt install -y vlc 1>>$log 2>>$err && let progress++
+
+
+# Virtualbox
+echo "[*] [ $progress/$total ] Installing Virtualbox"
+apt install -y virtualbox 1>>$log 2>>$err && let progress++
+
+
+# Emacs
+echo "[*] [ $progress/$total ] Installing Emacs"
+apt install -y emacs 1>>$log 2>>$err && let progress++
+
+
+# Skype
+echo "[*] [ $progress/$total ] Installing Skype"
+dpkg -s apt-transport-https > /dev/null || bash -c "sudo apt-get update; sudo apt-get install apt-transport-https -y"
+curl -s https://repo.skype.com/data/SKYPE-GPG-KEY | apt-key add - 1>>$log 2>>$err
+echo "deb [arch=amd64] https://repo.skype.com/deb stable main" > /etc/apt/sources.list.d/skype-stable.list
+apt update 1>>$log 2>>$err
+apt install -y skypeforlinux 1>>$log 2>>$err && let progress++
+
+
+# iotop
+#echo "[*] [ $progress/$total ] Installing iotop"
+#apt install -y iotop 1>>$log 2>>$err && let progress++
+
+
+# iftop
+#echo "[*] [ $progress/$total ] Installing iftop"
+#apt install -y iftop 1>>$log 2>>$err && let progress++
+
+
+# glances
+echo "[*] [ $progress/$total ] Installing glances"
+apt install -y glances 1>>$log 2>>$err && let progress++
+
+
+## Stacer
+#echo "[*] [ $progress/$total ] Installing Stacer"
+#stacer=stacer.deb
+#if [ ! -f $apps/$stacer ]; then
+#	wget -q -O $apps/$stacer 'https://github.com/oguzhaninan/Stacer/releases/download/v1.0.7/stacer_1.0.7_amd64.deb'
+#	dpkg -i $apps/$stacer 1>>$log 2>>$err && let progress++
+#else
+#	dpkg -i $apps/$stacer 1>>$log 2>>$err && let progress++
+#fi
+
+
+# aircrack
+echo "[*] [ $progress/$total ] Installing aircrack-ng"
+apt install -y aircrack-ng 1>>$log 2>>$err && let progress++
+
+
+# flux
+echo "[*] [ $progress/$total ] Installing fluxgui"
+add-apt-repository -y ppa:nathan-renniewaldock/flux 1>>$log 2>>$err
+apt update 1>>$log 2>>$err
+apt install -y fluxgui 1>>$log 2>>$err && let progress++
+
+
+# darktable
+echo "[*] [ $progress/$total ] Installing darktable"
+apt install -y darktable 1>>$log 2>>$err && let progress++
+
+
+# Veracrypt
+echo "[*] [ $progress/$total ] Installing Veracrypt"
+add-apt-repository -y ppa:unit193/encryption 1>>$log 2>>$err
+apt update 1>>$log 2>>$err
+apt install -y veracrypt 1>>$log 2>>$err && let progress++
+
+
 # Java JDK 8 for NetBeans IDE
 echo "[*] [ $progress/$total ] Installing Java JDK 8"
 file=jdk.tgz
@@ -337,127 +458,6 @@ else
 	chmod +x $apps/$file
     $apps/$file --silent --state $apps/state.xml 1>>$log 2>>$err && let progress++
 fi
-
-
-# Visual Studio Code
-echo "[*] [ $progress/$total ] Visual Studio Code"
-curl -s https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
-mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
-sh -c 'echo "deb [arch=amd64] http://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
-apt-get update 1>>$log 2>>$err
-#apt-get install -y code 1>>$log 2>>$err && let progress++
-apt-get install -y code-insiders 1>>$log 2>>$err && let progress++
-
-
-# GitKraken
-echo "[*] [ $progress/$total ] Installing GitKraken"
-gitk=gitkraken.deb
-if [ ! -f $apps/$gitk ]; then
-	wget -q -O $apps/$gitk "https://release.gitkraken.com/linux/gitkraken-amd64.deb"
-	dpkg -i $apps/$gitk 1>>$log 2>>$err && let progress++
-	#rm $apps/$pol
-else
-	dpkg -i $apps/$gitk 1>>$log 2>>$err && let progress++
-fi
-
-
-# npm
-echo "[*] [ $progress/$total ] Installing nmp"
-apt install -y nmp 1>>$log 2>>$err && let progress++
-
-
-# exfat
-echo "[*] [ $progress/$total ] Installing exfat-utils"
-apt install -y exfat-utils 1>>$log 2>>$err && let progress++
-
-
-# nmap
-echo "[*] [ $progress/$total ] Installing nmap"
-apt install -y nmap 1>>$log 2>>$err && let progress++
-
-
-# wireshark
-echo "[*] [ $progress/$total ] Installing wireshark"
-apt install -y wireshark 1>>$log 2>>$err && let progress++
-
-
-# QTQR
-echo "[*] [ $progress/$total ] Installing QTQR"
-apt install -y qtqr 1>>$log 2>>$err && let progress++
-
-
-# VLC
-echo "[*] [ $progress/$total ] Installing VLC"
-apt install -y vlc 1>>$log 2>>$err && let progress++
-
-
-# Virtualbox
-echo "[*] [ $progress/$total ] Installing Virtualbox"
-apt install -y virtualbox 1>>$log 2>>$err && let progress++
-
-
-# Emacs
-echo "[*] [ $progress/$total ] Installing Emacs"
-apt install -y emacs 1>>$log 2>>$err && let progress++
-
-
-# Skype
-echo "[*] [ $progress/$total ] Installing Skype"
-dpkg -s apt-transport-https > /dev/null || bash -c "sudo apt-get update; sudo apt-get install apt-transport-https -y"
-curl -s https://repo.skype.com/data/SKYPE-GPG-KEY | apt-key add - 1>>$log 2>>$err
-echo "deb [arch=amd64] https://repo.skype.com/deb stable main" > /etc/apt/sources.list.d/skype-stable.list
-apt update 1>>$log 2>>$err
-apt install -y skypeforlinux 1>>$log 2>>$err && let progress++
-
-
-# iotop
-#echo "[*] [ $progress/$total ] Installing iotop"
-#apt install -y iotop 1>>$log 2>>$err && let progress++
-
-
-# iftop
-#echo "[*] [ $progress/$total ] Installing iftop"
-#apt install -y iftop 1>>$log 2>>$err && let progress++
-
-
-# glances
-echo "[*] [ $progress/$total ] Installing glances"
-apt install -y glances 1>>$log 2>>$err && let progress++
-
-
-## Stacer
-#echo "[*] [ $progress/$total ] Installing Stacer"
-#stacer=stacer.deb
-#if [ ! -f $apps/$stacer ]; then
-#	wget -q -O $apps/$stacer 'https://github.com/oguzhaninan/Stacer/releases/download/v1.0.7/stacer_1.0.7_amd64.deb'
-#	dpkg -i $apps/$stacer 1>>$log 2>>$err && let progress++
-#else
-#	dpkg -i $apps/$stacer 1>>$log 2>>$err && let progress++
-#fi
-
-
-# aircrack
-echo "[*] [ $progress/$total ] Installing aircrack-ng"
-apt install -y aircrack-ng 1>>$log 2>>$err && let progress++
-
-
-# flux
-echo "[*] [ $progress/$total ] Installing fluxgui"
-add-apt-repository -y ppa:nathan-renniewaldock/flux 1>>$log 2>>$err
-apt update 1>>$log 2>>$err
-apt install -y fluxgui 1>>$log 2>>$err && let progress++
-
-
-# darktable
-echo "[*] [ $progress/$total ] Installing darktable"
-apt install -y darktable 1>>$log 2>>$err && let progress++
-
-
-# Veracrypt
-echo "[*] [ $progress/$total ] Installing Veracrypt"
-add-apt-repository -y ppa:unit193/encryption 1>>$log 2>>$err
-apt update 1>>$log 2>>$err
-apt install -y veracrypt 1>>$log 2>>$err && let progress++
 
 
 echo "[*] Done"
