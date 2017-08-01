@@ -67,7 +67,8 @@ if [ ! -d ~/.theme ]; then
 	mkdir ~/.theme
 fi
 wget -q -O - "https://dl.opendesktop.org/api/files/download/id/1489658553/Gnome-OSX-II-NT-2-5-1.tar.xz" | tar -xJf - -C ~/.theme && let progress++ && echo "[*] [ $progress/$total ] Installed Gnome-OSX-II-NT"
-gsettings set org.gnome.desktop.wm.preferences button-layout "close,minimize,maximize:"		# Put buttons on left side
+# Put buttons on left side
+gsettings set org.gnome.desktop.wm.preferences button-layout "close,minimize,maximize:"
 
 apt install -y libreoffice-style-sifr && let progress++ && echo "[*] [ $progress/$total ] Installed libreoffice styles"
 fonts=mac-fonts.zip
