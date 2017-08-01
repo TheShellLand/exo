@@ -94,9 +94,9 @@ echo "[*] [ $progress/$total ] Installing arc-icon-theme"
 if [ ! -d "$apps/arc-icon-theme" ]; then mkdir "$apps/arc-icon-theme"; fi
 if [ ! -d $apps/arc-icon-theme/Arc ]; then
     git clone https://github.com/horst3180/arc-icon-theme.git "$apps/arc-icon-theme"
-    mv $apps/arc-icon-theme/Arc /usr/share/icons && let progress++
+    cp -r $apps/arc-icon-theme/Arc /usr/share/icons && let progress++
 else
-    mv $apps/arc-icon-theme/Arc /usr/share/icons && let progress++
+    cp -r $apps/arc-icon-theme/Arc /usr/share/icons && let progress++
 fi
 
 
@@ -108,11 +108,11 @@ if [ ! -f $apps/$file ]; then
     wget -q -O $apps/$file https://dl.opendesktop.org/api/files/download/id/1489948557/capitaine-cursors-r2.tar.gz
     tar zxf $apps/$file -C $apps/capitaine-cursors
     mv $apps/capitaine-cursors/capitaine-cursors-r2/bin/xcursors $apps/capitaine-cursors/capitaine-cursors-r2/bin/capitaine-cursors && let progress++
-    mv $apps/capitaine-cursors/capitaine-cursors-r2/bin/capitaine-cursors /usr/share/icons && let progress++
+    cp -r $apps/capitaine-cursors/capitaine-cursors-r2/bin/capitaine-cursors /usr/share/icons && let progress++
 else
     tar zxf $apps/$file -C $apps/capitaine-cursors
     mv $apps/capitaine-cursors/capitaine-cursors-r2/bin/xcursors $apps/capitaine-cursors/capitaine-cursors-r2/bin/capitaine-cursors && let progress++
-    mv $apps/capitaine-cursors/capitaine-cursors-r2/bin/capitaine-cursors /usr/share/icons && let progress++
+    cp -r $apps/capitaine-cursors/capitaine-cursors-r2/bin/capitaine-cursors /usr/share/icons && let progress++
 fi
 
 
