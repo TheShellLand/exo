@@ -3,8 +3,6 @@
 # Set up my ubuntu
 
 
-
-user=eric
 apps=apps
 
 cd $(dirname "$0")
