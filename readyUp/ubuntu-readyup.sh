@@ -45,19 +45,18 @@ apt install -y ubuntu-gnome-desktop && let progress++ && echo "[*] [ $progress/$
 
 apt install -y plank && let progress++ && echo "[*] [ $progress/$total ] Installed plank"
 echo "[*] [ $progress/$total ] Installing Plank themes"
-if [ ! -d "~/.local/share/plank/themes" ]; then mkdir -p "~/.local/share/plank/themes"; fi
 theme=plank-themes.zip
 if [ ! -f $apps/$theme ]; then
 	wget -q -O $apps/$theme "https://github.com/KenHarkey/plank-themes/archive/master.zip"
 	unzip $apps/$theme -d $apps
-	cp -r $apps/plank-themes-master/anti-shade ~/.local/share/plank/themes
-	cp -r $apps/plank-themes-master/paperterial ~/.local/share/plank/themes
-	cp -r $apps/plank-themes-master/shade ~/.local/share/plank/themes
+	cp -r $apps/plank-themes-master/anti-shade /usr/share/plank/themes
+	cp -r $apps/plank-themes-master/paperterial /usr/share/plank/themes
+	cp -r $apps/plank-themes-master/shade /usr/share/plank/themes
 else
 	unzip $apps/$theme -d $apps
-	cp -r $apps/plank-themes-master/anti-shade ~/.local/share/plank/themes
-	cp -r $apps/plank-themes-master/paperterial ~/.local/share/plank/themes
-	cp -r $apps/plank-themes-master/shade ~/.local/share/plank/themes
+	cp -r $apps/plank-themes-master/anti-shade /usr/share/plank/themes
+	cp -r $apps/plank-themes-master/paperterial /usr/share/plank/themes
+	cp -r $apps/plank-themes-master/shade /usr/share/plank/themes
 fi
 
 apt install -y macbuntu-os-plank-theme-lts-v7 && let progress++ && echo "[*] [ $progress/$total ] Installed macbuntu-os-plank-themes"
