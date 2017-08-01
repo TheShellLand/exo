@@ -150,6 +150,7 @@ fi
 if [ -d usr ]; then
 	rsync -rti usr /
 fi
+apt install -f -y && let progress++
 dpkg --add-architecture i386
 apt update
 apt install -y wine && let progress++
