@@ -71,7 +71,7 @@ echo "[*] [ $progress/$total ] Installing OSX Arc Collection"
 theme=osx-arc-collection.deb
 if [ ! -f $apps/$theme ]; then
 	wget -q -O $apps/$theme 'https://github.com/LinxGem33/OSX-Arc-White/releases/download/v1.4.3/osx-arc-collection_1.4.3_amd64.deb'
-	dpkg -i $apps/$theme 1>>$log 2>>$err && let progress++
+	dpkg -i $apps/$theme && let progress++
 	#rm $apps/$chrome
 else
 	dpkg -i $apps/$theme && let progress++
@@ -84,9 +84,9 @@ gsettings set org.gnome.desktop.wm.preferences button-layout "close,minimize,max
 
 # oranchelo-icon-theme
 echo "[*] [ $progress/$total ] Installing oranchelo-icon-theme"
-add-apt-repository -y ppa:oranchelo/oranchelo-icon-theme 1>>$log 2>>$err
-apt-get update 1>>$log 2>>$err
-apt-get install -y oranchelo-icon-theme 1>>$log 2>>$err && let progress++
+add-apt-repository -y ppa:oranchelo/oranchelo-icon-theme
+apt-get update
+apt-get install -y oranchelo-icon-theme && let progress++
 
 
 # arc-icon-theme
@@ -94,9 +94,9 @@ echo "[*] [ $progress/$total ] Installing arc-icon-theme"
 if [ ! -d "$apps/arc-icon-theme" ]; then mkdir "$apps/arc-icon-theme"; fi
 if [ ! -d $apps/arc-icon-theme/Arc ]; then
     git clone https://github.com/horst3180/arc-icon-theme.git "$apps/arc-icon-theme"
-    mv $apps/arc-icon-theme/Arc /usr/share/icons 1>>$log 2>>$err && let progress++
+    mv $apps/arc-icon-theme/Arc /usr/share/icons && let progress++
 else
-    mv $apps/arc-icon-theme/Arc /usr/share/icons 1>>$log 2>>$err && let progress++
+    mv $apps/arc-icon-theme/Arc /usr/share/icons && let progress++
 fi
 
 
@@ -106,17 +106,17 @@ file=capitaine-cursors.tgz
 if [ ! -d $apps/capitaine-cursors ]; then mkdir $apps/capitaine-cursors; fi
 if [ ! -f $apps/$file ]; then
     wget -q -O $apps/$file https://dl.opendesktop.org/api/files/download/id/1489948557/capitaine-cursors-r2.tar.gz
-    tar zxf $apps/$file -C $apps/capitaine-cursors 1>>$log 2>>$err
-    mv $apps/capitaine-cursors/capitaine-cursors-r2/bin/xcursors $apps/capitaine-cursors/capitaine-cursors-r2/bin/capitaine-cursors 1>>$log 2>>$err && let progress++
-    mv $apps/capitaine-cursors/capitaine-cursors-r2/bin/capitaine-cursors /usr/share/icons 1>>$log 2>>$err && let progress++
+    tar zxf $apps/$file -C $apps/capitaine-cursors
+    mv $apps/capitaine-cursors/capitaine-cursors-r2/bin/xcursors $apps/capitaine-cursors/capitaine-cursors-r2/bin/capitaine-cursors && let progress++
+    mv $apps/capitaine-cursors/capitaine-cursors-r2/bin/capitaine-cursors /usr/share/icons && let progress++
 else
-    tar zxf $apps/$file -C $apps/capitaine-cursors 1>>$log 2>>$err
-    mv $apps/capitaine-cursors/capitaine-cursors-r2/bin/xcursors $apps/capitaine-cursors/capitaine-cursors-r2/bin/capitaine-cursors 1>>$log 2>>$err && let progress++
-    mv $apps/capitaine-cursors/capitaine-cursors-r2/bin/capitaine-cursors /usr/share/icons 1>>$log 2>>$err && let progress++
+    tar zxf $apps/$file -C $apps/capitaine-cursors
+    mv $apps/capitaine-cursors/capitaine-cursors-r2/bin/xcursors $apps/capitaine-cursors/capitaine-cursors-r2/bin/capitaine-cursors && let progress++
+    mv $apps/capitaine-cursors/capitaine-cursors-r2/bin/capitaine-cursors /usr/share/icons && let progress++
 fi
 
 
-apt install -y libreoffice-style-sifr 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installed libreoffice styles"
+apt install -y libreoffice-style-sifr && let progress++ && echo "[*] [ $progress/$total ] Installed libreoffice styles"
 fonts=mac-fonts.zip
 if [ ! -f $apps/$fonts ]; then
 	wget -q -O $apps/$fonts http://drive.noobslab.com/data/Mac/macfonts.zip
@@ -143,7 +143,7 @@ let progress++
 
 
 # Fix Nautilus recent files bug
-echo 'Environment=DISPLAY=:0' >> /usr/lib/systemd/user/gvfs-daemon.service
+#echo 'Environment=DISPLAY=:0' >> /usr/lib/systemd/user/gvfs-daemon.service
 
 
 # OpenVPN
@@ -254,7 +254,7 @@ if [ ! -f $apps/$gitk ]; then
 else
 	dpkg -i $apps/$gitk && let progress++
 fi
-apt-get install -f -y 1>>$log 2>>$err && let progress++
+apt-get install -f -y && let progress++
 
 
 # npm
