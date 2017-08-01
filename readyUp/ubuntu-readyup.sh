@@ -13,17 +13,14 @@ if [ ! -d "$apps" ]; then
 	mkdir "$apps"
 fi
 
-log="$apps/install.log"
-err="$apps/install-err.log"
-
 progress=1
 total=40
 
 
 echo "[*] Updating repository"
-apt update 1>>$log 2>>$err
+apt update
 echo "[*] Installing missing dependencies"
-apt install -f -y 1>>$log 2>>$err
+apt install -f -y
 
 
 # Macbuntu for 16.10 install
@@ -31,57 +28,57 @@ apt install -f -y 1>>$log 2>>$err
 # cerebro=cerebro.deb
 # if [ ! -f $apps/mac-fonts.zip ]; then
 #     wget -q -O $apps/$cerebro https://github.com/KELiON/cerebro/releases/download/0.2.6/cerebro_0.2.6_amd64.deb
-#     dpkg -i $apps/$cerebro 1>>$log 2>>$err && let progress++
+#     dpkg -i $apps/$cerebro && let progress++
 #     #rm $apps/$cerebro
 # else
-#     dpkg -i $apps/$cerebro 1>>$log 2>>$err && let progress++
+#     dpkg -i $apps/$cerebro && let progress++
 # fi
 
 
 echo "[*] [ $progress/$total ] Installing Macbuntu"
-apt install -y software-properties-common 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installed software-properties-common"
-add-apt-repository -y ppa:noobslab/macbuntu 1>>$log 2>>$err 
-apt update 1>>$log 2>>$err 
+apt install -y software-properties-common && let progress++ && echo "[*] [ $progress/$total ] Installed software-properties-common"
+add-apt-repository -y ppa:noobslab/macbuntu 
+apt update 
 
-#apt remove -y lightdm 1>>$log 2>>$err
-apt install -y gnome-tweak-tool 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installed gnome-tweak-tool"
-apt install -y ubuntu-gnome-desktop 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installed ubuntu-gnome-desktop"
-#apt install -y ubuntu-desktop 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installed ubuntu-desktop"
+#apt remove -y lightdm
+apt install -y gnome-tweak-tool && let progress++ && echo "[*] [ $progress/$total ] Installed gnome-tweak-tool"
+apt install -y ubuntu-gnome-desktop && let progress++ && echo "[*] [ $progress/$total ] Installed ubuntu-gnome-desktop"
+#apt install -y ubuntu-desktop && let progress++ && echo "[*] [ $progress/$total ] Installed ubuntu-desktop"
 
-apt install -y plank 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installed plank"
-apt install -y macbuntu-os-plank-theme-lts-v7 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installed macbuntu-os-plank-themes"
-apt install -y macbuntu-os-icons-lts-v7 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installed macbuntu-os-icons-lts"
-apt install -y macbuntu-os-ithemes-lts-v7 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installed macbuntu-os-ithemes"
-#apt install -y slingscold 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installed slingscold"
-#apt install -y albert 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installed albert"
+apt install -y plank && let progress++ && echo "[*] [ $progress/$total ] Installed plank"
+apt install -y macbuntu-os-plank-theme-lts-v7 && let progress++ && echo "[*] [ $progress/$total ] Installed macbuntu-os-plank-themes"
+apt install -y macbuntu-os-icons-lts-v7 && let progress++ && echo "[*] [ $progress/$total ] Installed macbuntu-os-icons-lts"
+apt install -y macbuntu-os-ithemes-lts-v7 && let progress++ && echo "[*] [ $progress/$total ] Installed macbuntu-os-ithemes"
+#apt install -y slingscold && let progress++ && echo "[*] [ $progress/$total ] Installed slingscold"
+#apt install -y albert && let progress++ && echo "[*] [ $progress/$total ] Installed albert"
 
 echo "[*] [ $progress/$total ] Installing OSX Arc Collection"
 theme=osx-arc-collection.deb
 if [ ! -f $apps/$theme ]; then
 	wget -q -O $apps/$theme 'https://github.com/LinxGem33/OSX-Arc-White/releases/download/v1.4.1/osx-arc-collection_1.4.1_amd64.deb'
-	dpkg -i $apps/$theme 1>>$log 2>>$err && let progress++
+	dpkg -i $apps/$theme && let progress++
 	#rm $apps/$chrome
 else
-	dpkg -i $apps/$theme 1>>$log 2>>$err && let progress++
+	dpkg -i $apps/$theme && let progress++
 fi
 
 
 if [ ! -d ~/.theme ]; then
 	mkdir ~/.theme
 fi
-wget -q -O - "https://dl.opendesktop.org/api/files/download/id/1489658553/Gnome-OSX-II-NT-2-5-1.tar.xz" | tar -xJf - -C ~/.theme 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installed Gnome-OSX-II-NT"
+wget -q -O - "https://dl.opendesktop.org/api/files/download/id/1489658553/Gnome-OSX-II-NT-2-5-1.tar.xz" | tar -xJf - -C ~/.theme && let progress++ && echo "[*] [ $progress/$total ] Installed Gnome-OSX-II-NT"
 gsettings set org.gnome.desktop.wm.preferences button-layout "close,minimize,maximize:"		# Put buttons on left side
 
-apt install -y libreoffice-style-sifr 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installed libreoffice styles"
+apt install -y libreoffice-style-sifr && let progress++ && echo "[*] [ $progress/$total ] Installed libreoffice styles"
 fonts=mac-fonts.zip
 if [ ! -f $apps/$fonts ]; then
 	wget -q -O $apps/$fonts http://drive.noobslab.com/data/Mac/macfonts.zip
-	unzip $apps/$fonts -d /usr/share/fonts 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installed Mac fonts"
+	unzip $apps/$fonts -d /usr/share/fonts && let progress++ && echo "[*] [ $progress/$total ] Installed Mac fonts"
 	#rm $apps/$fonts
 else
-	unzip -o $apps/mac-fonts.zip -d /usr/share/fonts 1>>$log 2>>$err && let progress++ && echo "[*] [ $progress/$total ] Installed Mac fonts"
+	unzip -o $apps/mac-fonts.zip -d /usr/share/fonts && let progress++ && echo "[*] [ $progress/$total ] Installed Mac fonts"
 fi
-fc-cache -f -v 1>>$log 2>>$err && (let progress++ && echo "[*] [ $progress/$total ] Updating font cache")
+fc-cache -f -v && (let progress++ && echo "[*] [ $progress/$total ] Updating font cache")
 
 
 # Disable Mouse Acceleration for X server
@@ -104,27 +101,27 @@ echo 'Environment=DISPLAY=:0' >> /usr/lib/systemd/user/gvfs-daemon.service
 
 # OpenVPN
 echo "[*] [ $progress/$total ] Installing OpenVPN"
-apt install -y openvpn 1>>$log 2>>$err && let progress++
+apt install -y openvpn && let progress++
 
 
 # Virt-Viewer
 echo "[*] [ $progress/$total ] Installing virt-viewer"
-apt install -y virt-viewer 1>>$log 2>>$err && let progress++
+apt install -y virt-viewer && let progress++
 
 
 # x11vnc
 echo "[*] [ $progress/$total ] Installing x11vnc"
-apt install -y x11vnc 1>>$log 2>>$err && let progress++
+apt install -y x11vnc && let progress++
 
 
 # tmux
 echo "[*] [ $progress/$total ] Installing tmux"
-apt install -y tmux 1>>$log 2>>$err && let progress++
+apt install -y tmux && let progress++
 
 
 # CIFS
 #echo "[*] [ $progress/$total ] Installing samba tools"
-#apt install -y cifs-utils 1>>$log 2>>$err && let progress++
+#apt install -y cifs-utils && let progress++
 
 
 # Chrome
@@ -132,12 +129,12 @@ echo "[*] [ $progress/$total ] Installing Chrome"
 chrome=chrome.deb
 if [ ! -f $apps/$chrome ]; then
 	wget -q -O $apps/$chrome 'https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb'
-	dpkg -i $apps/$chrome 1>>$log 2>>$err && let progress++
+	dpkg -i $apps/$chrome && let progress++
 	#rm $apps/$chrome
 else
-	dpkg -i $apps/$chrome 1>>$log 2>>$err && let progress++
+	dpkg -i $apps/$chrome && let progress++
 fi
-apt install -f -y 1>>$log 2>>$err && let progress++
+apt install -f -y && let progress++
 
 
 # PlayOnLinux
@@ -145,19 +142,19 @@ echo "[*] [ $progress/$total ] Installing PlayOnLinux"
 pol=PlayOnLinux.deb
 if [ ! -f $apps/$pol ]; then
 	wget -q -O $apps/$pol 'https://www.playonlinux.com/script_files/PlayOnLinux/4.2.12/PlayOnLinux_4.2.12.deb'
-	dpkg -i $apps/$pol 1>>$log 2>>$err && let progress++
+	dpkg -i $apps/$pol && let progress++
 	#rm $apps/$pol
 else
-	dpkg -i $apps/$pol 1>>$log 2>>$err && let progress++
+	dpkg -i $apps/$pol && let progress++
 fi
 if [ -d usr ]; then
 	rsync -rti usr /
 fi
-dpkg --add-architecture i386 1>>$log 2>>$err
-apt update 1>>$log 2>>$err
-apt install -y wine 1>>$log 2>>$err && let progress++
-apt install -y winbind 1>>$log 2>>$err && let progress++
-apt install -f -y 1>>$log 2>>$err && let progress++
+dpkg --add-architecture i386
+apt update
+apt install -y wine && let progress++
+apt install -y winbind && let progress++
+apt install -f -y && let progress++
 
 
 # Pycharm
@@ -166,10 +163,10 @@ pycharm=pycharm.tgz
 if [ ! -d '/opt/pycharm' ]; then mkdir /opt/pycharm; fi
 if [ ! -f $apps/$pycharm ]; then
 	wget -q -O $apps/$pycharm 'https://download.jetbrains.com/python/pycharm-community-2017.2.tar.gz'
-	tar zxf $apps/$pycharm -C /opt/pycharm 1>>$log 2>>$err && let progress++
+	tar zxf $apps/$pycharm -C /opt/pycharm && let progress++
 	#rm $apps/$pycharm
 else
-	tar zxf $apps/$pycharm -C /opt 1>>$log 2>>$err && let progress++
+	tar zxf $apps/$pycharm -C /opt && let progress++
 fi
 
 cat > /usr/share/applications/pycharm.desktop << EOF
@@ -185,8 +182,8 @@ Type=Application
 Terminal=0
 EOF
 
-apt install -y git 1>>$log 2>>$err && let progress++
-apt install -y python3-pip 1>>$log 2>>$err && let progress++
+apt install -y git && let progress++
+apt install -y python3-pip && let progress++
 
 
 # Visual Studio Code
@@ -194,9 +191,9 @@ echo "[*] [ $progress/$total ] Visual Studio Code"
 curl -s https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
 mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
 sh -c 'echo "deb [arch=amd64] http://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
-apt-get update 1>>$log 2>>$err
-#apt-get install -y code 1>>$log 2>>$err && let progress++
-apt-get install -y code-insiders 1>>$log 2>>$err && let progress++
+apt-get update
+#apt-get install -y code && let progress++
+apt-get install -y code-insiders && let progress++
 
 
 # GitKraken
@@ -204,75 +201,75 @@ echo "[*] [ $progress/$total ] Installing GitKraken"
 gitk=gitkraken.deb
 if [ ! -f $apps/$gitk ]; then
 	wget -q -O $apps/$gitk "https://release.gitkraken.com/linux/gitkraken-amd64.deb"
-	dpkg -i $apps/$gitk 1>>$log 2>>$err && let progress++
+	dpkg -i $apps/$gitk && let progress++
 	#rm $apps/$pol
 else
-	dpkg -i $apps/$gitk 1>>$log 2>>$err && let progress++
+	dpkg -i $apps/$gitk && let progress++
 fi
 
 
 # npm
 echo "[*] [ $progress/$total ] Installing nmp"
-apt install -y nmp 1>>$log 2>>$err && let progress++
+apt install -y nmp && let progress++
 
 
 # exfat
 echo "[*] [ $progress/$total ] Installing exfat-utils"
-apt install -y exfat-utils 1>>$log 2>>$err && let progress++
+apt install -y exfat-utils && let progress++
 
 
 # nmap
 echo "[*] [ $progress/$total ] Installing nmap"
-apt install -y nmap 1>>$log 2>>$err && let progress++
+apt install -y nmap && let progress++
 
 
 # wireshark
 echo "[*] [ $progress/$total ] Installing wireshark"
-apt install -y wireshark 1>>$log 2>>$err && let progress++
+apt install -y wireshark && let progress++
 
 
 # QTQR
 echo "[*] [ $progress/$total ] Installing QTQR"
-apt install -y qtqr 1>>$log 2>>$err && let progress++
+apt install -y qtqr && let progress++
 
 
 # VLC
 echo "[*] [ $progress/$total ] Installing VLC"
-apt install -y vlc 1>>$log 2>>$err && let progress++
+apt install -y vlc && let progress++
 
 
 # Virtualbox
 echo "[*] [ $progress/$total ] Installing Virtualbox"
-apt install -y virtualbox 1>>$log 2>>$err && let progress++
+apt install -y virtualbox && let progress++
 
 
 # Emacs
 echo "[*] [ $progress/$total ] Installing Emacs"
-apt install -y emacs 1>>$log 2>>$err && let progress++
+apt install -y emacs && let progress++
 
 
 # Skype
 echo "[*] [ $progress/$total ] Installing Skype"
 dpkg -s apt-transport-https > /dev/null || bash -c "sudo apt-get update; sudo apt-get install apt-transport-https -y"
-curl -s https://repo.skype.com/data/SKYPE-GPG-KEY | apt-key add - 1>>$log 2>>$err
+curl -s https://repo.skype.com/data/SKYPE-GPG-KEY | apt-key add -
 echo "deb [arch=amd64] https://repo.skype.com/deb stable main" > /etc/apt/sources.list.d/skype-stable.list
-apt update 1>>$log 2>>$err
-apt install -y skypeforlinux 1>>$log 2>>$err && let progress++
+apt update
+apt install -y skypeforlinux && let progress++
 
 
 # iotop
 #echo "[*] [ $progress/$total ] Installing iotop"
-#apt install -y iotop 1>>$log 2>>$err && let progress++
+#apt install -y iotop && let progress++
 
 
 # iftop
 #echo "[*] [ $progress/$total ] Installing iftop"
-#apt install -y iftop 1>>$log 2>>$err && let progress++
+#apt install -y iftop && let progress++
 
 
 # glances
 echo "[*] [ $progress/$total ] Installing glances"
-apt install -y glances 1>>$log 2>>$err && let progress++
+apt install -y glances && let progress++
 
 
 ## Stacer
@@ -280,34 +277,34 @@ apt install -y glances 1>>$log 2>>$err && let progress++
 #stacer=stacer.deb
 #if [ ! -f $apps/$stacer ]; then
 #	wget -q -O $apps/$stacer 'https://github.com/oguzhaninan/Stacer/releases/download/v1.0.7/stacer_1.0.7_amd64.deb'
-#	dpkg -i $apps/$stacer 1>>$log 2>>$err && let progress++
+#	dpkg -i $apps/$stacer && let progress++
 #else
-#	dpkg -i $apps/$stacer 1>>$log 2>>$err && let progress++
+#	dpkg -i $apps/$stacer && let progress++
 #fi
 
 
 # aircrack
 echo "[*] [ $progress/$total ] Installing aircrack-ng"
-apt install -y aircrack-ng 1>>$log 2>>$err && let progress++
+apt install -y aircrack-ng && let progress++
 
 
 # flux
 echo "[*] [ $progress/$total ] Installing fluxgui"
-add-apt-repository -y ppa:nathan-renniewaldock/flux 1>>$log 2>>$err
-apt update 1>>$log 2>>$err
-apt install -y fluxgui 1>>$log 2>>$err && let progress++
+add-apt-repository -y ppa:nathan-renniewaldock/flux
+apt update
+apt install -y fluxgui && let progress++
 
 
 # darktable
 echo "[*] [ $progress/$total ] Installing darktable"
-apt install -y darktable 1>>$log 2>>$err && let progress++
+apt install -y darktable && let progress++
 
 
 # Veracrypt
 echo "[*] [ $progress/$total ] Installing Veracrypt"
-add-apt-repository -y ppa:unit193/encryption 1>>$log 2>>$err
-apt update 1>>$log 2>>$err
-apt install -y veracrypt 1>>$log 2>>$err && let progress++
+add-apt-repository -y ppa:unit193/encryption
+apt update
+apt install -y veracrypt && let progress++
 
 
 # Java JDK 8 for NetBeans IDE
@@ -316,9 +313,9 @@ file=jdk.tgz
 if [ ! -d '/opt/jdk' ]; then mkdir /opt/jdk; fi
 if [ ! -f $apps/$file ]; then
 	wget -q -O $apps/$file -c --header "Cookie: oraclelicense=accept-securebackup-cookie" 'http://download.oracle.com/otn-pub/java/jdk/8u144-b01/090f390dda5b47b9b721c7dfaa008135/jdk-8u144-linux-x64.tar.gz'
-	tar zxf $apps/$file -C /opt/jdk 1>>$log 2>>$err && let progress++
+	tar zxf $apps/$file -C /opt/jdk && let progress++
 else
-	tar zxf $apps/$file -C /opt/jdk 1>>$log 2>>$err && let progress++
+	tar zxf $apps/$file -C /opt/jdk && let progress++
 fi
 if [ ! -f /usr/local/bin/javajdk ]; then
     ln -s /opt/jdk/jdk1.8.0_144/bin/java /usr/local/bin/javajdk
@@ -453,10 +450,10 @@ file=netbeans.sh
 if [ ! -f $apps/$file ]; then
 	wget -q -O $apps/$file 'http://download.netbeans.org/netbeans/8.2/final/bundles/netbeans-8.2-linux.sh'
 	chmod +x $apps/$file
-    $apps/$file --silent --state $apps/state.xml 1>>$log 2>>$err && let progress++
+    $apps/$file --silent --state $apps/state.xml && let progress++
 else
 	chmod +x $apps/$file
-    $apps/$file --silent --state $apps/state.xml 1>>$log 2>>$err && let progress++
+    $apps/$file --silent --state $apps/state.xml && let progress++
 fi
 
 
