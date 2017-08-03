@@ -12,13 +12,15 @@ if [ ! -d "$apps" ]; then
 fi
 
 progress=1
-total=40
+total=46
 
 
 echo "[*] Updating repository"
 apt update
 echo "[*] Installing missing dependencies"
 apt install -f -y
+
+apt install -y git && let progress++
 
 
 # Macbuntu for 16.10 install
@@ -71,7 +73,6 @@ theme=osx-arc-collection.deb
 if [ ! -f $apps/$theme ]; then
 	wget -q -O $apps/$theme 'https://github.com/LinxGem33/OSX-Arc-White/releases/download/v1.4.3/osx-arc-collection_1.4.3_amd64.deb'
 	dpkg -i $apps/$theme && let progress++
-	#rm $apps/$chrome
 else
 	dpkg -i $apps/$theme && let progress++
 fi
@@ -229,7 +230,6 @@ Type=Application
 Terminal=0
 EOF
 
-apt install -y git && let progress++
 apt install -y python3-pip && let progress++
 
 
