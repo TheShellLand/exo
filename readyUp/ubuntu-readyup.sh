@@ -288,20 +288,34 @@ apt install -y vlc && let progress++
 
 # Virtualbox
 echo "[*] [ $progress/$total ] Installing Virtualbox"
-file=vbox.deb
-if [ ! -f $apps/$file ]; then
-	wget -q -O $apps/$file "http://download.virtualbox.org/virtualbox/5.1.26/virtualbox-5.1_5.1.26-117224~Ubuntu~xenial_amd64.deb"
-    dpkg -i $apps/$file && let progress++
-else
-    dpkg -i $apps/$file && let progress++
-fi
-file=vbox-extpack
-if [ ! -f $apps/$file ]; then
-	wget -q -O $apps/$file "http://download.virtualbox.org/virtualbox/5.1.26/Oracle_VM_VirtualBox_Extension_Pack-5.1.26-117224.vbox-extpack"
-	VBoxManage extpack install --replace $apps/$file
-else
-	VBoxManage extpack install --replace $apps/$file
-fi
+apt install -y virtualbox && let progress++
+# TODO: VirtualBox 5.1.26 does not install on Ubuntu 16.04
+# Unable to install dependencies even with yakkety contrib branch
+#    dpkg: dependency problems prevent configuration of virtualbox-5.1:
+#        virtualbox-5.1 depends on libqt5core5a (>= 5.6.0~beta); however:
+#        Version of libqt5core5a:amd64 on system is 5.5.1+dfsg-16ubuntu7.5.
+#        virtualbox-5.1 depends on libqt5widgets5 (>= 5.6.0~beta); however:
+#        Version of libqt5widgets5:amd64 on system is 5.5.1+dfsg-16ubuntu7.5.
+#        virtualbox-5.1 depends on libqt5x11extras5 (>= 5.6.0); however:
+#        Version of libqt5x11extras5:amd64 on system is 5.5.1-3build1.
+#
+#echo "deb http://download.virtualbox.org/virtualbox/debian yakkety contrib" >> /etc/apt/sources.list
+#wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-key add -
+#apt update
+#file=vbox.deb
+#if [ ! -f $apps/$file ]; then
+#	wget -q -O $apps/$file "http://download.virtualbox.org/virtualbox/5.1.26/virtualbox-5.1_5.1.26-117224~Ubuntu~xenial_amd64.deb"
+#    dpkg -i $apps/$file && let progress++
+#else
+#    dpkg -i $apps/$file && let progress++
+#fi
+#file=vbox-extpack
+#if [ ! -f $apps/$file ]; then
+#	wget -q -O $apps/$file "http://download.virtualbox.org/virtualbox/5.1.26/Oracle_VM_VirtualBox_Extension_Pack-5.1.26-117224.vbox-extpack"
+#	VBoxManage extpack install --replace $apps/$file
+#else
+#	VBoxManage extpack install --replace $apps/$file
+#fi
 
 
 # Emacs
