@@ -288,8 +288,6 @@ apt install -y vlc && let progress++
 
 # Virtualbox
 echo "[*] [ $progress/$total ] Installing Virtualbox"
-apt install -y virtualbox && let progress++
-#
 file=vbox.deb
 if [ ! -f $apps/$file ]; then
 	wget -q -O $apps/$file "http://download.virtualbox.org/virtualbox/5.1.26/virtualbox-5.1_5.1.26-117224~Ubuntu~xenial_amd64.deb"
