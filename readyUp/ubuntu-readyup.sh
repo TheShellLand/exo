@@ -298,9 +298,9 @@ fi
 file=vbox-extpack
 if [ ! -f $apps/$file ]; then
 	wget -q -O $apps/$file "http://download.virtualbox.org/virtualbox/5.1.26/Oracle_VM_VirtualBox_Extension_Pack-5.1.26-117224.vbox-extpack"
-	VBoxManage extpack install --force $apps/$file
+	VBoxManage extpack install --replace $apps/$file
 else
-	VBoxManage extpack install --force $apps/$file
+	VBoxManage extpack install --replace $apps/$file
 fi
 
 
