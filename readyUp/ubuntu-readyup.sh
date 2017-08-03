@@ -289,6 +289,13 @@ apt install -y vlc && let progress++
 # Virtualbox
 echo "[*] [ $progress/$total ] Installing Virtualbox"
 apt install -y virtualbox && let progress++
+file=vbox-extpack
+if [ ! -f $apps/$file ]; then
+	wget -q -O $apps/$file "http://download.virtualbox.org/virtualbox/5.1.26/Oracle_VM_VirtualBox_Extension_Pack-5.1.26-117224.vbox-extpack"
+	VBoxManage extpack install --force $apps/$file
+else
+	VBoxManage extpack install --force $apps/$file
+fi
 
 
 # Emacs
