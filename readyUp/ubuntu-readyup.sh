@@ -12,7 +12,7 @@ if [ ! -d "$apps" ]; then
 fi
 
 progress=1
-total=46
+total=47
 
 
 echo "[*] Updating repository"
@@ -159,6 +159,12 @@ apt install -y virt-viewer && let progress++
 # x11vnc
 echo "[*] [ $progress/$total ] Installing x11vnc"
 apt install -y x11vnc && let progress++
+
+
+# x2go
+echo "[*] [ $progress/$total ] Installing x2go"
+apt install -y software-properties-common
+apt install -y x2goclient && let progress++
 
 
 # tmux
