@@ -177,6 +177,11 @@ echo "[*] [ $progress/$total ] Installing samba tools"
 apt install -y cifs-utils && let progress++
 
 
+# remmina
+echo "[*] [ $progress/$total ] Installing remmina"
+apt install -y remmina && let progress++
+
+
 # Chrome
 echo "[*] [ $progress/$total ] Installing Chrome"
 chrome=chrome.deb
