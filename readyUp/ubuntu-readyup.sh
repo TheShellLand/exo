@@ -173,8 +173,8 @@ apt install -y tmux && let progress++
 
 
 # CIFS
-#echo "[*] [ $progress/$total ] Installing samba tools"
-#apt install -y cifs-utils && let progress++
+echo "[*] [ $progress/$total ] Installing samba tools"
+apt install -y cifs-utils && let progress++
 
 
 # Chrome
