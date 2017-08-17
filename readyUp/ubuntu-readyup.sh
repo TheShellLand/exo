@@ -287,6 +287,11 @@ echo "[*] [ $progress/$total ] Installing wireshark"
 apt install -y wireshark && let progress++
 
 
+# lm-sensors
+echo "[*] [ $progress/$total ] Installing lm-sensors"
+apt install -y lm-sensors && let progress++
+
+
 # QTQR
 echo "[*] [ $progress/$total ] Installing QTQR"
 apt install -y qtqr && let progress++
