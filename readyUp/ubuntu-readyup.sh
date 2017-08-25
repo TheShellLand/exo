@@ -388,6 +388,8 @@ apt install -y fluxgui && let progress++
 
 # darktable
 echo "[*] [ $progress/$total ] Installing darktable"
+add-apt-repository -y ppa:pmjdebruijn/darktable-release
+apt update
 apt install -y darktable && let progress++
 
 
