@@ -12,7 +12,7 @@ if [ ! -d "$apps" ]; then
 fi
 
 progress=1
-total=47
+total=48
 
 
 echo "[*] Updating repository"
@@ -391,6 +391,11 @@ echo "[*] [ $progress/$total ] Installing darktable"
 add-apt-repository -y ppa:pmjdebruijn/darktable-release
 apt update
 apt install -y darktable && let progress++
+
+
+# audacity
+echo "[*] [ $progress/$total ] Installing audacity"
+apt install -y audacity && let progress++
 
 
 # Veracrypt
