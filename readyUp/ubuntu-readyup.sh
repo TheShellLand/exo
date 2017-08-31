@@ -15,6 +15,8 @@ progress=1
 total=48
 
 
+echo "[*] Ubuntu 16.04 appstream bugfix"
+apt purge -y appstream
 echo "[*] Updating repository"
 apt update
 echo "[*] Installing missing dependencies"
