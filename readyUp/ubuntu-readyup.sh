@@ -17,6 +17,8 @@ total=48
 
 echo "[*] Ubuntu 16.04 appstream bugfix"
 apt purge -y appstream
+echo "[*] Disable Ubuntu 16.04 console switch keys"
+dumpkeys | grep -v Incr_Console | grep -v Decr_Console | grep -v Last_Console |loadkeys
 echo "[*] Updating repository"
 apt update
 echo "[*] Installing missing dependencies"
