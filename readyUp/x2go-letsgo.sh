@@ -16,4 +16,4 @@ apt install -y xubuntu-desktop
 #apt install -y mate
 
 # XFCE4
-#apt install -y xfce4
+apt install -y xfce4
