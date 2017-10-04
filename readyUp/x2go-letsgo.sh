@@ -13,7 +13,7 @@ sudo apt-get install -y x2goserver x2goserver-xsession
 apt install -y xubuntu-desktop
 
 # MATE
-#apt install -y mate
+apt install -y mate
 
 # XFCE4
 apt install -y xfce4
