@@ -23,12 +23,12 @@ BOX_NAME="$2"
 VERSION="$3"
 PROVIDER_NAME="virtualbox"
 ACCESS_TOKEN="$4"
-UPLOAD_URL=$(curl -s "https://vagrantcloud.com/api/v1/box/$USERNAME/$BOX_NAME/version/$VERSION/provider/$PROVIDER_NAME/upload?access_token=$ACCESS_TOKEN" | jq -r ".upload_path" )
 
 if [ ! -f "$PACKAGE" ]; then
   vagrant package --base "$VBOX"
-  curl -v -X PUT --upload-file "$PACKAGE" "$UPLOAD_URL"
-else
-  curl -v -X PUT --upload-file "$PACKAGE" "$UPLOAD_URL"
 fi
+
+UPLOAD_URL=$(curl -s "https://vagrantcloud.com/api/v1/box/$USERNAME/$BOX_NAME/version/$VERSION/provider/$PROVIDER_NAME/upload?access_token=$ACCESS_TOKEN" | jq -r ".upload_path" )
+
+curl -v -X PUT --upload-file "$PACKAGE" "$UPLOAD_URL"
 
