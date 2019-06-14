@@ -4,6 +4,9 @@
 
 if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ] || [ -z "$4" ]; then
   echo "Usage: $0 virtualbox_name BOX_NAME VERSION TOKEN"
+  echo ""
+  VBoxManage list vms
+  echo ""
   exit 1
 elif [ ! $(which jq) ]; then
   echo "*** requires jq ***"
