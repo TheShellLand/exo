@@ -2,8 +2,8 @@
 
 # create and upload vagrant box
 
-if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
-  echo "Usage: $0 vagrant.box BOX_NAME VERSION TOKEN"
+if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ] || [ -z "$4" ]; then
+  echo "Usage: $0 virtualbox_name BOX_NAME VERSION TOKEN"
   exit 1
 elif [ ! $(which jq) ]; then
   echo "*** requires jq ***"
@@ -13,7 +13,8 @@ fi
 
 set -xe
 
-BOX="$1"
+VBOX="$1"
+PACKAGE="package.box"
 USERNAME="theshellland"
 BOX_NAME="$2"
 VERSION="$3"
@@ -21,10 +22,10 @@ PROVIDER_NAME="virtualbox"
 ACCESS_TOKEN="$4"
 UPLOAD_URL=$(curl -s "https://vagrantcloud.com/api/v1/box/$USERNAME/$BOX_NAME/version/$VERSION/provider/$PROVIDER_NAME/upload?access_token=$ACCESS_TOKEN" | jq -r ".upload_path" )
 
-if [ ! -f "$BOX" ]; then
-  vagrant package --output "$BOX"
-  curl -X PUT --upload-file "$BOX" "$UPLOAD_URL"
+if [ ! -f "$PACKAGE" ]; then
+  vagrant package --base "$VBOX"
+  curl -v -X PUT --upload-file "$PACKAGE" "$UPLOAD_URL"
 else
-  curl -X PUT --upload-file "$BOX" "$UPLOAD_URL"
+  curl -v -X PUT --upload-file "$PACKAGE" "$UPLOAD_URL"
 fi
 
