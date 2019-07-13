@@ -2,6 +2,8 @@
 
 # create and upload vagrant box
 
+# Usage: build-publish.sh virtualbox_name BOX_NAME VERSION TOKEN"
+
 if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ] || [ -z "$4" ]; then
   echo "Usage: $0 virtualbox_name BOX_NAME VERSION TOKEN"
   echo ""
