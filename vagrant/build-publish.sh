@@ -9,6 +9,8 @@ if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ] || [ -z "$4" ]; then
   echo ""
   VBoxManage list vms
   echo ""
+  echo "Example: $0 vagrant elementaryos-5.0-juno-readyup 20190713.0.1 TOKEN"
+  echo ""
   exit 1
 elif [ ! $(which jq) ]; then
   echo "*** requires jq ***"
