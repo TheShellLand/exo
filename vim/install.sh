@@ -4,5 +4,5 @@
 
 set -xe
 
-curl https://raw.githubusercontent.com/TheShellLand/exo/master/vim/basic.vim > ~/.vimrc
+curl -s https://raw.githubusercontent.com/TheShellLand/exo/master/vim/basic.vim > ~/.vimrc
 
