@@ -1,10 +1,10 @@
 #!/bin/bash
 # set git global configs
 
-set -x 
+set -xe
 
-read -p "Enter git username: " user
-read -p "Enter git email: " email
+read -p 'Enter git username: ' user
+read -p 'Enter git email: ' email
 
 git config --global user.name "$user"
 git config --global user.email "$email"
