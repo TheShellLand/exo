@@ -1,7 +1,7 @@
 progress()
 {
   tput civis
-  echo -en "\r"
+  echo -en "\rConnecting [        ]"
   tput el
   sleep 0.1
   echo -en "\rConnecting [o       ]"
