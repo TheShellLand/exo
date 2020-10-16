@@ -8,6 +8,7 @@ set -xe
 
 git config --local user.name "$user"
 git config --local user.email "$email"
+git config --local user.signingkey "$email"
 git config --global core.editor "vim"
 git config --global core.pager "less -r"
 git config --global gpg.program gpg
