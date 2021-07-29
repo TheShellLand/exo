@@ -1,0 +1,7 @@
+ForwardAgent yes
+ServerAliveInterval 15
+
+Host dream
+  HostName dream.within.a.dream
+  User dreamy
+  IdentityFile ~/.ssh/keys/dreamer/id_rsa
