@@ -3,6 +3,7 @@
 
 set -xe
 
+git config --global core.fileMode false
 git config --global core.editor "vim"
 git config --global core.pager "less -r"
 git config --global gpg.program gpg
