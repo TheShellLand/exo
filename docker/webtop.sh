@@ -3,14 +3,13 @@
 # webtop start
 
 if [ -z "$@" ]; then
-  echo "missing home folder"
-  exit 1
+  FOLDER=""
+else
+  ARGS="$@"
+  FOLDER="-v $PWD/$ARGS:/config"
 fi
 
 cd $(dirname $0) && set -xe
-
-ARGS="$@"
-FOLDER="-v $PWD/$ARGS:/config"
 
 docker run \
   --rm \
@@ -18,4 +17,3 @@ docker run \
   --shm-size="8gb" \
   $FOLDER \
   ghcr.io/linuxserver/webtop
-
