@@ -12,7 +12,7 @@ fi
 cd $(dirname $0) && set -xe
 
 docker run \
-  --rm \
+  --rm -it \
   -p 3000:3000 \
   --shm-size="8gb" \
   $FOLDER \
