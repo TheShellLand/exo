@@ -1,1 +1,1 @@
-netsh wlan show drivers
+netsh wlan show drivers | findstr "Interface Hosted"
