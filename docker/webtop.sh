@@ -2,20 +2,53 @@
 
 # webtop start
 
-if [ -z "$@" ]; then
-  FOLDER=""
+cd "$(dirname $0)" && set -e 
+
+BASEDIR="$(pwd)"
+
+
+if [ ! -z "$PROFILE" ]; then 
+  PROFILE=$PROFILE
+  VOLUME="-v $PROFILE:/config"
 else
-  ARGS="$@"
-  FOLDER="-v $PWD/$ARGS:/config"
+  VOLUME=""
 fi
 
-cd $(dirname $0) && set -x
+if [ -z "$TAG" ]; then
+  TAG=debian-xfce
+fi 
 
-docker rm -f webtop
+echo "http://localhost:3000/"
+echo ""
+echo "https://localhost:3001/"
+echo ""
+
+set -xe
+
+docker rm -f webtop 2>/dev/null || true
+
+LOCAL_PORT="3000:3000"
+LOCAL_PORT_HTTPS="3001:3001"
+
 docker run \
-  --name webtop
+  -d \
+  --name webtop \
   --rm -it \
-  -p 3000:3000 \
+  -p $LOCAL_PORT \
+  -p $LOCAL_PORT_HTTPS \
   --shm-size="8gb" \
-  $FOLDER \
-  ghcr.io/linuxserver/webtop
+  $VOLUME \
+  ghcr.io/linuxserver/webtop:$TAG &
+
+
+i=1
+while true; do 
+  if docker ps | grep webtop; then 
+    break
+  fi 
+  sleep $i
+  i=$(($i+1))
+done 
+
+docker logs webtop -f
+
