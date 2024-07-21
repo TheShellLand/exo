@@ -20,7 +20,7 @@ function interface_check {
 }
 
 
-until interface_check; do
+while ! interface_check; do
   echo "waiting for interface"
   sleep 1
 
