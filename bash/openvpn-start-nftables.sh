@@ -23,8 +23,11 @@ function interface_check {
 while ! interface_check; do
   echo "waiting for interface"
   sleep 1
-
-  if interface_check; then
-    start_nftables
-  fi
 done
+
+if interface_check; then
+  start_nftables
+  exit 0
+fi
+
+exit 1
