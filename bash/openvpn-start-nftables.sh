@@ -27,7 +27,7 @@ done
 
 if interface_check; then
   start_nftables
-  exit 0
+  exit $?
 fi
 
 exit 1
