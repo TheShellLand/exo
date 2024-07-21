@@ -1,4 +1,4 @@
- #!/bin/bash
+#!/bin/bash
 
 # ssh reverse proxy with dream.n7sa.com
 
