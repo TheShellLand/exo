@@ -9,7 +9,7 @@ cd "$(dirname $0)"
 
 
 function ssh_reverse_proxy {
-  ssh -R 2223:localhost:22 -L 2223:localhost:22 ubuntu@dream.n7sa.com -CN &
+  ssh -R 2223:localhost:22 -L 2223:localhost:22 user@dream.n7sa.com -CN &
   echo $! > SSH_PID
   return $?
 }
@@ -24,7 +24,7 @@ function pid_check {
 
 
 function ssh_check {
-  ssh -A ubuntu@localhost -p 2223 "ssh -A eric@localhost -p 2223 id"
+  ssh -A user@localhost -p 2223 "ssh -A user@localhost -p 2223 id"
   return $?
 }
 
