@@ -4,7 +4,7 @@
 
 date
 
-set -xe
+#set -xe
 cd "$(dirname $0)"
 
 REVERSE_PROXY_PORT=2224
@@ -62,5 +62,5 @@ else
       fi
 
     fi
-  fi  
-fi 
+  fi
+fi

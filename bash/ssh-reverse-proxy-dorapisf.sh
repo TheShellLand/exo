@@ -4,7 +4,7 @@
 
 date
 
-set -xe
+#set -xe
 cd "$(dirname $0)"
 
 REVERSE_PROXY_PORT=2223
