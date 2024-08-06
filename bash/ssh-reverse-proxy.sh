@@ -44,6 +44,7 @@ function pid_kill {
 
 
 if ! pid_check; then
+  echo "ssh :: pid_check :: FAIL"
   while ! ssh_reverse_proxy; do
     sleep 1
   done
