@@ -16,6 +16,7 @@ function start_nftables {
 
 function interface_check {
   ip link show wlan0
+  ip link show wlan0 | grep UP
   return $?
 }
 
