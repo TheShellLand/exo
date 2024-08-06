@@ -9,8 +9,9 @@ cd "$(dirname $0)"
 
 
 function start_nftables {
-  echo -n "nftables :: start_nftables :: starting :: "
+  echo -n "nftables :: start_nftables :: starting"
   systemctl start nftables
+  systemctl status nftables | grep Active
   return $?
 }
 
