@@ -4,42 +4,40 @@
 
 date
 
-set -xe
+#set -xe
 cd "$(dirname $0)"
 
 
 function start_nftables {
-  echo "start_nftables :: starting"
+  echo -n "nftables :: start_nftables :: starting :: "
   systemctl start nftables
   return $?
 }
 
 
 function interface_wlan0 {
-  echo "interface_wlan0 :: checking"
-  ip link show wlan0
+  echo -n "interface :: interface_wlan0 :: checking :: "
   ip link show wlan0 | grep UP
   return $?
 }
 
 
 function interface_ens3 {
-  echo "interface_ens3 :: checking"
-  ip link show ens3
+  echo -n "interface :: interface_ens3  :: checking :: "
   ip link show ens3 | grep UP
   return $?
 }
 
 
 function interface_check {
-  echo "interface_check :: checking"
+  echo "interface :: interface_check"
   if interface_wlan0; then
-    echo "interface_wlan0 :: OK"
+    echo "interface :: interface_wlan0 :: OK"
     return 0
   fi
 
   if interface_ens3; then
-    echo "interface_ens3 :: OK"
+    echo "interface :: interface_ens3 :: OK"
     return 0
   fi
 
@@ -48,13 +46,14 @@ function interface_check {
 
 
 while ! interface_check; do
+  echo "interface :: interface_check :: FAIL"
   sleep 1
 done
 
 if interface_check; then
-  echo "interface_check :: OK"
+  echo "interface :: interface_check :: OK"
   if start_nftables; then
-    echo "start_nftables :: OK"
+    echo "nftables :: start_nftables :: OK"
     exit 0
   fi
 fi
