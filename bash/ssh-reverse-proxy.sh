@@ -39,10 +39,9 @@ function pid_kill {
 
 
 if ! pid_check; then
-  while true; do
-    if ssh_reverse_proxy; then
-      break
-    fi
+  while ! ssh_reverse_proxy; do
+    echo "ssh :: connect :: retry"
+    sleep 1
   done
 
 else
