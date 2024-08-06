@@ -28,7 +28,8 @@ function pid_check {
 
 function ssh_check {
   echo -n "ssh :: ssh_check :: checking :: "
-  ssh -A user@localhost -p $REVERSE_PROXY_PORT "ssh user@localhost -p $REVERSE_PROXY_PORT id"
+#  ssh -A user@localhost -p $REVERSE_PROXY_PORT "ssh user@localhost -p $REVERSE_PROXY_PORT id"
+  ssh -A user@localhost -p $REVERSE_PROXY_PORT "id"
   return $?
 }
 
