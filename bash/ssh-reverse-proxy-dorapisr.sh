@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# ssh reverse proxy with dream.n7sa.com
+# ssh reverse proxy
 
 date
 
@@ -10,7 +10,7 @@ cd "$(dirname $0)"
 REVERSE_PROXY_PORT=2224
 
 function ssh_reverse_proxy {
-  echo "ssh_reverse_proxy :: checking"
+  echo "ssh_reverse_proxy :: connecting"
   ssh -R $REVERSE_PROXY_PORT:localhost:22 -L $REVERSE_PROXY_PORT:localhost:22 user@dream.n7sa.com -CN &
   echo $! > SSH_PID
   return $?
@@ -34,7 +34,7 @@ function ssh_check {
 
 
 function pid_kill {
-  if [ -f SSH_PID ]; then 
+  if [ -f SSH_PID ]; then
     echo "pid_kill :: killing"
     kill -9 $(cat SSH_PID)
   fi 
