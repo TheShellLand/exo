@@ -17,14 +17,14 @@ function start_nftables {
 
 
 function interface_wlan0 {
-  echo -n "interface :: interface_wlan0 :: checking :: "
+  echo -n "interface :: interface_check :: interface_wlan0 :: checking :: "
   ip link show wlan0 | grep UP
   return $?
 }
 
 
 function interface_ens3 {
-  echo -n "interface :: interface_ens3  :: checking :: "
+  echo -n "interface :: interface_check :: interface_ens3  :: checking :: "
   ip link show ens3 | grep UP
   return $?
 }
@@ -33,12 +33,12 @@ function interface_ens3 {
 function interface_check {
   echo "interface :: interface_check"
   if interface_wlan0; then
-    echo "interface :: interface_wlan0 :: OK"
+    echo "interface :: interface_check :: interface_wlan0 :: OK"
     return 0
   fi
 
   if interface_ens3; then
-    echo "interface :: interface_ens3 :: OK"
+    echo "interface :: interface_check :: interface_ens3 :: OK"
     return 0
   fi
 
