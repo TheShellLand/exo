@@ -3,6 +3,7 @@
 # ssh reverse proxy
 
 date
+echo $(pwd)/$(basename "$0")
 
 #set -xe
 cd "$(dirname $0)"
@@ -10,9 +11,10 @@ cd "$(dirname $0)"
 REVERSE_PROXY_PORT=2224
 
 function ssh_reverse_proxy {
-  echo "ssh :: ssh_reverse_proxy :: connecting"
+  echo -n "ssh :: ssh_reverse_proxy :: connecting :: "
   ssh -R $REVERSE_PROXY_PORT:localhost:22 -L $REVERSE_PROXY_PORT:localhost:22 user@dream.n7sa.com -CN &
   echo $! > SSH_PID
+  echo "PID $(cat SSH_PID)"
   return $?
 }
 
