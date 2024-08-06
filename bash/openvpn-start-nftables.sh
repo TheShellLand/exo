@@ -9,12 +9,14 @@ cd "$(dirname $0)"
 
 
 function start_nftables {
+  echo "start_nftables :: starting"
   systemctl start nftables
   return $?
 }
 
 
 function interface_check {
+  echo "interface_check :: checking"
   ip link show wlan0
   ip link show wlan0 | grep UP
   return $?
@@ -22,13 +24,15 @@ function interface_check {
 
 
 while ! interface_check; do
-  echo "waiting for interface"
   sleep 1
 done
 
 if interface_check; then
-  start_nftables
-  exit $?
+  echo "interface_check :: OK"
+  if start_nftables; then
+    echo "start_nftables :: OK"
+    exit $?
+  fi
 fi
 
 exit 1
