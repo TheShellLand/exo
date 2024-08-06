@@ -39,7 +39,11 @@ function pid_kill {
 
 
 if ! pid_check; then
-  ssh_reverse_proxy
+  while true; do
+    if ssh_reverse_proxy; then
+      break
+    fi
+  done
 
 else
 

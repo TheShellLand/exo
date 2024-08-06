@@ -25,7 +25,7 @@ function pid_check {
 
 
 function ssh_check {
-  ssh -A user@localhost -p $REVERSE_PROXY_PORT "ssh -A user@localhost -p $REVERSE_PROXY_PORT id"
+  ssh -A user@localhost -p $REVERSE_PROXY_PORT "ssh user@localhost -p $REVERSE_PROXY_PORT id"
   return $?
 }
 
@@ -39,7 +39,11 @@ function pid_kill {
 
 
 if ! pid_check; then
-  ssh_reverse_proxy
+  while true; do
+    if ssh_reverse_proxy; then
+      break
+    fi
+  done
 
 else
 
