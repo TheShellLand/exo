@@ -3,6 +3,7 @@
 # enable nftables
 
 date
+echo $(dirname $0)/$(basename "$0")
 
 #set -xe
 cd "$(dirname $0)"

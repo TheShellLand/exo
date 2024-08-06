@@ -3,7 +3,7 @@
 # ssh reverse proxy
 
 date
-echo $(pwd)/$(basename "$0")
+echo $(dirname $0)/$(basename "$0")
 
 #set -xe
 cd "$(dirname $0)"

@@ -3,7 +3,7 @@
 # ssh reverse proxy
 
 date
-echo $(pwd)/$(basename "$0")
+echo $(dirname $0)/$(basename "$0")
 
 #set -xe
 cd "$(dirname $0)"
@@ -21,7 +21,7 @@ function ssh_reverse_proxy {
 
 function pid_check {
   if [ -f SSH_PID ]; then
-    echo -n "ssh :: pid_check :: checking :: "
+    echo -n "ssh :: pid_check :: checking :: process :: "
     ps -fp $(cat SSH_PID) | grep $(cat SSH_PID)
   fi 
   return $?
