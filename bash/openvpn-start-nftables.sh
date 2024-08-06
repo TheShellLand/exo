@@ -31,7 +31,7 @@ function interface_ens3 {
 
 
 function interface_check {
-  echo "interface :: interface_check"
+  echo "interface :: interface_check :: checking "
   if interface_wlan0; then
     echo "interface :: interface_check :: interface_wlan0 :: OK"
     return 0
