@@ -63,5 +63,8 @@ else
       fi
 
     fi
+
+    echo "ssh :: ssh_check :: OK"
+
   fi
 fi
