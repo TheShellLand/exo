@@ -83,6 +83,7 @@ if ! pid_check; then
 
   if ssh_check; then
     echo "ssh: ssh_check :: OK"
+  fi
 
 else
 
