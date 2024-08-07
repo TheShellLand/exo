@@ -28,6 +28,13 @@ function pid_check {
 }
 
 
+function ssh_agent {
+  echo -n "ssh :: agent :: "
+  ssh-add
+  return $?
+}
+
+
 function ssh_check {
   echo -n "ssh :: ssh_check :: command :: "
   echo ssh -A user@localhost -p $REVERSE_PROXY_PORT "ssh -A user@localhost -p $REVERSE_PROXY_PORT hostname"
@@ -46,6 +53,10 @@ function pid_kill {
   return $?
 }
 
+
+if ssh_agent; then
+  echo "ssh :: agent :: OK"
+fi
 
 if ! pid_check; then
   echo "ssh :: pid_check :: FAIL"
