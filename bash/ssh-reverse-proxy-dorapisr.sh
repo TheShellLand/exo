@@ -44,9 +44,9 @@ function ssh_add {
 
 function ssh_check {
   echo -n "ssh :: ssh_check :: command :: "
-  echo ssh -A user@localhost -p $REVERSE_PROXY_PORT "ssh -A user@localhost -p $REVERSE_PROXY_PORT hostname"
+  echo ssh -A -i $HOME/.ssh/id_rsa user@localhost -p $REVERSE_PROXY_PORT "ssh -A user@localhost -p $REVERSE_PROXY_PORT hostname"
   echo -n "ssh :: ssh_check :: checking :: remote hostname :: "
-  ssh -A user@localhost -p $REVERSE_PROXY_PORT "ssh -A user@localhost -p $REVERSE_PROXY_PORT hostname"
+  ssh -A -i $HOME/.ssh/id_rsa user@localhost -p $REVERSE_PROXY_PORT "ssh -A user@localhost -p $REVERSE_PROXY_PORT hostname"
 #  ssh -A user@localhost -p $REVERSE_PROXY_PORT "hostname"
   return $?
 }
@@ -60,13 +60,6 @@ function pid_kill {
   return $?
 }
 
-
-if ssh_agent; then
-  echo "ssh :: agent :: OK"
-  if ssh_add; then
-    echo "ssh :: agent :: add key :: OK"
-  fi
-fi
 
 if ! pid_check; then
   echo "ssh :: pid_check :: FAIL"
