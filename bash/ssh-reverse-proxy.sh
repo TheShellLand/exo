@@ -89,6 +89,7 @@ echo "ssh :: ssh_check :: FAIL"
 
 if ssh_reverse_proxy; then
   echo "ssh :: ssh_reverse_proxy :: OK"
+  sleep 3
 
   if ssh_check; then
     echo "ssh :: ssh_check :: OK"
