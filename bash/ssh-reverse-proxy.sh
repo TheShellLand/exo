@@ -13,16 +13,16 @@ REVERSE_PROXY_PORT=$REVERSE_PROXY_PORT
 
 
 if [ "$REVERSE_PROXY_PORT" ]; then
-  echo "REVERSE_PROXY_PORT :: $REVERSE_PROXY_PORT"
+  echo "ssh :: REVERSE_PROXY_PORT :: $REVERSE_PROXY_PORT"
 else
-  echo "ERROR :: REVERSE_PROXY_PORT :: not set"
+  echo "ssh :: ERROR :: REVERSE_PROXY_PORT :: not set"
   exit 1
 fi
 
 
 function ssh_reverse_proxy {
   echo -n "ssh :: ssh_reverse_proxy :: command :: "
-  echo "ssh -R $REVERSE_PROXY_PORT:localhost:22 -L $REVERSE_PROXY_PORT:localhost:22 user@dream.n7sa.com -CN &"
+  echo ssh -R $REVERSE_PROXY_PORT:localhost:22 -L $REVERSE_PROXY_PORT:localhost:22 user@dream.n7sa.com -CN
   echo -n "ssh :: ssh_reverse_proxy :: connecting :: "
   ssh -R $REVERSE_PROXY_PORT:localhost:22 -L $REVERSE_PROXY_PORT:localhost:22 user@dream.n7sa.com -CN &
   echo $! > SSH_PID
