@@ -8,7 +8,17 @@ echo $(dirname $0)/$(basename "$0")
 #set -xe
 cd "$(dirname $0)"
 
+
 REVERSE_PROXY_PORT=$REVERSE_PROXY_PORT
+
+
+if [ "$REVERSE_PROXY_PORT" ]; then
+  echo "REVERSE_PROXY_PORT :: $REVERSE_PROXY_PORT"
+else
+  echo "ERROR :: REVERSE_PROXY_PORT :: not set"
+  exit 1
+fi
+
 
 function ssh_reverse_proxy {
   echo -n "ssh :: ssh_reverse_proxy :: connecting :: "
