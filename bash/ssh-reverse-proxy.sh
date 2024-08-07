@@ -66,7 +66,7 @@ function ssh_check {
 
 function pid_kill {
   if [ -f SSH_PID ]; then
-    echo "ssh :: pid_kill :: kill -9 $(cat SSH_PID)"
+    echo -n "ssh :: pid_kill :: kill -9 $(cat SSH_PID) :: "
     kill -9 $(cat SSH_PID)
   fi 
   return $?
