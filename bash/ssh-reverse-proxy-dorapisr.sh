@@ -30,6 +30,13 @@ function pid_check {
 
 function ssh_agent {
   echo -n "ssh :: agent :: "
+  ssh-agent bash
+  return $?
+}
+
+
+function ssh_add {
+  echo -n "ssh :: agent :: add key :: "
   ssh-add
   return $?
 }
@@ -56,6 +63,9 @@ function pid_kill {
 
 if ssh_agent; then
   echo "ssh :: agent :: OK"
+  if ssh_add; then
+    echo "ssh :: agent :: add key :: OK"
+  fi
 fi
 
 if ! pid_check; then
