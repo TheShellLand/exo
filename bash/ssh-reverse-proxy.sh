@@ -73,36 +73,21 @@ function pid_kill {
 }
 
 
-if ! pid_check; then
-  echo "ssh :: pid_check :: FAIL"
-  while ! ssh_reverse_proxy; do
-    sleep 1
-  done
 
-  echo "ssh :: ssh_reverse_proxy :: OK"
-
-  if pid_check; then
-    echo "ssh :: pid_check :: OK"
-    if ssh_check; then
-      echo "ssh :: ssh_check :: OK"
-    fi
-  fi
-
-else
-
-  if ! ssh_check; then
-    echo "ssh :: ssh_check :: FAIL"
-
-    if pid_kill; then
-      echo "ssh :: pid_kill :: OK"
-
-      if ssh_reverse_proxy; then
-        echo "ssh :: ssh_reverse_proxy :: OK"
-      fi
-
-    fi
-  fi
-
-  echo "ssh :: ssh_check :: OK"
-
+if pid_check; then
+  echo "ssh :: pid_check :: OK"
+elif pid_kill; then
+    echo "ssh :: pid_kill :: OK"
 fi
+
+
+while ! ssh_check; do
+  echo "ssh :: ssh_check :: FAIL"
+
+  if ssh_reverse_proxy; then
+    echo "ssh :: ssh_reverse_proxy :: OK"
+  fi
+  sleep 1
+done
+
+echo "ssh :: ssh_check :: OK"
