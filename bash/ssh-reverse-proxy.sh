@@ -81,8 +81,11 @@ if ! pid_check; then
 
   echo "ssh :: ssh_reverse_proxy :: OK"
 
-  if ssh_check; then
-    echo "ssh: ssh_check :: OK"
+  if pid_check; then
+    echo "ssh :: pid_check :: OK"
+    if ssh_check; then
+      echo "ssh :: ssh_check :: OK"
+    fi
   fi
 
 else
