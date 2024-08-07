@@ -99,4 +99,8 @@ if ssh_reverse_proxy; then
 
 fi
 
+if pid_kill; then
+  echo "ssh :: pid_kill :: OK"
+fi
+
 exit 1
