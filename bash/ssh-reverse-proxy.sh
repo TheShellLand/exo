@@ -40,24 +40,10 @@ function pid_check {
 }
 
 
-function ssh_agent {
-  echo -n "ssh :: agent :: "
-  ssh-agent bash
-  return $?
-}
-
-
-function ssh_add {
-  echo -n "ssh :: agent :: add key :: "
-  ssh-add
-  return $?
-}
-
-
 function ssh_check {
   echo -n "ssh :: ssh_check :: command :: "
   echo ssh user@localhost -p $REVERSE_PROXY_PORT "ssh user@localhost -p $REVERSE_PROXY_PORT hostname"
-  echo -n "ssh :: ssh_check :: checking :: remote hostname :: "
+  echo -n "ssh :: ssh_check :: checking :: from remote tunnel :: "
   ssh user@localhost -p $REVERSE_PROXY_PORT "ssh user@localhost -p $REVERSE_PROXY_PORT hostname"
   return $?
 }
