@@ -4,4 +4,8 @@
 
 set -xe
 
-ssh 192.168.11.1 -l root tcpdump -i ovpnclient -w - "$@" | $(which wireshark) -k -i -
+if [[ $# -eq 0 ]]; then
+  ssh 192.168.11.1 -l root tcpdump -i any -w - | $(which wireshark) -k -i -
+else
+  ssh 192.168.11.1 -l root tcpdump "$@" -w - | $(which wireshark) -k -i -
+fi
