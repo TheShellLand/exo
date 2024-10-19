@@ -23,7 +23,7 @@ fi
 function ssh_reverse_proxy {
   echo -n "ssh :: ssh_reverse_proxy :: command :: "
   echo "ssh -o StrictHostKeyChecking=accept-new -R $REVERSE_PROXY_PORT:localhost:22 -L $REVERSE_PROXY_PORT:localhost:22 user@208.113.134.207 -CN &"
-  echo -n "ssh -o StrictHostKeyChecking=accept-new :: ssh_reverse_proxy :: connecting :: "
+  echo -n "ssh :: ssh_reverse_proxy :: connecting :: "
   ssh -o StrictHostKeyChecking=accept-new -R $REVERSE_PROXY_PORT:localhost:22 -L $REVERSE_PROXY_PORT:localhost:22 user@208.113.134.207 -CN &
   echo $! > SSH_PID
   echo "PID $(cat SSH_PID)"
