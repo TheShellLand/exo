@@ -22,9 +22,9 @@ fi
 
 function ssh_reverse_proxy {
   echo -n "ssh :: ssh_reverse_proxy :: command :: "
-  echo "ssh -R $REVERSE_PROXY_PORT:localhost:22 -L $REVERSE_PROXY_PORT:localhost:22 user@208.113.134.207 -CN &"
-  echo -n "ssh :: ssh_reverse_proxy :: connecting :: "
-  ssh -R $REVERSE_PROXY_PORT:localhost:22 -L $REVERSE_PROXY_PORT:localhost:22 user@208.113.134.207 -CN &
+  echo "ssh -o StrictHostKeyChecking=accept-new -R $REVERSE_PROXY_PORT:localhost:22 -L $REVERSE_PROXY_PORT:localhost:22 user@208.113.134.207 -CN &"
+  echo -n "ssh -o StrictHostKeyChecking=accept-new :: ssh_reverse_proxy :: connecting :: "
+  ssh -o StrictHostKeyChecking=accept-new -R $REVERSE_PROXY_PORT:localhost:22 -L $REVERSE_PROXY_PORT:localhost:22 user@208.113.134.207 -CN &
   echo $! > SSH_PID
   echo "PID $(cat SSH_PID)"
   return $?
@@ -42,9 +42,9 @@ function pid_check {
 
 function ssh_check {
   echo -n "ssh :: ssh_check :: command :: "
-  echo ssh user@localhost -p $REVERSE_PROXY_PORT "ssh user@localhost -p $REVERSE_PROXY_PORT hostname"
+  echo ssh -o StrictHostKeyChecking=accept-new user@localhost -p $REVERSE_PROXY_PORT "ssh -o StrictHostKeyChecking=accept-new user@localhost -p $REVERSE_PROXY_PORT hostname"
   echo -n "ssh :: ssh_check :: checking :: from remote tunnel :: "
-  ssh user@localhost -p $REVERSE_PROXY_PORT "ssh user@localhost -p $REVERSE_PROXY_PORT hostname"
+  ssh -o StrictHostKeyChecking=accept-new user@localhost -p $REVERSE_PROXY_PORT "ssh -o StrictHostKeyChecking=accept-new user@localhost -p $REVERSE_PROXY_PORT hostname"
   return $?
 }
 
