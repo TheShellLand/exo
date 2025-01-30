@@ -7,3 +7,5 @@
 # configure
 - https://config.office.com/deploymentsettings
 
+# commands
+- https://learn.microsoft.com/en-us/microsoft-365-apps/deploy/overview-office-deployment-tool
