@@ -9,3 +9,8 @@
 
 # commands
 - https://learn.microsoft.com/en-us/microsoft-365-apps/deploy/overview-office-deployment-tool
+
+# run 
+```
+setup.exe /configure installconfig.xml
+```
