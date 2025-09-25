@@ -13,6 +13,7 @@ cp -v .tmux.conf ~/
 
 tmux source ~/.tmux.conf
 
+# https://www.nerdfonts.com/font-downloads
 fc-cache -f || :
 
 echo done.
