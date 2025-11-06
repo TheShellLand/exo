@@ -1,5 +1,7 @@
 ForwardAgent yes
+Compression yes
 ServerAliveInterval 15
+StrictHostKeyChecking no
 
 Host dream
   HostName dream.within.a.dream
