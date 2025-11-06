@@ -2,8 +2,16 @@ ForwardAgent yes
 Compression yes
 ServerAliveInterval 15
 StrictHostKeyChecking no
+StrictHostKeyChecking accept-new
 
 Host dream
   HostName dream.within.a.dream
   User dreamy
+  Port 22
   IdentityFile ~/.ssh/keys/dreamer/id_rsa
+
+Host dream.proxy
+  HostName proxy.dream.within.a.dream
+  User proxy
+  DynamicForward 8084
+  ProxyJump dream
